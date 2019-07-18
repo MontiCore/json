@@ -18,24 +18,49 @@
  */
 
 
-grammar JSON extends lib.MCBasicLiterals {
+grammar JSON extends de.monticore.MCCommonLiterals {
 
-  JSONDocument = JSONObject*;
-  
-  JSONObject implements JSONValue = "{" propertie:(JSONProperty || ",")* "}";
+  /** An ASTJSONDocument represents an input file in JSON format.
+    @attribute jSONObjects The objects contained in the JSON document.
+  */
+  scope JSONDocument = JSONObject*;
 
+  /** An ASTJSONObject is a JSONValue that may contain further properties.
+    @attribute props The properties of the JSON document.
+  */
+  scope JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
+
+  /** An ASTJSONProperty represents elements in a key-value relationship.
+    @attribute key The unique identifier of a property.
+    @attribute value The property value associated with the identifier.
+  */
   JSONProperty = key:StringLiteral ":" value:JSONValue;
 
+  /** An ASTJSONValue represents an arbitrary property value. */
   interface JSONValue;
 
+  /** An ASTJSONBoolean represents a boolean property value.
+    @attribute value The actual value.
+  */
   JSONBoolean implements JSONValue = value:BooleanLiteral;
 
+  /** An ASTJSONString represents a String property value.
+    @attribute value The actual value.
+  */
   JSONString implements JSONValue = value:StringLiteral;
-  
+
+  /** An ASTJSONNumber represents a number property value.
+    @attribute value The actual value (as signed integer or double).
+  */
   JSONNumber implements JSONValue = value:SignedNumericLiteral;
 
-  JSONArray implements JSONValue = "[" value:(JSONValue || "," )* "]";
+  /** An ASTJSONArray represents an array of multiple property values.
+    @attribute values The values in the array.
+  */
+  scope JSONArray implements JSONValue = "[" value:(JSONValue || ",")* "]";
 
+  /** An ASTJSONNull represents an empty property value.
+    @attribute value The actual "null" value.
+  */
   JSONNull implements JSONValue = value:NullLiteral;
-  
 }
