@@ -13,7 +13,7 @@
 					"NullValue": null,
 					"ISO": "ISO 2694:1243",
 					"Definition": {
-						"def": "A meta-markup language, used to create markup languages such as DocBook.",
+						"1.1def": "A defintion.",
 						"Formats": [
 							"JSON",
 							"XML"
