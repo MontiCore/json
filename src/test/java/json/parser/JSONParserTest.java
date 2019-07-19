@@ -20,8 +20,18 @@ import json._parser.JSONParser;
 public class JSONParserTest {
   
   @Test
-  public void testState() throws RecognitionException, IOException {
+  public void testBookstore() throws RecognitionException, IOException {
     Path model = Paths.get("src/test/resources/json/parser/bookstore.json");
+    JSONParser parser = new JSONParser();
+    
+    Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
+    assertFalse(parser.hasErrors());
+    assertTrue(jsonDoc.isPresent());
+  }
+  
+  @Test
+  public void testGenerated() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/json/parser/generated.json");
     JSONParser parser = new JSONParser();
     
     Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());

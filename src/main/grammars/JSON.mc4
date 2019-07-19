@@ -23,7 +23,7 @@ grammar JSON extends de.monticore.MCCommonLiterals {
   /** An ASTJSONDocument represents an input file in JSON format.
     @attribute jSONObjects The objects contained in the JSON document.
   */
-  scope JSONDocument = JSONObject*;
+  scope JSONDocument = object:(JSONObject || ",")*;
 
   /** An ASTJSONObject is a JSONValue that may contain further properties.
     @attribute props The properties of the JSON document.
