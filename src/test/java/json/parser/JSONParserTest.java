@@ -30,8 +30,18 @@ public class JSONParserTest {
   }
   
   @Test
-  public void testGenerated() throws RecognitionException, IOException {
-    Path model = Paths.get("src/test/resources/json/parser/generated.json");
+  public void testGeneratedArray() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/json/parser/generatedArray.json");
+    JSONParser parser = new JSONParser();
+    
+    Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
+    assertFalse(parser.hasErrors());
+    assertTrue(jsonDoc.isPresent());
+  }
+  
+  @Test
+  public void testGeneratedObjects() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/json/parser/generatedObjects.json");
     JSONParser parser = new JSONParser();
     
     Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
