@@ -21,7 +21,7 @@
 grammar JSON extends de.monticore.MCCommonLiterals {
 
   /** An ASTJSONDocument represents an input file in JSON format.
-    @attribute jSONObjects The objects contained in the JSON document.
+    @attribute objects The objects contained in the JSON document.
   */
   scope JSONDocument = object:JSONObject* | "[" object:(JSONObject || ",")* "]";
 
@@ -57,7 +57,7 @@ grammar JSON extends de.monticore.MCCommonLiterals {
   /** An ASTJSONArray represents an array of multiple property values.
     @attribute values The values in the array.
   */
-  scope JSONArray implements JSONValue = "[" value:(JSONValue || ",")* "]";
+  JSONArray implements JSONValue = "[" value:(JSONValue || ",")* "]";
 
   /** An ASTJSONNull represents an empty property value.
     @attribute value The actual "null" value.
