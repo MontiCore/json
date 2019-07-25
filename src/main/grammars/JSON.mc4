@@ -20,10 +20,17 @@
 
 grammar JSON extends de.monticore.MCCommonLiterals {
 
+  /** The starting nonterminal. */
+  start JSONDocument;
+
+  /** An ASTJSONValue represents an arbitrary property value. */
+  interface JSONValue;
+
   /** An ASTJSONDocument represents an input file in JSON format.
     @attribute objects The objects contained in the JSON document.
+    @attribute values The top level values contained in the JSON document.
   */
-  scope JSONDocument = object:JSONObject* | "[" object:(JSONObject || ",")* "]";
+  scope JSONDocument = object:JSONObject* | value:JSONValue*;
 
   /** An ASTJSONObject is a JSONValue that may contain further properties.
     @attribute props The properties of the JSON document.
@@ -35,9 +42,6 @@ grammar JSON extends de.monticore.MCCommonLiterals {
     @attribute value The property value associated with the identifier.
   */
   JSONProperty = key:StringLiteral ":" value:JSONValue;
-
-  /** An ASTJSONValue represents an arbitrary property value. */
-  interface JSONValue;
 
   /** An ASTJSONBoolean represents a boolean property value.
     @attribute value The actual value.
