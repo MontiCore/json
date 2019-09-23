@@ -1,0 +1,21 @@
+{
+	MyAutomaton: {
+		states: {
+			Ping: {
+				initial: true,
+				final: false
+			},
+			Pong: {
+				initial: false,
+				final: true
+			}
+		},
+		transitions: {
+			t1: {
+				from: "Ping",
+				to: "Pong",
+				input: "foo"
+			}
+		}
+	}
+}
