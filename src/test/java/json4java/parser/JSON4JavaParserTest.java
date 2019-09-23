@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.io.paths.ModelPath;
-import json4java._ast.ASTJSONDocument;
+import json._ast.ASTJSONDocument;
 import json4java._parser.JSON4JavaParser;
 import json4java._symboltable.IJSON4JavaScope;
 import json4java._symboltable.JSON4JavaArtifactScope;

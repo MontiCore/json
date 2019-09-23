@@ -30,12 +30,12 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
     @attribute objects The objects contained in the JSON document.
     @attribute values The top level values contained in the JSON document.
   */
-  scope JSONDocument = value:JSONValue*;
+  JSONDocument = value:JSONValue*;
 
   /** An ASTJSONObject is a JSONValue that may contain further properties.
     @attribute props The properties of the JSON document.
   */
-  scope JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
+  JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
 
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute key The unique identifier of a property.

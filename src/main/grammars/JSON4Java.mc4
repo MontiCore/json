@@ -18,24 +18,10 @@
  */
 
 
-grammar JSON4Java extends de.monticore.literals.MCCommonLiterals {
+grammar JSON4Java extends JSON {
 
   /** The starting nonterminal. */
   start JSONDocument;
-
-  /** An ASTJSONValue represents an arbitrary property value. */
-  interface JSONValue;
-
-  /** An ASTJSONDocument represents an input file in JSON format.
-    @attribute objects The objects contained in the JSON document.
-    @attribute values The top level values contained in the JSON document.
-  */
-  JSONDocument = value:JSONValue*;
-
-  /** An ASTJSONObject is a JSONValue that may contain further properties.
-    @attribute props The properties of the JSON document.
-  */
-  JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
 
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute name The unique identifier of a property.
@@ -43,28 +29,4 @@ grammar JSON4Java extends de.monticore.literals.MCCommonLiterals {
   */
   symbol scope JSONProperty = name:Name ":" value:JSONValue;
 
-  /** An ASTJSONBoolean represents a boolean property value.
-    @attribute value The actual value.
-  */
-  JSONBoolean implements JSONValue = value:BooleanLiteral;
-
-  /** An ASTJSONString represents a String property value.
-    @attribute value The actual value.
-  */
-  JSONString implements JSONValue = value:StringLiteral;
-
-  /** An ASTJSONNumber represents a number property value.
-    @attribute value The actual value (as signed integer or double).
-  */
-  JSONNumber implements JSONValue = value:SignedNumericLiteral;
-
-  /** An ASTJSONArray represents an array of multiple property values.
-    @attribute values The values in the array.
-  */
-  JSONArray implements JSONValue = "[" value:(JSONValue || ",")* "]";
-
-  /** An ASTJSONNull represents an empty property value.
-    @attribute value The actual "null" value.
-  */
-  JSONNull implements JSONValue = value:NullLiteral;
 }
