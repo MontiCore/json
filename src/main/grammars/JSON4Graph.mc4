@@ -31,10 +31,15 @@ grammar JSON4Graph extends JSON {
       ("," prop:JSONProperty)* 
   "}";
   
-  JSONReference extends JSONProperty = "@" key:StringLiteral ":" reference:StringLiteral;
+  /** An ASTJSONReference extends the ASTJSONProperty to depict cross-references to an ASTJSONObject.
+    @attribute key The unique identifier of a property starting with an "@".
+    @attribute reference The reference value associated with the identifier.
+  */
+  JSONReference extends JSONProperty = 
+    {_input.LT(1).getText().startsWith("@")}? key:StringLiteral ":" reference:StringLiteral;
 
   astrule JSONReference =
-    method public  json._ast.ASTJSONValue getValue ()  {
+    method public json._ast.ASTJSONValue getValue ()  {
       if (this.value==null) {
         json4graph._visitor.JSON4GraphObjectVisitor.getInstance().getReferenceValue(getReference());
       }      
