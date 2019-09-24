@@ -1,0 +1,33 @@
+{
+	"ID": "root",
+	"object diagram": {
+		"ID": "od",
+		"title": "OD Ping Pong Automaton",
+		"automaton": {
+			"ID": "aut",
+			"name": "PingPong Automaton Game",
+			"states": [
+				{
+					"ID": "state_ping",
+					"name": "Ping",
+					"initial": true,
+					"final": false
+				},
+				{
+					"ID": "state_pong",
+					"name": "Pong",
+					"initial": false,
+					"final": true
+				}
+			],
+			"transitions": [
+				{
+					"ID": "t1",
+					"@from": "state_ping",
+					"@to": "state_pong",
+					"input": "foo"
+				}
+			]
+		}
+	}
+}
