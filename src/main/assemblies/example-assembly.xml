@@ -2,7 +2,7 @@
   xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-  <id>automata-example</id>
+  <id>json-example</id>
   <includeBaseDirectory>false</includeBaseDirectory>
   <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
@@ -10,16 +10,16 @@
       <outputDirectory>src</outputDirectory>
       <directory>src/main/java</directory>
       <excludes>
-        <exclude>automata/_ast/</exclude>
-        <exclude>automata/_symboltable/</exclude>
+        <exclude>json/_ast/</exclude>
+        <exclude>json/_symboltable/</exclude>
       </excludes>
     </fileSet>
     <fileSet>
       <outputDirectory>hwc</outputDirectory>
       <directory>src/main/java</directory>
       <includes>
-        <include>automata/_ast/</include>
-        <include>automata/_symboltable/</include>
+        <include>json/_ast/</include>
+        <include>json/_symboltable/</include>
       </includes>
     </fileSet>
     <fileSet>
