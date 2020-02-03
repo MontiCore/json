@@ -41,7 +41,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
     @attribute key The unique identifier of a property.
     @attribute value The property value associated with the identifier.
   */
-  JSONProperty = key:String ":" value:JSONValue;
+  symbol scope JSONProperty = key:String ":" value:JSONValue;
 
   /** An ASTJSONBoolean represents a boolean property value.
     @attribute value The actual value.
@@ -67,4 +67,10 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
     @attribute value The actual "null" value.
   */
   JSONNull implements JSONValue = value:NullLiteral;
+  
+  astrule JSONProperty =
+    method public String getName()  {
+      return getKey();
+    }
+  ;
 }
