@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017, MontiCore. All rights reserved. http://www.se-rwth.de/
  */
-package json.parser;
+package de.monticore.lang.json.parser;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,8 +14,8 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import json._ast.ASTJSONDocument;
-import json._parser.JSONParser;
+import de.monticore.lang.json._ast.ASTJSONDocument;
+import de.monticore.lang.json._parser.JSONParser;
 
 public class JSONParserTest {
   

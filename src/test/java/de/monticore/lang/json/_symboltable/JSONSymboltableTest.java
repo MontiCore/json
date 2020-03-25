@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017, MontiCore. All rights reserved. http://www.se-rwth.de/
  */
-package json._symboltable;
+package de.monticore.lang.json._symboltable;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,8 +15,9 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.io.paths.ModelPath;
-import json._ast.ASTJSONDocument;
-import json._parser.JSONParser;
+import de.monticore.lang.json._symboltable.JSONLanguage;
+import de.monticore.lang.json._ast.ASTJSONDocument;
+import de.monticore.lang.json._parser.JSONParser;
 
 public class JSONSymboltableTest {
   
