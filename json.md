@@ -1,9 +1,4 @@
 # JSON
-
-MontiCore language for parsing JSON artifacts.
-
-
-# JSON
 The MontiCore language for parsing JSON artifacts contains the grammar:
 - **JSON**: basic json language with symbol table definition 
 
