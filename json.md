@@ -3,7 +3,7 @@
 MontiCore language for parsing JSON artifacts.
 
 
-# UML/P CD
+# JSON
 The MontiCore language for parsing JSON artifacts contains the grammar:
 - **JSON**: basic json language with symbol table definition 
 
