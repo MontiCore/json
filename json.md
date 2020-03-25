@@ -8,7 +8,7 @@ The MontiCore language for parsing JSON artifacts contains the grammar:
 - **JSON**: basic json language with symbol table definition 
 
 The main pupose of this language is parsing general artifacts in JSON format
-at adheres to the common standard.
+that adhere to the common standard.
 
 The grammar file is [`JSON.mc4`][JSONGrammar].
 
