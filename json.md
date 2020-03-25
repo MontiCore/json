@@ -24,13 +24,6 @@ The grammar file is [`JSON.mc4`][JSONGrammar].
 Automatically extracts the structure of a set of JSON artifacts and stores it 
 as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
   
-### CLI Application
-[`de.monticore.cd.CD4ACLI`][CD4ACLI] contains a standalone cli application
- which:
-1. Parses the given model
-2. Creates a symbol table
-3. Checks the CoCos
-
 
 [JSONGrammar]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4
 [JSONLanguage]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/java/de/monticore/lang/json/_symboltable/JSONLanguage.java
