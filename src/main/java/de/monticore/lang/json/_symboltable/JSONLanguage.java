@@ -1,6 +1,4 @@
-/*
- * Copyright (c) 2017, MontiCore. All rights reserved. http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json._symboltable;
 
 public class JSONLanguage extends JSONLanguageTOP {
