@@ -71,9 +71,8 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   /*============================ LEXER RULES ===============================*/
   /*========================================================================*/
 
-  token DecimalDoublePointLiteral
-     = Digits '.' (Digits)? (ExponentPart)?
-       | Digits ExponentPart;
+  token DecimalDoublePointLiteral = Digits '.' (Digits)? (ExponentPart)? |
+                                    Digits ExponentPart;
 
   token ExponentPart = ExponentIndicator SignedInteger;
 
