@@ -45,4 +45,16 @@ public class JSONParserTest {
     assertFalse(parser.hasErrors());
     assertTrue(jsonDoc.isPresent());
   }
+  
+  @Test
+  public void testNumbers() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/json/parser/Numbers.json");
+    JSONParser parser = new JSONParser();
+    double i = 430e3;
+    System.out.println(i);
+    
+    Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
+    assertFalse(parser.hasErrors());
+    assertTrue(jsonDoc.isPresent());
+  }
 }
