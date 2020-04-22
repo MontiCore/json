@@ -51,9 +51,48 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   */
   JSONNull implements JSONValue = value:NullLiteral;
   
+  /** ASTSignedBasicDoubleLiteral represents a positive or negative double.
+    Overrides the inherited production to include exponential representations.
+    @attribute source String-representation (including '"').
+  */
+  SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
+    negative:["-"]? DecimalDoublePointLiteral;
+
+
+  /*========================================================================*/
+  /*============================ LEXER RULES ===============================*/
+  /*========================================================================*/
+
+  token DecimalDoublePointLiteral
+     = Digits '.' (Digits)? (ExponentPart)?
+       | Digits ExponentPart;
+
+  token ExponentPart = ExponentIndicator SignedInteger;
+
+  fragment token ExponentIndicator = 'e' | 'E';
+  
+  fragment token SignedInteger = (Sign)? Digits;
+
+  fragment token Sign = '+' | '-';
+  
+  
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
+
   astrule JSONProperty =
     method public String getName()  {
       return getKey();
     }
   ;
+  
+  astrule SignedBasicDoubleLiteral =
+    method public String getSource() {
+      return (isNegative()?"-":"") + getDecimalDoublePointLiteral();
+    }
+    method public double getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+    }
+  ;
+  
 }
