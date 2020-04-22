@@ -1,6 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang;
 
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar represents a slight superset to the official JSON standard. 
+ * It is intended for parsing JSON-compliant artifacts. Further well-formedness
+ * checks are not included.
+*/
+
 grammar JSON extends de.monticore.literals.MCCommonLiterals {
 
   /** The starting nonterminal. */
