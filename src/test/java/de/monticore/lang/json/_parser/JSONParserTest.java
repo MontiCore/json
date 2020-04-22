@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.json.parser;
+package de.monticore.lang.json._parser;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
-import de.monticore.lang.json._parser.JSONParser;
 
 public class JSONParserTest {
   
