@@ -18,46 +18,46 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   interface JSONValue;
 
   /** An ASTJSONDocument represents an input file in JSON format.
-    @attribute objects The objects contained in the JSON document.
-    @attribute values The top level values contained in the JSON document.
+    @attribute jSONValue The top level values contained in the JSON document.
   */
-  JSONDocument = value:JSONValue;
+  JSONDocument = JSONValue;
 
   /** An ASTJSONObject is a JSONValue that may contain further properties.
     @attribute props The properties of the JSON document.
   */
-  JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
+  JSONObject implements JSONValue = "{" props:(JSONProperty || ",")* "}";
 
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute key The unique identifier of a property.
-    @attribute value The property value associated with the identifier.
+    @attribute name The forwarded key as name for symbol table access.
+    @attribute jSONValue The property value associated with the identifier.
   */
-  symbol scope JSONProperty = key:String ":" value:JSONValue;
+  symbol scope JSONProperty = key:String ":" JSONValue;
 
   /** An ASTJSONBoolean represents a boolean property value.
-    @attribute value The actual value.
+    @attribute booleanLiteral The actual value.
   */
-  JSONBoolean implements JSONValue = value:BooleanLiteral;
+  JSONBoolean implements JSONValue = BooleanLiteral;
 
   /** An ASTJSONString represents a String property value.
-    @attribute value The actual value.
+    @attribute stringLiteral The actual value.
   */
-  JSONString implements JSONValue = value:String;
+  JSONString implements JSONValue = StringLiteral;
 
   /** An ASTJSONNumber represents a number property value.
-    @attribute value The actual value (as signed integer or double).
+    @attribute signedNumericLiteral The actual value (as integer or double).
   */
-  JSONNumber implements JSONValue = value:SignedNumericLiteral;
+  JSONNumber implements JSONValue = SignedNumericLiteral;
 
   /** An ASTJSONArray represents an array of multiple property values.
-    @attribute values The values in the array.
+    @attribute JSONValues The values in the array.
   */
-  JSONArray implements JSONValue = "[" value:(JSONValue || ",")* "]";
+  JSONArray implements JSONValue = "[" (JSONValue || ",")* "]";
 
   /** An ASTJSONNull represents an empty property value.
-    @attribute value The actual "null" value.
+    @attribute nullLiteral The actual "null" value.
   */
-  JSONNull implements JSONValue = value:NullLiteral;
+  JSONNull implements JSONValue = NullLiteral;
   
   /** ASTSignedBasicDoubleLiteral represents a positive or negative double.
     Overrides the inherited production to include exponential representations.
@@ -68,7 +68,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
 
 
   /*========================================================================*/
-  /*============================ LEXER RULES ===============================*/
+  /*============================= LEXER RULES ==============================*/
   /*========================================================================*/
 
   token DecimalDoublePointLiteral = Digits '.' (Digits)? (ExponentPart)? |
@@ -84,7 +84,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   
   
   /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
+  /*=========================== AST DEFINITIONS ============================*/
   /*========================================================================*/
 
   astrule JSONProperty =
