@@ -6,7 +6,8 @@ package de.monticore.lang;
 /**
  * This grammar represents a slight superset to the official JSON standard. 
  * It is intended for parsing JSON-compliant artifacts. Further well-formedness
- * checks are not included.
+ * checks are not included, because we assume to parse correctly produced JSON 
+ * documents only.
 */
 
 grammar JSON extends de.monticore.literals.MCCommonLiterals {
