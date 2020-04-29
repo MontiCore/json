@@ -62,7 +62,8 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
     @attribute source String-representation (including '"').
   */
   SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
-    negative:["-"]? DecimalDoublePointLiteral;
+    negative:["-"] DecimalDoublePointLiteral {noSpace()}? | 
+                   DecimalDoublePointLiteral;
 
 
   /*========================================================================*/
