@@ -23,7 +23,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   /** An ASTJSONObject is a JSONValue that may contain further properties.
     @attribute props The properties of the JSON document.
   */
-  JSONObject implements JSONValue = "{" props:(JSONProperty || ",")* "}";
+  JSONObject implements JSONValue = "{" prop:(JSONProperty || ",")* "}";
 
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute key The unique identifier of a property.
