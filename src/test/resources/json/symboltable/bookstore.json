@@ -16,9 +16,6 @@
 						"1.1def": "A defintion.",
 						"Formats": [
 							"JSON",
-							{
-								"1.1def": "A defintion."
-							},
 							"XML"
 						]
 					},
