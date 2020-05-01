@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# JSON
+# JSON Language Description
 
 * The MontiCore language JSON contains the grammar 
   and symbol management infrastructure for parsing and processing 
@@ -24,6 +24,7 @@
 
 * Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
+
 ## Handwritten Extensions
 
 ### Symboltable
@@ -40,17 +41,9 @@
 * Some examples showng nested access zB "adress.street" and "street": XXX TODO NJ 
 
 
-## Functionality
-
-### Structure Extraction
-
-* (Under construction) 
-Automatically extracts the structure of a set of JSON artifacts and stores it 
-as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
-  
-
 ## Further Links 
 
-* [JSONGrammar](src/main/grammars/de/monticore/lang/JSON.mc4)
+* [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
+* [Functions for JSON available](./Readme.mc4)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
 
