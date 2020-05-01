@@ -1,9 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # JSON
 
-* The MontiCore language for parsing JSON artifacts contains the grammar:
+* The MontiCore language JSON contains the grammar 
+  and symbol management infrastructure for parsing and processing 
+  JSON artifacts
 
-  * **JSON**: json language with symbol table definition. 
+  * TODO NJ: small good example (am besten so, dass man sich unten gleich darauf beziehen kann)
 
 * The main purpose of this language is parsing general artifacts in JSON format
   that adhere to the common standard.
@@ -34,8 +36,8 @@
   * Symbols are by definition *externally visible* and *exported*. 
     All of them, even deeply nested ones!
   * Therefore, symbol resolving is implemented in a way that even deeply 
-    nested names are found by `resolve.Many`.
-* Some examples: XXX TODO NJ
+    nested names are found by `resolve.Many` delivering a set of found symbols.
+* Some examples showng nested access zB "adress.street" and "street": XXX TODO NJ 
 
 
 ## Functionality
@@ -47,13 +49,8 @@ Automatically extracts the structure of a set of JSON artifacts and stores it
 as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
   
 
-## Further Links
+## Further Links 
 
 * [JSONGrammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
-* [MontiCore documentation](http://www.monticore.de/)
-* [MontiCore @github](https://github.com/MontiCore/monticore)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
-
 
