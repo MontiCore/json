@@ -19,10 +19,10 @@
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
 
-
-The grammar file is [`JSON.mc4`][JSONGrammar].
+* Main grammar [`de.monticore.lang.JSON.mc4`][JSONGrammar].
 
 ## Handwritten Extensions
+
 ### Symboltable
 - The [`de.monticore.lang.json._symboltable.JSONLanguage`][JSONLanguage]
  defines the language name and its file ending. Additionally, it sets the 
@@ -39,13 +39,5 @@ as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
 [JSONLanguage]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/java/de/monticore/lang/json/_symboltable/JSONLanguage.java
 [CD4Analysis]: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
 
-
-
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (stable)
-* Responsible: NJ
-* Main grammar 
-  [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
-  and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
 
 
