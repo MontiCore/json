@@ -1,19 +1,25 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # JSON
 
-* The MontiCore language JSON defines the parsing and processing infrastructure 
-  for JSON artifacts
 
-* Please note that JSON (like XML or ASCII) is just a carrier language.
-  The conrete JSON dialect and the question, how to recreate the
-  real objects / data structures, etc. behind the JSON tree structure
-  is beyond this grammar, but can be applied to the AST defined here.
+The MontiCore language JSON defines the parsing and processing infrastructure 
+for JSON artifacts.
+The language component (and full language) is part of the MontiCore language 
+library.
+
+Please note that JSON (like XML or ASCII) is just a carrier language.
+The concrete JSON dialect and the question, how to recreate the
+real objects / data structures, etc. behind the JSON tree structure
+is beyond this grammar, but can be applied to the AST defined here.
 
 * Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
-## Handwritten Extensions
 
 ## Functionality
+
+### Parsing JSON artifacts and symbol table creation.
+
+* available [see language explanataion](json.md)
 
 ### Structure Extraction
 
@@ -24,7 +30,7 @@ as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
 
 ## Further Links
 
-* [JSONGrammar](src/main/grammars/de/monticore/lang/JSON.mc4)
+* [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 
 * [MontiCore documentation](http://www.monticore.de/)
 * [MontiCore @github](https://github.com/MontiCore/monticore)
