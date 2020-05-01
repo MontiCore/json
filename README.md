@@ -32,7 +32,7 @@ as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-* [MontiCore @github](https://github.com/MontiCore/monticore)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
