@@ -2,7 +2,8 @@
 # JSON
 
 * The MontiCore language for parsing JSON artifacts contains the grammar:
-  * **JSON**: json language with symbol table definition 
+
+  * **JSON**: json language with symbol table definition. 
 
 * The main purpose of this language is parsing general artifacts in JSON format
   that adhere to the common standard.
@@ -24,20 +25,30 @@
 ## Handwritten Extensions
 
 ### Symboltable
-- The [`de.monticore.lang.json._symboltable.JSONLanguage`][JSONLanguage]
- defines the language name and its file ending. Additionally, it sets the 
- default model loader.
+* The JSON artifacts provide symbols of type JSONPropertySymbol. 
+* The JSON symbols of artifact `A.json` are stored in `A.jsonsym`.
+* TODO NJ:
+* Symbol management:
+  * A JSON artifacts provide a hierarchy of scopes along the objects it defines.
+  * Each *"attribute name"* acts a symbol.
+  * Symbols are by definition *externally visible* and *exported*. 
+    All of them, even deeply nested ones!
+  * Therefore, symbol resolving is implemented in a way that even deeply 
+    nested names are found by `resolve.Many`.
+* Some examples: XXX TODO NJ
+
 
 ## Functionality
+
 ### Structure Extraction
-(Under construction) 
+
+* (Under construction) 
 Automatically extracts the structure of a set of JSON artifacts and stores it 
 as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
   
 
-[JSONGrammar]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4
-[JSONLanguage]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/java/de/monticore/lang/json/_symboltable/JSONLanguage.java
-[CD4Analysis]: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
+* [JSONGrammar]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4
+* [CD4Analysis]: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
 
 
 
