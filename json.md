@@ -20,7 +20,7 @@
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
 
-* Main grammar [`de.monticore.lang.JSON.mc4`][JSONGrammar].
+* Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
 ## Handwritten Extensions
 
@@ -46,10 +46,14 @@
 Automatically extracts the structure of a set of JSON artifacts and stores it 
 as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
   
+
 ## Further Links
 
-* [JSONGrammar][https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4]
-* [CD4Analysis][https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
+* [JSONGrammar](src/main/grammars/de/monticore/lang/JSON.mc4)
+* [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
+* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore @github](https://github.com/MontiCore/monticore)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
 
 
