@@ -45,5 +45,5 @@
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 * [Functions for JSON available](./Readme.mc4)
-* [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
+* [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 
