@@ -46,9 +46,10 @@
 Automatically extracts the structure of a set of JSON artifacts and stores it 
 as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
   
+## Further Links
 
-* [JSONGrammar]: https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4
-* [CD4Analysis]: https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis
+* [JSONGrammar][https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4]
+* [CD4Analysis][https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis]
 
 
 
