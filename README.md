@@ -19,7 +19,7 @@ is beyond this grammar, but can be applied to the AST defined here.
 
 ### Parsing JSON artifacts and symbol table creation.
 
-* available [see language explanataion](json.md)
+* available ([see language explanation](json.md))
 
 ### Structure Extraction
 
