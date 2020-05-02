@@ -35,7 +35,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
     @attribute key The unique identifier of a property.
     @attribute name The forwarded key as name for symbol table access.
                     It is derived and accessible by a getName().
-    @attribute jSONValue The property value associated with the identifier.
+    @attribute value The property value associated with the identifier.
 
     Keyword symbol requires a "Name", this is mimicked by an explicitly 
     defined "getName()" method via astrule.
