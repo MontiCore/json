@@ -34,7 +34,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute key The unique identifier of a property.
     @attribute name The forwarded key as name for symbol table access.
-    		It is derived and accesssible by a getName().
+                    It is derived and accesssible by a getName().
     @attribute jSONValue The property value associated with the identifier.
 
     Keyword smybol requires a "Name", this is mimicked by an explicitely 
@@ -83,7 +83,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   /*============================= LEXER RULES ==============================*/
   /*========================================================================*/
 
-  // JSON doubles differ from Java' doubles in the exponent. 
+  // JSON doubles differ from Java doubles in the exponent. 
   // We therefore define a new token here that acts as literal 
   // for JSON
 
