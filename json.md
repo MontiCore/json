@@ -4,19 +4,34 @@
 * The MontiCore language JSON contains the grammar 
   and symbol management infrastructure for parsing and processing 
   JSON artifacts
-
-  * TODO NJ: small good example (am besten so, dass man sich unten gleich darauf beziehen kann)
-
+```json
+    {
+        "Alice": {
+            "name": "Alice Anderson",
+            "address": {
+                "postal_code": 10459,
+                "street": "Beck Street",
+                "number": 56
+            }
+        },
+        "Bob": {
+            "name": "Bob Barkley",
+            "address": {
+                "postal_code": 10459,
+                "street": "Freeman Street",
+                "number": 73
+            }
+        }
+    }
+```
 * The main purpose of this language is parsing general artifacts in JSON format
   that adhere to the common standard.
-
 * The JSON grammar adheres to the common **standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
   It is intended for parsing JSON-compliant artifacts. Further well-formedness
   checks are not included, because we assume to parse correctly produced JSON 
   documents only.
-
 * Please note that JSON (like XML or ASCII) is just a carrier language.
   The conrete JSON dialect and the question, how to recreate the
   real objects / data structures, etc. behind the JSON tree structure
@@ -30,16 +45,18 @@
 ### Symboltable
 * The JSON artifacts provide symbols of type JSONPropertySymbol. 
 * The JSON symbols of artifact `A.json` are stored in `A.jsonsym`.
-* TODO NJ:
 * Symbol management:
-  * A JSON artifacts provide a hierarchy of scopes along the objects it defines.
-  * Each *"attribute name"* acts a symbol.
+  * JSON artifacts provide a hierarchy of scopes along the objects they define.
+  * Each *"attribute name"* (i.e., each property key) acts as a symbol.
   * Symbols are by definition *externally visible* and *exported*. 
     All of them, even deeply nested ones!
-  * Therefore, symbol resolving is implemented in a way that even deeply 
-    nested names are found by `resolve.Many` delivering a set of found symbols.
-* Some examples showng nested access zB "adress.street" and "street": XXX TODO NJ 
-
+  * Therefore, symbol resolving is implemented in a way that even deeply nested 
+    names are found by `resolve.DownMany` delivering a set of found symbols.
+  * Example: Considering the presented JSON snippet, the default resolving 
+    algorithm requires the qualified name `Alice.address.street` to resolve the 
+    corresponding symbol.
+  * The modified `resolve.DownMany` approach allows resolving for `street` 
+    directly, returning a list of all property symbols named "street".
 
 ## Further Links 
 
