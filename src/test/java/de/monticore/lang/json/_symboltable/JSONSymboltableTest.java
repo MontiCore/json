@@ -98,6 +98,24 @@ public class JSONSymboltableTest {
     assertTrue(deep_scope.resolveJSONPropertyDown("substate").isPresent());
   }
   
+  @Test
+  public void testAddresses() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/json/symboltable/addresses.json");
+    JSONParser parser = new JSONParser();
+    
+    // parse model
+    Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
+    assertFalse(parser.hasErrors());
+    assertTrue(jsonDoc.isPresent());
+    
+    // build symbol table
+    final JSONLanguage lang = JSONSymTabMill.jSONLanguageBuilder().build();
+    JSONArtifactScope scope = createSymbolTable(lang, jsonDoc.get());
+    
+    // test resolving
+    assertTrue(scope.resolveJSONProperty("Alice.address.postal_code").isPresent());
+    assertEquals(scope.resolveJSONPropertyDownMany("postal_code").size(), 2);
+  }
   
   /**
    * Creates the symbol table from the parsed AST.
