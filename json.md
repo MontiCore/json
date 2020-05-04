@@ -25,7 +25,7 @@
     }
 ```
 * The main purpose of this language is parsing general artifacts in JSON format
-  that adhere to the common standard.
+  that adhere to the common [standard](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 * The JSON grammar adheres to the common **standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
