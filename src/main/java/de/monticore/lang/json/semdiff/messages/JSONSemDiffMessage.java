@@ -6,6 +6,7 @@ import de.se_rwth.commons.SourcePosition;
 public interface JSONSemDiffMessage {
 
   ASTNode getASTNode();
+
   String getSimpleErrorMessage();
 
   default SourcePosition getSourcePositionStart() {
