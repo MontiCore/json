@@ -60,6 +60,31 @@
   * The modified `resolve.DownMany` approach allows resolving for `street` 
     directly, returning a list of all property symbols named "street".
 
+## Symbol kinds used by JSON (importable):
+* None, because JSON does not have mechanisms to refer to external symbols.
+
+## Symbol kinds defined by JSON:
+* `JSONPropertySymbol` contains a JSON attribute name and a JSONValue.
+* JSON attribute names act as symbol names and 
+  can be ordinary strings (which differs from 
+  standard approach to use `Name`s only and leads to problems if "."
+  is included in the symbol and qualified search is used.)
+
+## Symbols exported by JSON:
+* Alternative 1: (??? TODO: clarify this)
+  * JSON documents generally do NOT export any symbol to external artifacts.
+    Thus there is no symbol-table to be stored 
+  * JSON Symbols are available only when the model is loaded.
+* ALternative 2: 
+  * From outside only the top level symbols are accessible, 
+    all other symbols are assumed to be attributes within the top-level
+    objects.
+  * Internal JSON Symbols are available only when the model is loaded.
+
+## Functionality: CoCos
+* none provided; it is assumed that the JSON model was produced correctly.
+
+
 ## Further Information
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
