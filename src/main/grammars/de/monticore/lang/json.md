@@ -70,13 +70,13 @@
 * none provided; it is assumed that the JSON model was produced correctly.
 
 ## Handwritten Extensions
- [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter)
+ [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
 A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
 
 ## Further Information
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
-* [Functions for JSON available](../../../Readme.md)
+* [Functions for JSON available](./Readme.md)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
