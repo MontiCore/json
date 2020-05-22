@@ -1,4 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # JSON Language Description
 
 * The MontiCore language JSON contains the grammar 
@@ -53,14 +54,19 @@
   * Therefore, symbol resolving is implemented in a way that even deeply nested 
     names are found by `resolve.DownMany` delivering a set of found symbols.
   * Example: Considering the presented JSON snippet, the default resolving 
-    algorithm requires the qualified name `Alice.address.street` to resolve the 
-    corresponding symbol.
+    algorithm provides the qualified name `Alice.address.street`, which resolves 
+    to the corresponding symbol.
+  * TODO: BR 21.5: das muessen wir nochmal diskutieren. Das sehe ich so nicht.
   * The modified `resolve.DownMany` approach allows resolving for `street` 
     directly, returning a list of all property symbols named "street".
 
-## Further Links 
+## Further Information
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
-* [Functions for JSON available](./Readme.mc4)
+* [Functions for JSON available](./Readme.md)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
