@@ -42,10 +42,7 @@
 
 * Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
-
-## Handwritten Extensions
-
-### Symboltable
+## Symboltable
 * The JSON artifacts provide symbols of type JSONPropertySymbol. 
 * The JSON symbols of artifact `A.json` are stored in `A.jsonsym`.
 * Symbol management:
@@ -53,44 +50,33 @@
   * Each *"attribute name"* (i.e., each property key) acts as a symbol.
   * Symbols are by definition *externally visible* and *exported*. 
     All of them, even deeply nested ones!
-  * Therefore, symbol resolving is implemented in a way that even deeply nested 
-    names are found by `resolve.DownMany` delivering a set of found symbols.
-  * Example: Considering the presented JSON snippet, the default resolving 
-    algorithm provides the qualified name `Alice.address.street`, which resolves 
-    to the corresponding symbol.
-  * TODO: BR 21.5: das muessen wir nochmal diskutieren. Das sehe ich so nicht.
-  * The modified `resolve.DownMany` approach allows resolving for `street` 
-    directly, returning a list of all property symbols named "street".
 
-## Symbol kinds used by JSON (importable):
+### Symbol kinds used by JSON (importable):
 * None, because JSON does not have mechanisms to refer to external symbols.
 
-## Symbol kinds defined by JSON:
-* `JSONPropertySymbol` contains a JSON attribute name and a JSONValue.
+### Symbol kinds defined by JSON:
+* `JSONPropertySymbol` contains a JSON attribute name
 * JSON attribute names act as symbol names and 
   can be ordinary strings (which differs from 
   standard approach to use `Name`s only and leads to problems if "."
   is included in the symbol and qualified search is used.)
 
-## Symbols exported by JSON:
-* Alternative 1: (??? TODO: clarify this)
-  * JSON documents generally do NOT export any symbol to external artifacts.
+### Symbols exported by JSON:
+* JSON documents generally do NOT export any symbol to external artifacts.
     Thus there is no symbol-table to be stored 
-  * JSON Symbols are available only when the model is loaded.
-* ALternative 2: 
-  * From outside only the top level symbols are accessible, 
-    all other symbols are assumed to be attributes within the top-level
-    objects.
-  * Internal JSON Symbols are available only when the model is loaded.
+* JSON Symbols are available only when the model is loaded.
 
 ## Functionality: CoCos
 * none provided; it is assumed that the JSON model was produced correctly.
 
+## Handwritten Extensions
+ [JSONPrettyPrinter](../java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter)
+A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
 
 ## Further Information
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
-* [Functions for JSON available](./Readme.md)
+* [Functions for JSON available](../../../Readme.md)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
