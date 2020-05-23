@@ -84,8 +84,8 @@
 * none provided; it is assumed that the JSON model was produced correctly.
 
 ## Handwritten Extensions
- [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
-A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
+* [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
+  A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
 
 ## Further Information
 
