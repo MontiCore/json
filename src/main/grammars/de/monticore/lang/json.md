@@ -39,7 +39,6 @@
   The conrete JSON dialect and the question, how to recreate the
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
-
 * Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
 ## Symboltable
