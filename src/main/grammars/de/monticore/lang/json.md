@@ -76,8 +76,11 @@
     fully qualified `"Bob.adress.street"`. This, however, would leed to a 
     symboltable that is larger that the original model and therefore,
     we suggest to load the original model then instead.
-  * A special kind of JSON property, such as `"identifier"` within each
-    *objects* contains the name in an endoded form.
+  * A special kind of JSON property, such as `"name"` within each
+    *objects* contains the usable object name.
+  * A special kind of JSON property, such as `"uuid"` within each
+    *objects* contains an anonymously generated reference allowing
+    to rebuild graph structures (if needed).
 
 ## Functionality: CoCos
 * none provided; it is assumed that the JSON model was produced correctly.
