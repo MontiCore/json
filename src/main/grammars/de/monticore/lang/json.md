@@ -47,8 +47,6 @@
 * Symbol management:
   * JSON artifacts provide a hierarchy of scopes along the objects they define.
   * Each *"attribute name"* (i.e., each property key) acts as a symbol.
-  * Symbols are by definition *externally visible* and *exported*. 
-    All of them, even deeply nested ones!
 
 ### Symbol kinds used by JSON (importable):
 * None, because JSON does not have mechanisms to refer to external symbols.
@@ -61,9 +59,26 @@
   is included in the symbol and qualified search is used.)
 
 ### Symbols exported by JSON:
-* JSON documents generally do NOT export any symbol to external artifacts.
-    Thus there is no symbol-table to be stored 
-* JSON Symbols are available only when the model is loaded.
+* JSON documents generally do NOT export any symbol to external artifacts. 
+  This has two reasons:
+  * Usually JSON dialect encode their information in various 
+    specific forms. A default symbol table would therefore 
+    not be useful.
+  * JSON is mainly a transport technique for data, e.g. during runtime
+    of products, services, but also tools and simulators. JSON artefacts 
+    are meant for reading and processing, not usually for referring to 
+    their internal information by other artefacts.
+* Thus there is no symbol-table to be stored.  
+  JSON Symbols are available only when the model has been loaded.
+* Please note that alternatives are possible and could be implemented
+  based on the MontiCore symboltable infrastructure. E.g. 
+  * The top-level symbols, like `"Alice"` and `"Bob"` would be available. 
+  * All symbols would be available. That would also include e.g. 
+    fully qualified `"Bob.adress.street"`. This, however, would leed to a 
+    symboltable that is larger that the original model and therefore,
+    we suggest to load the original model then instead.
+  * A special kind of JSON property, such as `"identifier"` within each
+    *objects* contains the name in an endoded form.
 
 ## Functionality: CoCos
 * none provided; it is assumed that the JSON model was produced correctly.
