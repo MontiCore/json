@@ -44,7 +44,6 @@
 
 ## Symboltable
 * The JSON artifacts provide symbols of type JSONPropertySymbol. 
-* The JSON symbols of artifact `A.json` are stored in `A.jsonsym`.
 * Symbol management:
   * JSON artifacts provide a hierarchy of scopes along the objects they define.
   * Each *"attribute name"* (i.e., each property key) acts as a symbol.
