@@ -92,7 +92,6 @@
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 * [Functions for JSON available](./README.md)
 * [CD4Analysis](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis)
-
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
