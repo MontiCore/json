@@ -1,0 +1,25 @@
+{
+  "Bob": {
+    "name": "Bob Barkley",
+    "address": {
+      "postal_code": 10459,
+      "number": 73,
+      "street": "Freeman Street"
+    },
+    "cars": [
+      { "name":"Opel", "models":[ "Astra", "Corsa"] }
+    ]
+  },
+  "Alice": {
+    "cars": [
+      { "name":"Ford", "models":[ "Fiesta", "Focus", "Mustang"] },
+      { "name":"BMW", "models":[ "320", "X3", "X5"] }
+    ],
+    "address": {
+      "street": "Beck Street",
+      "postal_code": 10459,
+      "number": 56
+    },
+    "name": "Alice Anderson"
+  }
+}
