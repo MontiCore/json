@@ -1,15 +1,19 @@
 package de.monticore.lang.json.semdiff.exceptions;
 
-public class SemanticJSONDiffException extends RuntimeException {
+public class SemanticJSONDiffException extends Exception {
 
     private final SemanticJSONDiffError error;
 
-    public SemanticJSONDiffException(final SemanticJSONDiffError error) {
-        this(error, null);
+    public SemanticJSONDiffException(final SemanticJSONDiffError error, String cause) {
+        this(error, cause, null);
     }
 
-    public SemanticJSONDiffException(final SemanticJSONDiffError error, Exception e) {
-        super(error.name(), e);
+    public SemanticJSONDiffException(final SemanticJSONDiffError error, String cause, Exception e) {
+        super(String.format(error.getErrorMessage(), cause), e);
         this.error = error;
+    }
+
+    public SemanticJSONDiffError getError() {
+        return error;
     }
 }

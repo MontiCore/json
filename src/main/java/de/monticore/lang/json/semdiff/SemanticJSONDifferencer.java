@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffError.FAILED_TO_PARSE_MODEL;
+import static de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffError.*;
 
 public class SemanticJSONDifferencer {
 
@@ -20,37 +20,41 @@ public class SemanticJSONDifferencer {
 
   private final JSONPrettyPrinter prettyPrinter = new JSONPrettyPrinter();
 
-  public List<JSONSemDiffMessage> semDiffJSONArtifacts(String artifactName1, String artifactName2) {
+  public List<JSONSemDiffMessage> semDiffJSONArtifacts(String artifactName1, String artifactName2) throws SemanticJSONDiffException {
     ASTJSONDocument d1 = parse(artifactName1),
                     d2 = parse(artifactName2);
     return semDiffASTs(d1, d2);
   }
 
-  private ASTJSONDocument parse(String model) {
+  private ASTJSONDocument parse(String model) throws SemanticJSONDiffException {
     try {
-      return parser.parse(model).orElseThrow(() -> new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL));
+      return parser.parse(model).orElseThrow(() -> new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, model));
     } catch (IOException e) {
-      throw new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, e);
+      throw new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, model, e);
     }
   }
 
-  public List<JSONSemDiffMessage> semDiffASTs(ASTJSONDocument d1, ASTJSONDocument d2) {
+  public List<JSONSemDiffMessage> semDiffASTs(ASTJSONDocument d1, ASTJSONDocument d2) throws SemanticJSONDiffException {
     return toMessages(semDiffASTs(d1.getJSONValue(), d2.getJSONValue()));
   }
 
-  private List<JSONSemDiffMessage> toMessages(List<SemanticJSONDifference> semDiffs) {
+  private List<JSONSemDiffMessage> toMessages(List<SemanticJSONDifference> semDiffs) throws SemanticJSONDiffException {
     if (semDiffs.isEmpty()) {
       return Collections.singletonList(new EquivalentModelsMessage(null));
     }
-    return semDiffs.stream().map(this::toMessage).collect(Collectors.toList());
+    List<JSONSemDiffMessage> result = new ArrayList<>();
+    for (SemanticJSONDifference semDiff : semDiffs) {
+      result.add(toMessage(semDiff));
+    }
+    return result;
   }
 
-  private JSONSemDiffMessage toMessage(SemanticJSONDifference diff) {
+  private JSONSemDiffMessage toMessage(SemanticJSONDifference diff) throws SemanticJSONDiffException {
     switch (diff.kind) {
       case MISSING_PROPERTY: return new MissingPropertyMessage(diff.node, getPropertyName(diff));
       case DIFFERENT_VALUE: return new DifferentPropertyValueMessage(diff.node, getPropertyName(diff), diff.value);
       case DIFFERENT_TYPE: return new DifferentPropertyTypeMessage(diff.node, getPropertyName(diff), diff.type);
-      default: throw new IllegalStateException("Invalid semantic difference type");
+      default: throw new SemanticJSONDiffException(INVALID_JSON_SEM_DIFF_TYPE, diff.kind.name());
     }
   }
 
@@ -62,7 +66,7 @@ public class SemanticJSONDifferencer {
     return result;
   }
 
-  private List<SemanticJSONDifference> semDiffASTs(ASTJSONValue n1, ASTJSONValue n2) {
+  private List<SemanticJSONDifference> semDiffASTs(ASTJSONValue n1, ASTJSONValue n2) throws SemanticJSONDiffException {
     if (!equalJSONType(n1, n2)) {
       return Collections.singletonList(SemanticJSONDifference.differentType(n1, jsonTypeToString(n1)));
     }
@@ -84,10 +88,10 @@ public class SemanticJSONDifferencer {
     else if (isJSONNull(n1)) {
       // nothing to do here
     }
-    throw new IllegalArgumentException("Not valid JSON value");
+    throw new SemanticJSONDiffException(UNKNOWN_JSON_VALUE_TYPE, n1.toString());
   }
 
-  private List<SemanticJSONDifference> semDiffASTs(ASTJSONObject o1, ASTJSONObject o2) {
+  private List<SemanticJSONDifference> semDiffASTs(ASTJSONObject o1, ASTJSONObject o2) throws SemanticJSONDiffException {
     List<SemanticJSONDifference> result = new ArrayList<>();
     for (ASTJSONProperty p1 : o1.getPropList()) {
       List<ASTJSONProperty> props2 = o2.getProps(p1.getKey());
@@ -95,7 +99,7 @@ public class SemanticJSONDifferencer {
         result.add(SemanticJSONDifference.missingProperty(o1, p1));
       }
       else if (props2.size() > 1) {
-        // TODO
+        throw new SemanticJSONDiffException(AMBIGUOUS_PROPERTY, p1.getKey());
       }
       else {
         ASTJSONProperty p2 = props2.get(0);
@@ -110,13 +114,11 @@ public class SemanticJSONDifferencer {
     return result;
   }
 
-  private List<SemanticJSONDifference> semDiffASTs(ASTJSONArray a1, ASTJSONArray a2) {
+  private List<SemanticJSONDifference> semDiffASTs(ASTJSONArray a1, ASTJSONArray a2) throws SemanticJSONDiffException {
     List<SemanticJSONDifference> result = new ArrayList<>();
     for (int i = 0; i < a1.getJSONValueList().size(); i++) {
       if (i >= a2.getJSONValueList().size()) {
         result.add(SemanticJSONDifference.missingProperty(a1, i));
-        //TODO: Spielt die Reihenfolge einer List in JSON eine Rolle?
-        // sind z.B. diese Listen semantisch äquivalent: ["A", "B"], ["B", "A"]
       }
       else {
         ASTJSONValue v1 = a1.getJSONValue(i);
@@ -152,7 +154,7 @@ public class SemanticJSONDifferencer {
     if (n1.deepEquals(n2)) {
       return Collections.emptyList();
     }
-    return Collections.singletonList(SemanticJSONDifference.differentValue(n1, n1.toString())); // TODO get String from number
+    return Collections.singletonList(SemanticJSONDifference.differentValue(n1, prettyPrinter.printJSONNumber(n2)));
   }
 
   private static boolean equalJSONType(ASTJSONValue n1, ASTJSONValue n2) {
@@ -164,7 +166,7 @@ public class SemanticJSONDifferencer {
             isJSONNull(n1) && isJSONNull(n2);
   }
 
-  private static String jsonTypeToString(ASTJSONValue value) {
+  private static String jsonTypeToString(ASTJSONValue value) throws SemanticJSONDiffException {
     if (isJSONObject(value)) {
       return "object";
     }
@@ -183,8 +185,7 @@ public class SemanticJSONDifferencer {
     else if (isJSONNull(value)) {
       return "null";
     }
-    // TODO
-    throw new SemanticJSONDiffException(null);
+    throw new SemanticJSONDiffException(UNKNOWN_JSON_VALUE_TYPE, value.toString());
   }
 
   private static boolean isJSONObject(ASTJSONValue value) {

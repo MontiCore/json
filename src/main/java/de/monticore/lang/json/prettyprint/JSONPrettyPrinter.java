@@ -28,6 +28,13 @@ public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor {
     getRealThis().handle(jsonDocument);
     return getContent();
   }
+
+  public String printJSONNumber(ASTJSONNumber jsonNumber) {
+    clearBuffer();
+    ls = LineState.OPEN_BLOCK;
+    getRealThis().handle(jsonNumber);
+    return getContent();
+  }
   
   @Override
   public void visit(ASTJSONArray node) {

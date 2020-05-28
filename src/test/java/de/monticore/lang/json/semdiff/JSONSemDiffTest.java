@@ -1,5 +1,6 @@
 package de.monticore.lang.json.semdiff;
 
+import de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffException;
 import de.monticore.lang.json.semdiff.messages.JSONSemDiffMessage;
 import de.monticore.lang.json.semdiff.messages.MissingPropertyMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,12 @@ public class JSONSemDiffTest {
     }
 
     private List<JSONSemDiffMessage> run(String pkg, String d1, String d2) {
-        return semJsonDiffer.semDiffJSONArtifacts(getModelPath(pkg, d1), getModelPath(pkg, d2));
+        try {
+            return semJsonDiffer.semDiffJSONArtifacts(getModelPath(pkg, d1), getModelPath(pkg, d2));
+        } catch (SemanticJSONDiffException e) {
+            fail();
+        }
+        throw new IllegalStateException("Should not reach this point");
     }
 
     /*
