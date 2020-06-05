@@ -33,14 +33,9 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
 
   /** An ASTJSONProperty represents elements in a key-value relationship.
     @attribute key The unique identifier of a property.
-    @attribute name The forwarded key as name for symbol table access.
-                    It is derived and accessible by a getName().
     @attribute value The property value associated with the identifier.
-
-    Keyword symbol requires a "Name", this is mimicked by an explicitly 
-    defined "getName()" method via astrule.
   */
-  symbol scope JSONProperty = key:String ":" value:JSONValue;
+  JSONProperty = key:String ":" value:JSONValue;
 
   /** An ASTJSONBoolean represents a boolean property value.
     @attribute booleanLiteral The actual value.
@@ -96,20 +91,6 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
   /*========================================================================*/
   /*=========================== AST DEFINITIONS ============================*/
   /*========================================================================*/
-
-  /**
-    This method added by hand is needed because of the "symbol"
-    keyword at the JSONProperty nonterminal (which does not have a Name),
-    but a "key" attribute.
-
-    Please note that JSON names stringy differ from MontiCore Names, because
-    they allow arbitrary strings (including e.g. dots inside).
-  */
-  astrule JSONProperty =
-    method public String getName()  {
-      return getKey();
-    }
-  ;
 
   // because SignedBasicDoubleLiteral is a parsed literal, we add the
   // getSource() and getValue() methods by hand.
