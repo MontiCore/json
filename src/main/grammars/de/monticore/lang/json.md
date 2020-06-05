@@ -10,7 +10,7 @@
 ```json
     {
         "Alice": {
-            "name": "Alice Anderson",
+            "fullname": "Alice Anderson",
             "address": {
                 "postal_code": 10459,
                 "street": "Beck Street",
@@ -18,7 +18,7 @@
             }
         },
         "Bob": {
-            "name": "Bob Barkley",
+            "fullname": "Bob Barkley",
             "address": {
                 "postal_code": 10459,
                 "street": "Freeman Street",
