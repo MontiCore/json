@@ -1,0 +1,235 @@
+# Build JAVA applications using Apache Maven (http://maven.apache.org)
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  paths:
+    - .m2/repository/
+  key: "$CI_COMMIT_SHA" # Cache across branch and stage
+
+stages:
+  - build
+  - test
+  - integration-test
+  - acceptance-test
+  - quality-report
+
+variables:
+  # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  MAVEN_OPTS: "-Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  # `installAtEnd` and `deployAtEnd`are only effective with recent version of the corresponding plugins.
+  MAVEN_CLI_OPTS: "-s settings.xml --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true"
+
+###############################################################################
+# BUILD STAGE
+###############################################################################
+
+# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
+# Because some enforcer rules might check dependency convergence and class duplications
+# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
+ValidateMaven:
+  image: maven:3-jdk-11
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean test-compile
+
+ValidateGradle:
+  image: gradle:6.5-jdk11
+  stage: build
+  script:
+    - gradle build -x test
+
+###############################################################################
+# TEST STAGE
+###############################################################################
+
+# Run Unit Tests after build
+Gradle Unit Test JDK 11:
+  image: gradle:6.5-jdk11
+  stage: test
+  script:
+    - gradle clean test
+  allow_failure: true # gradle is experimental for now
+
+# Run Unit Tests after build
+Unit Test JDK 11:
+  image: maven:3-jdk-11
+  stage: test
+  coverage: '/\d+.\d+ \% covered/'
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ./target/site/jacoco/jacoco.csv
+  artifacts:
+    reports:
+      junit:
+      - ./target/surefire-reports/TEST-*.xml      
+
+# Generic template without coverage / reports
+.unit_test_template: &unit_test_definition
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  allow_failure: true
+  except: 
+    - master
+
+# JDK 8
+Unit Test JDK 8: 
+  image: maven:3-jdk-8
+  <<: *unit_test_definition
+
+# Corretto JDK 8
+Unit Test Amazon Corretto 8: 
+  image: maven:3-amazoncorretto-8
+  <<: *unit_test_definition
+
+###############################################################################
+# INTEGRATION TEST STAGE
+###############################################################################
+
+# Run Integration Tests after build
+Integration Test JDK 11:
+  image: maven:3-jdk-11
+  stage: integration-test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Pintegration-test
+  except:
+    - master
+  artifacts:
+    reports:
+      junit:
+      - ./target/failsafe-reports/TEST-*.xml
+
+# Generic template without coverage / reports
+.integration_test_template: &integration_test_template
+  stage: integration-test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Pintegration-test
+  allow_failure: true
+  except: 
+    - master
+
+# JDK 8
+Integration Test JDK 8: 
+  image: maven:3-jdk-8
+  <<: *integration_test_template
+
+# Corretto JDK 8
+Integration Test Amazon Corretto JDK 8: 
+  image: maven:3-amazoncorretto-8
+  <<: *integration_test_template
+
+###############################################################################
+# ACCEPTANCE TEST STAGE
+###############################################################################
+
+# Run Acceptance Tests after build
+Acceptance Test JDK 11:
+  image: maven:3-jdk-11
+  stage: acceptance-test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Pacceptance-test
+  artifacts:
+    reports:
+      junit:
+      - ./target/failsafe-reports/TEST-*.xml
+
+# Generic template without coverage / reports
+.acceptance_test_template: &acceptance_test_template
+  stage: acceptance-test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Pacceptance-test
+  allow_failure: true
+
+# JDK 8
+Acceptance Test JDK 8: 
+  image: maven:3-jdk-8
+  <<: *acceptance_test_template
+
+# Corretto JDK 8
+Acceptance Test Amazon Corretto 8: 
+  image: maven:3-amazoncorretto-8
+  <<: *acceptance_test_template
+      
+###############################################################################
+# QUALITY REPORT STAGE
+###############################################################################
+
+Code Quality:
+  stage: quality-report
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  cache: {}
+  tags:
+    - shell
+    - docker
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    # Update Codeclimate and SonarJava Plugin
+    - docker run  --rm 
+      --env CODECLIMATE_CODE="$PWD" 
+      --env CONTAINER_TIMEOUT_SECONDS=150000 
+      --volume "$PWD":/code 
+      --volume /var/run/docker.sock:/var/run/docker.sock 
+      --volume /tmp/cc:/tmp/cc 
+      codeclimate/codeclimate engines:install
+    # Check Code Quality
+    - docker run --rm 
+       --env CODECLIMATE_CODE="$PWD" 
+       --env CONTAINER_TIMEOUT_SECONDS=150000 
+       --volume "$PWD":/code 
+       --volume /var/run/docker.sock:/var/run/docker.sock 
+       --volume /tmp/cc:/tmp/cc 
+       codeclimate/codeclimate analyze -f json > codeclimate.json
+        #"registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: codeclimate.json
+
+# # Scans for known vulnerabilities of dependencies
+# Dependency Scan:
+#   stage: quality-report
+#   image: docker:stable
+#   variables:
+#     DOCKER_DRIVER: overlay2
+#   allow_failure: true
+#   tags: []
+#   before_script: []
+#   cache: {}
+#   dependencies: []
+#   services:
+#     - docker:stable-dind
+#   script:
+#     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+#     - docker run
+#         --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
+#         --volume "$PWD:/code"
+#         --volume "/root/.m2":/root/.m2
+#         --volume /var/run/docker.sock:/var/run/docker.sock
+#         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
+#   artifacts:
+#     reports:
+#       dependency_scanning: gl-dependency-scanning-report.json
+
+# #Static Application Security Scan (SAST)
+# SAST:
+#   stage: quality-report
+#   image: docker:stable
+#   variables:
+#     DOCKER_DRIVER: overlay2
+#   allow_failure: true
+#   services:
+#     - docker:stable-dind
+#   script:
+#     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+#     - docker run
+#         --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
+#         --volume "$PWD:/code"
+#         --volume "/root/.m2":/root/.m2
+#         --volume /var/run/docker.sock:/var/run/docker.sock
+#         "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
+#   artifacts:
+#     reports:
+#       sast: gl-sast-report.json
