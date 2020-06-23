@@ -29,6 +29,12 @@ public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor {
     return getContent();
   }
 
+  /**
+   * Serializes and pretty-prints a single number in a JSON artifact.
+   * 
+   * @param jsonNumber The input AST node that contains the number
+   * @return The pretty-printed JSON number as String
+   */
   public String printJSONNumber(ASTJSONNumber jsonNumber) {
     clearBuffer();
     ls = LineState.OPEN_BLOCK;
