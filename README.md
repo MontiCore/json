@@ -17,15 +17,8 @@ is beyond this grammar but can be applied to the AST defined here.
 
 ## Functionality
 
-### Parsing JSON artifacts and symbol table creation.
-
-* available ([see language explanation](json.md))
-
-### Structure Extraction
-
-* (Under construction) 
-Automatically extracts the structure of a set of JSON artifacts and stores it 
-as a class diagram adhering to [`CD4Analysis`][CD4Analysis].
+### Parsing JSON artifacts and pretty printing.
+* available ([see language explanation](src/main/grammars/de/monticore/lang/json.md))
   
 
 ## Further Links
