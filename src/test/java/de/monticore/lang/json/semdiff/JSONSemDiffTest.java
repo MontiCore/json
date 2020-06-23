@@ -4,10 +4,11 @@ package de.monticore.lang.json.semdiff;
 import de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffException;
 import de.monticore.lang.json.semdiff.messages.JSONSemDiffMessage;
 import de.monticore.lang.json.semdiff.messages.MissingPropertyMessage;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -17,8 +18,8 @@ public class JSONSemDiffTest {
   
   private SemanticJSONDifferencer semJsonDiffer;
   
-  @BeforeEach
-  void setup() {
+  @Before
+  public void setup() {
     semJsonDiffer = new SemanticJSONDifferencer();
   }
   

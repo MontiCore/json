@@ -1,57 +1,92 @@
-/* (c) https://github.com/MontiCore/monticore */
+// (c) https://github.com/MontiCore/monticore
+
+/* ============================================================ */
+/* ========================= Plugins ========================== */
+/* ============================================================ */
+
 plugins {
-    id "java"
-    id "monticore"  version "6.1.0" // MontiCore Plugin
-    id "maven-publish"
+    id 'java'
+    id "monticore" version "6.1.0"
+    id 'maven-publish'
     id "com.github.johnrengelman.shadow" version "4.0.4"
-//    id 'cz.malohlava.visteg' version '1.0.5'
+    id "com.adarshr.test-logger" version "2.0.0"
 }
 
-group = "de.monticore.lang"
-version = "0.0.1-SNAPSHOT"
-description = "json"
-sourceCompatibility = "1.8"
+/* ============================================================ */
+/* ========================= Project ========================== */
+/* ============================================================ */
 
-def emf_version = "2.15.0"
-def mc_version  = "6.1.0"
-def commons_version = "1.7.9"
+group = 'de.monticore.lang'
+version = '1.0-SNAPSHOT'
+description = 'json'
+sourceCompatibility = '1.8'
+
+/* ============================================================ */
+/* ========================= Versions ========================= */
+/* ============================================================ */
+
+def monticore_version = "6.1.0"
+def junit_version = "5.0.3"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
+
+/* ============================================================ */
+/* ======================= Configuration ====================== */
+/* ============================================================ */
 
 // configure non-standard source sets
 sourceSets {
     main.java.srcDirs += [ "$projectDir/target/generated-sources/monticore/sourcecode"]
+
+    test {
+        java.srcDir "$projectDir/src/test/java"
+        resources.srcDir "$projectDir/src/test/resources"
+    }
 }
 buildDir = file("$projectDir/target")
 
 configurations {grammar}
 
-dependencies {
-    implementation "org.eclipse.emf:org.eclipse.emf.ecore:$emf_version"
-    implementation "org.eclipse.emf:org.eclipse.emf.ecore.xmi:$emf_version"
-    implementation "org.eclipse.emf:org.eclipse.emf.common:$emf_version"
-    implementation "de.monticore:monticore-runtime:$mc_version"
-    implementation "de.monticore:monticore-emf-runtime:$mc_version"
-    implementation "de.monticore:monticore-grammar:$mc_version"
-    grammar "de.monticore:monticore-grammar:$mc_version:$grammar_classifier"
-    implementation "de.se_rwth.commons:se-commons-logging:$commons_version"
-    implementation "de.se_rwth.commons:se-commons-utilities:$commons_version"
-    implementation "com.google.guava:guava:23.0"
-    implementation "org.antlr:antlr4-runtime:4.7.1"
-    implementation "net.sourceforge.plantuml:plantuml:1.2018.12"
-    implementation "com.google.code.findbugs:jsr305:3.0.0"
-    implementation "ch.qos.logback:logback-classic:1.1.7"
-    testImplementation "junit:junit:4.11"
-    testImplementation "de.monticore:monticore-runtime:$mc_version:tests"
-    testImplementation "de.monticore:monticore-runtime:$mc_version"
+test {
+    useJUnit()
 }
 
-// execute MC
-task  generateJSON (type: MCTask) {
+/* ============================================================ */
+/* ======================= Dependencies ======================= */
+/* ============================================================ */
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        credentials.username mavenUser
+        credentials.password System.getenv("cibuild")
+        url = 'https://nexus.se.rwth-aachen.de/content/groups/se/'
+    }
+}
+
+dependencies {
+    grammar "de.monticore:monticore-grammar:$monticore_version:$grammar_classifier"
+    implementation "org.antlr:antlr4-runtime:4.7.1"
+    implementation "de.monticore:monticore-generator:$monticore_version"
+    implementation "de.monticore:monticore-runtime:$monticore_version"
+    implementation "de.monticore:monticore-grammar:$monticore_version"
+    implementation "org.assertj:assertj-core:3.7.0"
+    testImplementation "junit:junit:4.11"
+    testImplementation "de.monticore:monticore-runtime:$monticore_version:tests"
+    testImplementation "de.monticore:monticore-runtime:$monticore_version"
+    compileOnly "de.monticore:monticore-grammar:$monticore_version"
+}
+
+/* ============================================================ */
+/* ========================== Tasks =========================== */
+/* ============================================================ */
+
+task generateJSON(type: MCTask) {
     grammar = file "$projectDir/$grammarDir/de/monticore/lang/JSON.mc4"
     outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
     handcodedPath file("$projectDir/src/main/java")
-    def uptoDate = incCheck(outputDir.toString() +"/de/monticore/lang/json/IncGenGradleCheck.txt")
+    def uptoDate = incCheck(outputDir.toString() + "/de/monticore/lang/json/IncGenGradleCheck.txt")
     outputs.upToDateWhen { uptoDate }
 }
 
@@ -70,25 +105,22 @@ task sourcesJar(type: Jar) {
 // build javadoc jar in addition
 task javadocJar(type: Jar) {
     from javadoc
-    archiveClassifier =  "javadoc"
+    archiveClassifier = "javadoc"
 }
+
 // generated java doc contains errors, disable for now
 javadoc.failOnError(false)
 
-// shadowJar { // all in one jar
-//    manifest {
-//        attributes "Main-Class": "de.monticore.umlcd4a.CD4ACLI"
-//    }
-//    archiveClassifier =  "cli"
-// }
-
 // build grammar jar as well
 task grammarJar(type: Jar) {
-    from ("$projectDir/src/main/grammars/"){ include "**/*.mc4" }
+    from("$projectDir/src/main/grammars/") { include "**/*.mc4" }
     archiveClassifier = "grammars"
 }
 
-// configure deployment
+/* ============================================================ */
+/* ======================= Publishing ========================= */
+/* ============================================================ */
+
 publishing {
     // configure what artifacts to publish
     publications {
@@ -103,18 +135,9 @@ publishing {
     }
     repositories.maven {
         credentials.username mavenUser
-        credentials.password mavenPassword
+        credentials.password System.getenv("cibuild")
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-    }
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        url repo
     }
 }
