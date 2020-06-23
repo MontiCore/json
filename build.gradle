@@ -26,7 +26,7 @@ sourceCompatibility = '1.8'
 /* ============================================================ */
 
 def monticore_version = "6.1.0"
-def junit_version = "5.0.3"
+def junit_version = "4.12"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
 
@@ -72,7 +72,7 @@ dependencies {
     implementation "de.monticore:monticore-runtime:$monticore_version"
     implementation "de.monticore:monticore-grammar:$monticore_version"
     implementation "org.assertj:assertj-core:3.7.0"
-    testImplementation "junit:junit:4.11"
+    testImplementation "junit:junit:$junit_version"
     testImplementation "de.monticore:monticore-runtime:$monticore_version:tests"
     testImplementation "de.monticore:monticore-runtime:$monticore_version"
     compileOnly "de.monticore:monticore-grammar:$monticore_version"
