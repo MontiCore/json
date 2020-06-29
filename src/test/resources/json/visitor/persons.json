@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+	"Alice": {
+		"name": "Alice Anderson"
+	},
+	"Bob": {
+		"name": "Bob Barkley",
+		"friends": [
+			{
+				"Alice": true
+			},
+			{
+				"Bob": false
+			},
+			{
+				"Alice": true
+			},
+			{
+				"Charlie": true
+			}
+		]
+	}
+}
