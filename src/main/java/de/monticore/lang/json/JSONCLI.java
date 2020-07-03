@@ -44,20 +44,29 @@ public class JSONCLI {
   /**
    * Main method that is called from command line and runs the JSON tool.
    * 
-   * @param args The input parameters
+   * @param args The input parameters. Not required nor handled.
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
     JSONCLI cli = new JSONCLI();
-    cli.run(args);
+    cli.run();
   }
   
-  private void run(String[] args) throws IOException {
+  /**
+   * Main run method of the CLI instance. Initializes the tool and passes
+   * arguments to main program loop.
+   * 
+   * @throws IOException
+   */
+  private void run() throws IOException {
     init();
     printHelp();
-    handleArgs(args);
+    handleArgs();
   }
   
+  /**
+   * Initializes the CLI tool. Sets up the logger as well as available tooling.
+   */
   private void init() {
     System.out.println("##### JSON command line tool #####");
     Log.init();
@@ -68,23 +77,38 @@ public class JSONCLI {
     jsonDoc = Optional.empty();
   }
   
+  /**
+   * Refreshes the CLI tool on model changes. Resets the stored JSON-AST and
+   * instantiates available tooling to enable efficient computation.
+   */
   private void refresh() {
     fpc = new FullPropertyCalculator();
     tlpc = new TopLevelPropertyCalculator();
     jsonDoc = Optional.empty();
   }
   
+  /**
+   * Requests command line input.
+   * 
+   * @return The given input line from command line
+   * @throws IOException
+   */
   private String input() throws IOException {
     System.out.print("> ");
     String input = reader.readLine();
     return input;
   }
   
-  private void handleArgs(String[] args) throws IOException {
+  /**
+   * Main program loop. Processes user input from command line and delegates to
+   * the corresponding tools.
+   * 
+   * @throws IOException
+   */
+  private void handleArgs() throws IOException {
     boolean exit = false;
     
     while (!exit) {
-      
       String input = input();
       
       if (input.isEmpty()) {
@@ -124,6 +148,13 @@ public class JSONCLI {
     }
   }
   
+  /**
+   * Checks the format of a command line input to derive the correct behavior.
+   * 
+   * @param input The input String from command line.
+   * @param format A predefined format of input
+   * @return true, ifthe input matches the format, false otherwise
+   */
   private boolean hasFormat(String input, String[] format) {
     String[] tmp = input.split(separator);
     for (int i = 0; i < format.length; i++) {
@@ -134,6 +165,10 @@ public class JSONCLI {
     return true;
   }
   
+  /**
+   * Prints the usage of the CLI. Contains available commands with possible
+   * parameters an their explanations.
+   */
   private void printHelp() {
     System.out.println("-h                    Opens this help dialoge");
     System.out.println("parse *input*         Parses the given input as JSON");
@@ -146,12 +181,23 @@ public class JSONCLI {
     System.out.println("-q                    Quit");
   }
   
+  /**
+   * Parses an input String as JSON.
+   * 
+   * @param json The input String
+   * @throws IOException
+   */
   private void parseString(String json) throws IOException {
     refresh();
     JSONParser parser = new JSONParser();
     jsonDoc = parser.parse_StringJSONDocument(json);
   }
   
+  /**
+   * Parses the contents of a given file as JSON.
+   * 
+   * @param path The path to the JSON-file as String
+   */
   private void parseFile(String path) {
     refresh();
     Path model = Paths.get(path);
@@ -164,6 +210,13 @@ public class JSONCLI {
     }
   }
   
+  /**
+   * Prints the contents of the JSON-AST to command line or a specified file.
+   * 
+   * @param file The target file for printing the JSON artifact. If empty, the
+   *          artifact is printed to the command line instead
+   * @throws IOException
+   */
   private void print(String file) throws IOException {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
@@ -185,6 +238,9 @@ public class JSONCLI {
     }
   }
   
+  /**
+   * Prints all property names in the JSON-AST as ordered list.
+   */
   private void allPropertyNames() {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
@@ -203,6 +259,10 @@ public class JSONCLI {
     System.out.println();
   }
   
+  /**
+   * Prints all property names in the JSON-AST as a set with additional number
+   * of their respective occurrence.
+   */
   private void countedPropertyNames() {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
@@ -225,6 +285,10 @@ public class JSONCLI {
     System.out.println();
   }
   
+  /**
+   * Prints all top-level property names in the JSON-AST as ordered list. THus,
+   * only traverses the AST shallowly.
+   */
   private void topLevelPropertyNames() {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
