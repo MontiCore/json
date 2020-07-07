@@ -126,19 +126,19 @@ public class JSONCLI {
       else if (hasFormat(input, printToFile)) {
         print(input.split(separator, 3)[2]);
       }
-      else if (hasFormat(input, print)) {
+      else if (hasFormat(input, print) && partsMatch(input, 1)) {
         print("");
       }
-      else if (hasFormat(input, propertiesAllCount)) {
+      else if (hasFormat(input, propertiesAllCount) && partsMatch(input, 3)) {
         countedPropertyNames();
       }
-      else if (hasFormat(input, propertiesAll)) {
+      else if (hasFormat(input, propertiesAll) && partsMatch(input, 2)) {
         allPropertyNames();
       }
-      else if (hasFormat(input, propertiesTL)) {
+      else if (hasFormat(input, propertiesTL) && partsMatch(input, 2)) {
         topLevelPropertyNames();
       }
-      else if (hasFormat(input, quit)) {
+      else if (hasFormat(input, quit) && partsMatch(input, 1)) {
         exit = true;
       }
       else {
@@ -163,6 +163,18 @@ public class JSONCLI {
       }
     }
     return true;
+  }
+  
+  /**
+   * Checks whether the number of parts matches expected number concerning a
+   * specific format.
+   * 
+   * @param input The input String
+   * @param parts The expected number of parts
+   * @return true if parts matches the expected number, false otherwise
+   */
+  private boolean partsMatch(String input, int parts) {
+    return input.split(separator).length == parts;
   }
   
   /**
