@@ -215,9 +215,8 @@ public class JSONCLI {
    * 
    * @param file The target file for printing the JSON artifact. If empty, the
    *          artifact is printed to the command line instead
-   * @throws IOException
    */
-  private void print(String file) throws IOException {
+  private void print(String file) {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
       System.out.println("Error: No JSON artifact available. First parse a valid JSON artifact.");
@@ -228,13 +227,18 @@ public class JSONCLI {
     JSONPrettyPrinter pp = new JSONPrettyPrinter();
     String json = pp.printJSONDocument(jsonDoc.get());
     
-    // print to concole or file
+    // print to console or file
     if (file.isEmpty()) {
       System.out.println(json);
     } else {
-      FileWriter writer = new FileWriter(file);
-      writer.write(json);
-      writer.close();
+      FileWriter writer;
+      try {
+        writer = new FileWriter(file);
+        writer.write(json);
+        writer.close();
+      } catch (IOException e) {
+        System.out.println("Error: Could not write to file " + file);
+      }
     }
   }
   
