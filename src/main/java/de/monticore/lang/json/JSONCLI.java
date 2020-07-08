@@ -187,9 +187,9 @@ public class JSONCLI {
     System.out.println("parse -f *source*     Reads the given source file and parses the contents as JSON");
     System.out.println("print                 Prints the JSON-AST");
     System.out.println("print -f *target*     Prints the JSON-AST to the specified file");
-    System.out.println("properties -a         Returns a list of all properties in the chached JSON artifact");
-    System.out.println("properties -a -c      Returns a set of all properties and the number of ocurrence in the chached JSON artifact");
-    System.out.println("properties -tl        Returns a list of all top level properties in the chached JSON artifact");
+    System.out.println("properties -a         Returns a list of all properties in the cached JSON artifact");
+    System.out.println("properties -a -c      Returns a set of all properties and the number of ocurrence in the cached JSON artifact");
+    System.out.println("properties -tl        Returns a list of all top level properties in the cached JSON artifact");
     System.out.println("-q                    Quit");
   }
   
