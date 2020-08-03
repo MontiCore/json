@@ -23,7 +23,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Command line interface for the JSON language and corresponding tooling.
  */
-public class JSONCLI {
+public class JSONTool {
   
   private BufferedReader reader;
   private FullPropertyCalculator fpc;
@@ -48,7 +48,7 @@ public class JSONCLI {
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
-    JSONCLI cli = new JSONCLI();
+    JSONTool cli = new JSONTool();
     cli.run();
   }
   
