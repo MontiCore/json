@@ -1,17 +1,21 @@
 package de.monticore.lang.json;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
@@ -25,31 +29,30 @@ import de.se_rwth.commons.logging.Log;
  */
 public class JSONTool {
   
-  private BufferedReader reader;
+  private Optional<ASTJSONDocument> jsonDoc;
   private FullPropertyCalculator fpc;
   private TopLevelPropertyCalculator tlpc;
-  private Optional<ASTJSONDocument> jsonDoc;
   
-  private static final String separator = " ";
-  private static final String[] help = { "-h" };
-  private static final String[] parse = { "parse" };
-  private static final String[] parseFile = { "parse", "-f" };
-  private static final String[] print = { "print" };
-  private static final String[] printToFile = { "print", "-f" };
-  private static final String[] propertiesAll = { "properties", "-a" };
-  private static final String[] propertiesAllCount = { "properties", "-a", "-c" };
-  private static final String[] propertiesTL = { "properties", "-tl" };
-  private static final String[] quit = { "-q" };
+  private static final String help = "-h";
+  private static final String input = "-i";
+  private static final String print = "-pp";
+  private static final String properties = "-prop";
+  private static final String all = "-a";
+  private static final String counted = "-c";
+  private static final String top_level = "-tl";
+  
+  private static final List<String> allArgs = Arrays.asList(help, input, print, properties, all, counted, top_level);
+  
   
   /**
    * Main method that is called from command line and runs the JSON tool.
    * 
-   * @param args The input parameters. Not required nor handled.
+   * @param args The input parameters for configuring the JSON tool.
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
     JSONTool cli = new JSONTool();
-    cli.run();
+    cli.run(args);
   }
   
   /**
@@ -58,123 +61,135 @@ public class JSONTool {
    * 
    * @throws IOException
    */
-  private void run() throws IOException {
+  private void run(String[] args) throws IOException {
     init();
-    printHelp();
-    handleArgs();
+    handleArgs(args);
   }
   
   /**
    * Initializes the CLI tool. Sets up the logger as well as available tooling.
    */
   private void init() {
-    System.out.println("##### JSON command line tool #####");
     Log.init();
     Log.enableFailQuick(false);
-    reader = new BufferedReader(new InputStreamReader(System.in));
+    jsonDoc = Optional.empty();
     fpc = new FullPropertyCalculator();
     tlpc = new TopLevelPropertyCalculator();
-    jsonDoc = Optional.empty();
   }
   
   /**
-   * Refreshes the CLI tool on model changes. Resets the stored JSON-AST and
-   * instantiates available tooling to enable efficient computation.
-   */
-  private void refresh() {
-    fpc = new FullPropertyCalculator();
-    tlpc = new TopLevelPropertyCalculator();
-    jsonDoc = Optional.empty();
-  }
-  
-  /**
-   * Requests command line input.
+   * Processes user input from command line and delegates to the corresponding
+   * tools.
    * 
-   * @return The given input line from command line
+   * @param args The input parameters for configuring the JSON tool.
    * @throws IOException
    */
-  private String input() throws IOException {
-    System.out.print("> ");
-    String input = reader.readLine();
-    return input;
-  }
-  
-  /**
-   * Main program loop. Processes user input from command line and delegates to
-   * the corresponding tools.
-   * 
-   * @throws IOException
-   */
-  private void handleArgs() throws IOException {
-    boolean exit = false;
+  private void handleArgs(String[] args) throws IOException {
+    // setup argument list and remove empty Strings
+    List<String> formArgs = new ArrayList<String>(Arrays.asList(args));
+    formArgs.removeAll(Arrays.asList(StringUtils.EMPTY));
     
-    while (!exit) {
-      String input = input();
-      
-      if (input.isEmpty()) {
-        // do nothing
-      }
-      else if (hasFormat(input, help)) {
-        printHelp();
-      }
-      else if (hasFormat(input, parseFile)) {
-        parseFile(input.split(separator, 3)[2]);
-      }
-      else if (hasFormat(input, parse)) {
-        parseString(input.split(separator, 2)[1]);
-      }
-      else if (hasFormat(input, printToFile)) {
-        print(input.split(separator, 3)[2]);
-      }
-      else if (hasFormat(input, print) && partsMatch(input, 1)) {
-        print("");
-      }
-      else if (hasFormat(input, propertiesAllCount) && partsMatch(input, 3)) {
-        countedPropertyNames();
-      }
-      else if (hasFormat(input, propertiesAll) && partsMatch(input, 2)) {
-        allPropertyNames();
-      }
-      else if (hasFormat(input, propertiesTL) && partsMatch(input, 2)) {
-        topLevelPropertyNames();
-      }
-      else if (hasFormat(input, quit) && partsMatch(input, 1)) {
-        exit = true;
-      }
-      else {
-        printHelp();
-      }
-      
+    // print help if requested or arguments cannot be processed
+    if (formArgs.contains(help) || !processCommands(formArgs)) {
+      printHelp();
     }
   }
   
   /**
-   * Checks the format of a command line input to derive the correct behavior.
+   * Executes the JSON tool based on the given commands.
    * 
-   * @param input The input String from command line.
-   * @param format A predefined format of input
-   * @return true, ifthe input matches the format, false otherwise
+   * @param args The formatted input arguments (without empty entries)
+   * @return true, if the execution was successful, false otherwise
    */
-  private boolean hasFormat(String input, String[] format) {
-    String[] tmp = input.split(separator);
-    for (int i = 0; i < format.length; i++) {
-      if (tmp.length <= i || !format[i].equals(tmp[i])) {
+  private boolean processCommands(List<String> args) {
+    // ensure exactly one input model is defined
+    if (Collections.frequency(args, input) != 1) {
+      System.out.println("Error: No unique JSON artifact defined. Make sure to define an input file exactly once.");
+      return false;
+    }
+    
+    // retrieve input model if available
+    int pathPos = args.indexOf(input) + 1;
+    if (pathPos == -1 || args.size() < pathPos) {
+      System.out.println("Error: No JSON artifact defined.");
+      return false;
+    }
+    
+    parseFile(args.get(pathPos));
+    if (!jsonDoc.isPresent()) {
+      // error message already printed if we reach this position
+      return false;
+    }
+    
+    // remove input command from argument list
+    args.remove(pathPos);
+    args.remove(pathPos - 1);
+    
+    // process remaining commands sequentially and stop if any error occurs
+    for (int i = 0; i < args.size(); i++) {
+      String arg = args.get(i);
+      if (arg.equals(print)) {
+        Optional<String> path = fetchTargetPath(args, i + 1);
+        print(path.get());
+        
+        // increment counter due to additional arguments
+        if (path.isPresent()) {
+          i++;
+        }
+      } else if (arg.equals(properties) && i + 1 < args.size()) {
+        String propArg = args.get(i+1);
+        Optional<String> path = fetchTargetPath(args, i + 2);
+        
+        // delegate to correct behavior based on the property argument
+        if (propArg.equals(all)) {
+          allPropertyNames();
+        } else if (propArg.equals(counted)) {
+          countedPropertyNames();
+        } else if (propArg.equals(top_level)) {
+          topLevelPropertyNames();
+        } else {
+          System.out.println("Error: " + propArg + " is not a valid property arguement.");
+          return false;
+        }
+        
+        // increment counter due to additional arguments
+        if (path.isPresent()) {
+          i += 2;
+        } else {
+          i++;
+        }
+      } else {
+        System.out.println("Error: Unknown or incomplete command " + arg);
         return false;
       }
     }
+    
     return true;
   }
-  
+
   /**
-   * Checks whether the number of parts matches expected number concerning a
-   * specific format.
+   * Returns a file in the argument list based on the specified position. Checks
+   * whether the position contains a valid target path and creates the required
+   * parent directories if possible.
    * 
-   * @param input The input String
-   * @param parts The expected number of parts
-   * @return true if parts matches the expected number, false otherwise
+   * @param args The argument list
+   * @param pos The possible position of the path to check
+   * @return An optional with the target path, Optional.empty() otherwise
    */
-  private boolean partsMatch(String input, int parts) {
-    return input.split(separator).length == parts;
+  private Optional<String> fetchTargetPath(List<String> args, int pos) {
+    String path = "";
+    if (pos < args.size()) {
+      path = args.get(pos);
+      if (allArgs.contains(path)) {
+        return Optional.empty();
+      } else {
+        File f = new File(path);
+        if (!f.getParentFile().mkdirs()) {
+          return Optional.empty();
+        }
+      }
+    }
+    return Optional.of(path);
   }
   
   /**
@@ -182,27 +197,13 @@ public class JSONTool {
    * parameters an their explanations.
    */
   private void printHelp() {
-    System.out.println("-h                    Opens this help dialoge");
-    System.out.println("parse *input*         Parses the given input as JSON");
-    System.out.println("parse -f *source*     Reads the given source file and parses the contents as JSON");
-    System.out.println("print                 Prints the JSON-AST");
-    System.out.println("print -f *target*     Prints the JSON-AST to the specified file");
-    System.out.println("properties -a         Returns a list of all properties in the cached JSON artifact");
-    System.out.println("properties -a -c      Returns a set of all properties and the number of ocurrence in the cached JSON artifact");
-    System.out.println("properties -tl        Returns a list of all top level properties in the cached JSON artifact");
-    System.out.println("-q                    Quit");
-  }
-  
-  /**
-   * Parses an input String as JSON.
-   * 
-   * @param json The input String
-   * @throws IOException
-   */
-  private void parseString(String json) throws IOException {
-    refresh();
-    JSONParser parser = new JSONParser();
-    jsonDoc = parser.parse_StringJSONDocument(json);
+    System.out.println("-h                Opens this help dialoge");
+    System.out.println("-i *source*       Reads the given source file and parses the contents as JSON");
+    System.out.println("-pp               Prints the JSON-AST");
+    System.out.println("-pp *target*      Prints the JSON-AST to the specified file");
+    System.out.println("-prop -a          Returns a list of all properties in the cached JSON artifact");
+    System.out.println("-prop -c          Returns a set of all properties and the number of ocurrence in the cached JSON artifact");
+    System.out.println("-prop -tl         Returns a list of all top level properties in the cached JSON artifact");
   }
   
   /**
@@ -211,7 +212,6 @@ public class JSONTool {
    * @param path The path to the JSON-file as String
    */
   private void parseFile(String path) {
-    refresh();
     Path model = Paths.get(path);
     JSONParser parser = new JSONParser();
     try {
@@ -286,7 +286,7 @@ public class JSONTool {
       return;
     }
     
-    // print property names with number of occurrence 
+    // print property names with number of occurrence
     Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc.get());
     Set<Entry<String, Integer>> entries = properties.entrySet();
     Iterator<Entry<String, Integer>> it = entries.iterator();
@@ -302,7 +302,7 @@ public class JSONTool {
   }
   
   /**
-   * Prints all top-level property names in the JSON-AST as ordered list. THus,
+   * Prints all top-level property names in the JSON-AST as ordered list. Thus,
    * only traverses the AST shallowly.
    */
   private void topLevelPropertyNames() {
