@@ -176,14 +176,15 @@ public class JSONTool {
    * @return An optional with the target path, Optional.empty() otherwise
    */
   private Optional<File> fetchTargetFile(List<String> args, int pos) {
-    String path = "";
     if (pos < args.size()) {
-      path = args.get(pos);
+      String path = args.get(pos);
       if (allArgs.contains(path)) {
         return Optional.empty();
+      } else {
+        return Optional.of(new File(path));
       }
     }
-    return Optional.of(new File(path));
+    return Optional.empty();
   }
   
   /**
@@ -305,7 +306,7 @@ public class JSONTool {
     } else {
       File f = file.get();
       // create directories
-      f.getParentFile().mkdirs();
+      f.getAbsoluteFile().getParentFile().mkdirs();
       
       FileWriter writer;
       try {
