@@ -89,7 +89,7 @@ public class JSONTool {
     formArgs.removeAll(Arrays.asList(StringUtils.EMPTY));
     
     // print help if requested and process arguments otherwise
-    if (formArgs.contains(help)) {
+    if (formArgs.contains(help) || formArgs.isEmpty()) {
       printHelp();
     } else {
       processCommands(formArgs);
