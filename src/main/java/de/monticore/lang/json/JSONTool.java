@@ -192,11 +192,11 @@ public class JSONTool {
    * parameters an their explanations.
    */
   private void printHelp() {
-    System.out.println("-h                  Opens this help dialoge");
+    System.out.println("-h                  Opens this help dialog");
     System.out.println("-i <file>           Reads the given source file (mandatory) and parses the contents as JSON");
     System.out.println("-pp <file>          Prints the JSON-AST to stdout or the specified file (optional)");
     System.out.println("-prop -a <file>     Prints a list of all properties in the cached JSON artifact to stdout or the specified file (optional)");
-    System.out.println("-prop -c <file>     Prints a set of all properties and the number of ocurrence in the cached JSON artifact to stdout or the specified file (optional)");
+    System.out.println("-prop -c <file>     Prints a set of all properties and the number of occurrences in the cached JSON artifact to stdout or the specified file (optional)");
     System.out.println("-prop -tl <file>    Prints a list of all top level properties in the cached JSON artifact to stdout or the specified file (optional)");
   }
   
