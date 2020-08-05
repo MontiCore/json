@@ -5,9 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +12,11 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
@@ -33,24 +35,12 @@ public class JSONTool {
   private FullPropertyCalculator fpc;
   private TopLevelPropertyCalculator tlpc;
   
-  private static final String help = "-h";
-  private static final String input = "-i";
-  private static final String print = "-pp";
-  private static final String properties = "-prop";
-  private static final String all = "-a";
-  private static final String counted = "-c";
-  private static final String top_level = "-tl";
-  
-  private static final List<String> allArgs = Arrays.asList(help, input, print, properties, all, counted, top_level);
-  
-  
   /**
    * Main method that is called from command line and runs the JSON tool.
    * 
    * @param args The input parameters for configuring the JSON tool.
-   * @throws IOException
    */
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     JSONTool cli = new JSONTool();
     cli.run(args);
   }
@@ -59,9 +49,9 @@ public class JSONTool {
    * Main run method of the CLI instance. Initializes the tool and passes
    * arguments to main program loop.
    * 
-   * @throws IOException
+   * @param args The input parameters for configuring the JSON tool.
    */
-  private void run(String[] args) throws IOException {
+  private void run(String[] args) {
     init();
     handleArgs(args);
   }
@@ -81,123 +71,42 @@ public class JSONTool {
    * tools.
    * 
    * @param args The input parameters for configuring the JSON tool.
-   * @throws IOException
    */
-  private void handleArgs(String[] args) throws IOException {
-    // setup argument list and remove empty Strings
-    List<String> formArgs = new ArrayList<String>(Arrays.asList(args));
-    formArgs.removeAll(Arrays.asList(StringUtils.EMPTY));
-    
-    // print help if requested and process arguments otherwise
-    if (formArgs.contains(help) || formArgs.isEmpty()) {
-      printHelp();
-    } else {
-      processCommands(formArgs);
-    }
-    
-  }
-  
-  /**
-   * Executes the JSON tool based on the given commands.
-   * 
-   * @param args The formatted input arguments (without empty entries)
-   */
-  private void processCommands(List<String> args) {
-    // ensure exactly one input model is defined
-    if (Collections.frequency(args, input) != 1) {
-      Log.error("0xA7100 No unique JSON artifact defined. Make sure to define an input file exactly once.");
-      return;
-    }
-    
-    // retrieve input model if available
-    int pathPos = args.indexOf(input) + 1;
-    if (pathPos == -1 || args.size() < pathPos) {
-      Log.error("0xA7101 No JSON artifact defined.");
-      return;
-    }
-    
-    parseFile(args.get(pathPos));
-    if (!jsonDoc.isPresent()) {
-      // error message already printed if we reach this position
-      return;
-    }
-    
-    // remove input command from argument list
-    args.remove(pathPos);
-    args.remove(pathPos - 1);
-    
-    // process remaining commands sequentially and stop if any error occurs
-    for (int i = 0; i < args.size(); i++) {
-      String arg = args.get(i);
-      if (arg.equals(print)) {
-        Optional<File> file = fetchTargetFile(args, i + 1);
-        prettyPrint(file);
-        
-        // increment counter due to additional arguments
-        if (file.isPresent()) {
-          i++;
-        }
-      } else if (arg.equals(properties) && i + 1 < args.size()) {
-        String propArg = args.get(i+1);
-        Optional<File> file = fetchTargetFile(args, i + 2);
-        
-        // delegate to correct behavior based on the property argument
-        if (propArg.equals(all)) {
-          allPropertyNames(file);
-        } else if (propArg.equals(counted)) {
-          countedPropertyNames(file);
-        } else if (propArg.equals(top_level)) {
-          topLevelPropertyNames(file);
-        } else {
-          Log.error("0xA7102 " + propArg + " is no valid property arguement.");
-          return;
-        }
-        
-        // increment counter due to additional arguments
-        if (file.isPresent()) {
-          i += 2;
-        } else {
-          i++;
-        }
-      } else {
-        Log.error("0xA7103 Unknown or incomplete command " + arg);
-        return;
+  private void handleArgs(String[] args) {
+    try {
+      // Create CLI parser and parse input options from command line
+      CommandLineParser parser = new DefaultParser();
+      JSONCLIConfiguration config = new JSONCLIConfiguration();
+      CommandLine cmd = parser.parse(config.getOptions(), args);
+      
+      // help
+      if (cmd.hasOption(JSONCLIConfiguration.HELP)) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("JSONTool", config.getOptions());
       }
-    }
-  }
-
-  /**
-   * Returns a file in the argument list based on the specified position. Checks
-   * whether the position contains a valid target path and creates the required
-   * parent directories if possible.
-   * 
-   * @param args The argument list
-   * @param pos The possible position of the path to check
-   * @return An optional with the target path, Optional.empty() otherwise
-   */
-  private Optional<File> fetchTargetFile(List<String> args, int pos) {
-    if (pos < args.size()) {
-      String path = args.get(pos);
-      if (allArgs.contains(path)) {
-        return Optional.empty();
-      } else {
-        return Optional.of(new File(path));
+      
+      // parse input file
+      if (cmd.hasOption(JSONCLIConfiguration.INPUT)) {
+        parseFile(cmd.getOptionValue(JSONCLIConfiguration.INPUT));
       }
+      
+      // pretty print
+      if (cmd.hasOption(JSONCLIConfiguration.PRINT)) {
+        String path = cmd.getOptionValue(JSONCLIConfiguration.PRINT, StringUtils.EMPTY);
+        prettyPrint(path);
+      }
+      
+      // reports
+      if (cmd.hasOption(JSONCLIConfiguration.REPORT)) {
+        String path = cmd.getOptionValue(JSONCLIConfiguration.REPORT, StringUtils.EMPTY);
+        report(path);
+      }
+      
     }
-    return Optional.empty();
-  }
-  
-  /**
-   * Prints the usage of the CLI. Contains available commands with possible
-   * parameters an their explanations.
-   */
-  private void printHelp() {
-    System.out.println("-h                  Opens this help dialog");
-    System.out.println("-i <file>           Reads the given source file (mandatory) and parses the contents as JSON");
-    System.out.println("-pp <file>          Prints the JSON-AST to stdout or the specified file (optional)");
-    System.out.println("-prop -a <file>     Prints a list of all properties in the cached JSON artifact to stdout or the specified file (optional)");
-    System.out.println("-prop -c <file>     Prints a set of all properties and the number of occurrences in the cached JSON artifact to stdout or the specified file (optional)");
-    System.out.println("-prop -tl <file>    Prints a list of all top level properties in the cached JSON artifact to stdout or the specified file (optional)");
+    catch (ParseException e) {
+      Log.error("0xA7106 Could not process CLI parameters: " + e.getMessage());
+    }
+    
   }
   
   /**
@@ -217,24 +126,54 @@ public class JSONTool {
   }
   
   /**
-   * Prints the contents of the JSON-AST to command line or a specified file.
+   * Prints the contents of the JSON-AST to stdout or a specified file.
    * 
-   * @param file The target file for printing the JSON artifact. If empty, the
-   *          artifact is printed to stdout instead
+   * @param file The target file name for printing the JSON artifact. If empty,
+   *          the content is printed to stdout instead
    */
-  private void prettyPrint(Optional<File> file) {
+  private void prettyPrint(String file) {
+    // check if AST is available
+    if (!jsonDoc.isPresent()) {
+      Log.error("0xA7106 No JSON artifact available to pretty print. First specify a valid JSON artifact as input.");
+      return;
+    }
+    
+    // pretty print AST
     JSONPrettyPrinter pp = new JSONPrettyPrinter();
     String json = pp.printJSONDocument(jsonDoc.get());
     print(json, file);
   }
   
   /**
-   * Prints all property names in the JSON-AST as ordered list.
+   * Creates reports for the JSON-AST to stdout or a specified file.
    * 
-   * @param file The target file for printing the property names. If empty, the
-   *          artifact is printed to stdout instead
+   * @param path The target path of the directory for the report artifacts. If
+   *          empty, the contents are printed to stdout instead
    */
-  private void allPropertyNames(Optional<File> file) {
+  private void report(String path) {
+    // check if AST is available
+    if (!jsonDoc.isPresent()) {
+      Log.error("0xA7107 No JSON artifact available for reporting. First specify a valid JSON artifact as input.");
+      return;
+    }
+    
+    // calculate reports
+    String aProps = allPropertyNames();
+    String cProps = countedPropertyNames();
+    String tlProps = topLevelPropertyNames();
+    
+    // print reports
+    print(aProps, path + "/AllProperties.txt");
+    print(cProps, path + "/CountedProperties.txt");
+    print(tlProps, path + "/TopLevelProperties.txt");
+  }
+  
+  /**
+   * Calculates all property names in the JSON-AST as ordered list.
+   * 
+   * @return A String containing all property names
+   */
+  private String allPropertyNames() {
     List<String> properties = fpc.getAllPropertyNames(jsonDoc.get());
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
@@ -243,18 +182,17 @@ public class JSONTool {
         content += ", ";
       }
     }
-    // print property names
-    print(content, file);
+    return content;
   }
   
   /**
-   * Prints all property names in the JSON-AST as a set with additional number
-   * of their respective occurrence.
+   * Calculates all property names in the JSON-AST as a set with additional
+   * number of their respective occurrence.
    * 
-   * @param file The target file for printing the property names. If empty, the
-   *          artifact is printed to stdout instead
+   * @return A String containing all property names with the number of
+   *         occurrence
    */
-  private void countedPropertyNames(Optional<File> file) {
+  private String countedPropertyNames() {
     Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc.get());
     Set<Entry<String, Integer>> entries = properties.entrySet();
     Iterator<Entry<String, Integer>> it = entries.iterator();
@@ -267,18 +205,16 @@ public class JSONTool {
         content += ", ";
       }
     }
-    // print property names with number of occurrence
-    print(content, file);
+    return content;
   }
   
   /**
-   * Prints all top-level property names in the JSON-AST as ordered list. Thus,
-   * only traverses the AST shallowly.
+   * Calculates all top-level property names in the JSON-AST as ordered list.
+   * Thus, only traverses the AST shallowly.
    * 
-   * @param file The target file for printing the property names. If empty, the
-   *          artifact is printed to stdout instead
+   * @return A String containing all top-level property names
    */
-  private void topLevelPropertyNames(Optional<File> file) {
+  private String topLevelPropertyNames() {
     List<String> properties = tlpc.getTopLevelPropertyNames(jsonDoc.get());
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
@@ -287,8 +223,7 @@ public class JSONTool {
         content += ", ";
       }
     }
-    // print property names
-    print(content, file);
+    return content;
   }
   
   /**
@@ -296,15 +231,15 @@ public class JSONTool {
    * the file is Optional.empty()).
    * 
    * @param content The String to be printed
-   * @param file The target file for printing the JSON artifact. If empty, the
-   *          artifact is printed to the command line instead
+   * @param path The target path to the file for printing the content. If empty,
+   *          the content is printed to stdout instead
    */
-  private void print(String content, Optional<File> file) {
+  private void print(String content, String path) {
     // print to stdout or file
-    if (!file.isPresent()) {
+    if (path.isEmpty()) {
       System.out.println(content);
     } else {
-      File f = file.get();
+      File f = new File(path);
       // create directories
       f.getAbsoluteFile().getParentFile().mkdirs();
       
