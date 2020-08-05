@@ -31,6 +31,11 @@ import de.se_rwth.commons.logging.Log;
  */
 public class JSONTool {
   
+  private static final String REPORT_ALL_PROPS = "/AllProperties.txt";
+  private static final String REPORT_COUNTED_PROPS = "/CountedProperties.txt";
+  private static final String REPORT_TOPLEVEL_PROPS = "/TopLevelProperties.txt";
+  
+  
   private Optional<ASTJSONDocument> jsonDoc;
   private FullPropertyCalculator fpc;
   private TopLevelPropertyCalculator tlpc;
@@ -163,9 +168,9 @@ public class JSONTool {
     String tlProps = topLevelPropertyNames();
     
     // print reports
-    print(aProps, path + "/AllProperties.txt");
-    print(cProps, path + "/CountedProperties.txt");
-    print(tlProps, path + "/TopLevelProperties.txt");
+    print(aProps, path + REPORT_ALL_PROPS);
+    print(cProps, path + REPORT_COUNTED_PROPS);
+    print(tlProps, path + REPORT_TOPLEVEL_PROPS);
   }
   
   /**
