@@ -109,7 +109,7 @@ public class JSONTool {
       
     }
     catch (ParseException e) {
-      Log.error("0xA7106 Could not process CLI parameters: " + e.getMessage());
+      Log.error("0xA7101 Could not process CLI parameters: " + e.getMessage());
     }
     
   }
@@ -126,7 +126,7 @@ public class JSONTool {
       jsonDoc = parser.parse(model.toString());
     }
     catch (IOException e) {
-      Log.error("0xA7104 File " + path + " not found.");
+      Log.error("0xA7102 File " + path + " not found.");
     }
   }
   
@@ -139,7 +139,7 @@ public class JSONTool {
   private void prettyPrint(String file) {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
-      Log.error("0xA7106 No JSON artifact available to pretty print. First specify a valid JSON artifact as input.");
+      Log.error("0xA7103 No JSON artifact available to pretty print. First specify a valid JSON artifact as input.");
       return;
     }
     
@@ -158,7 +158,7 @@ public class JSONTool {
   private void report(String path) {
     // check if AST is available
     if (!jsonDoc.isPresent()) {
-      Log.error("0xA7107 No JSON artifact available for reporting. First specify a valid JSON artifact as input.");
+      Log.error("0xA7104 No JSON artifact available for reporting. First specify a valid JSON artifact as input.");
       return;
     }
     
