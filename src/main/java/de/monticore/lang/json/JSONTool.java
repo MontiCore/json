@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -30,13 +29,7 @@ import de.se_rwth.commons.logging.Log;
  * Command line interface for the JSON language and corresponding tooling.
  */
 public class JSONTool {
-  
-  // TODO: diese drei Attribute werden besser als lokale Variable gespeichert und als Argumente zwischen Funktionen übergeben
-  // (teilweise ist das schon erledigt)
-  private Optional<ASTJSONDocument> jsonDoc;   // muss dann kein Optional mehr sein ...
-  private FullPropertyCalculator fpc;
-  private TopLevelPropertyCalculator tlpc;
-  
+
   /**
    * Main method that is called from command line and runs the JSON tool.
    * 
@@ -44,7 +37,7 @@ public class JSONTool {
    */
   public static void main(String[] args) {
     JSONTool cli = new JSONTool();
-    // Initialize Logging with standard logging
+    // initialize logging with standard logging
     Log.init();
     cli.handleArgs(args);
   }
@@ -58,33 +51,34 @@ public class JSONTool {
   public void handleArgs(String[] args) {
     
     try {
-      // Create CLI parser and parse input options from command line
+      // create CLI parser and parse input options from command line
       CommandLineParser cliparser = new DefaultParser();
       JSONCLIConfiguration config = new JSONCLIConfiguration();
       CommandLine cmd = cliparser.parse(config.getOptions(), args);
       
       // help
-      if (cmd.hasOption(JSONCLIConfiguration.HELP)
-              || !cmd.hasOption(JSONCLIConfiguration.INPUT)) {
+      if (cmd.hasOption(JSONCLIConfiguration.HELP) 
+          || !cmd.hasOption(JSONCLIConfiguration.INPUT)) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("JSONTool", config.getOptions());
-        // print help, but continue ...
+        // do not continue, when help is printed
+        return;
       }
       
       // parse input file
-      // (only returns if successfull)
+      // (only returns if successful)
       ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue(JSONCLIConfiguration.INPUT));
       
       // -option pretty print
       if (cmd.hasOption(JSONCLIConfiguration.PRINT)) {
         String path = cmd.getOptionValue(JSONCLIConfiguration.PRINT, StringUtils.EMPTY);
-        prettyPrint(jsonDoc,path);
+        prettyPrint(jsonDoc, path);
       }
       
       // -option reports
       if (cmd.hasOption(JSONCLIConfiguration.REPORT)) {
         String path = cmd.getOptionValue(JSONCLIConfiguration.REPORT, StringUtils.EMPTY);
-        report(jsonDoc,path);
+        report(jsonDoc, path);
       }
       
     } catch (ParseException e) {
@@ -99,15 +93,14 @@ public class JSONTool {
    * @param path The path to the JSON-file as String
    */
   public ASTJSONDocument parseFile(String path) {
-    Path model = Paths.get(path);
-    JSONParser parser = new JSONParser();
-    Optional<ASTJSONDocument> jsonDoc;
+    Optional<ASTJSONDocument> jsonDoc = Optional.empty();
     try {
+      Path model = Paths.get(path);
+      JSONParser parser = new JSONParser();
       jsonDoc = parser.parse(model.toString());
     }
-    catch (IOException e) {
-      Log.error("0xA7102 File " + path + " not found.");
-      jsonDoc = null; // will not be reached
+    catch (IOException | NullPointerException e) {
+      Log.error("0xA7102 Input file " + path + " not found.");
     }
     return jsonDoc.get();
   }
@@ -115,6 +108,7 @@ public class JSONTool {
   /**
    * Prints the contents of the JSON-AST to stdout or a specified file.
    * 
+   * @param jsonDoc The JSON-AST to be pretty printed
    * @param file The target file name for printing the JSON artifact. If empty,
    *          the content is printed to stdout instead
    */
@@ -128,6 +122,7 @@ public class JSONTool {
   /**
    * Creates reports for the JSON-AST to stdout or a specified file.
    * 
+   * @param jsonDoc The JSON-AST for which the reports are created
    * @param path The target path of the directory for the report artifacts. If
    *          empty, the contents are printed to stdout instead
    */
@@ -143,7 +138,7 @@ public class JSONTool {
     print(tlProps, path + REPORT_TOPLEVEL_PROPS);
   }
 
-  // Names of the reports:
+  // names of the reports:
   public static final String REPORT_ALL_PROPS = "/allProperties.txt";
   public static final String REPORT_COUNTED_PROPS = "/countedProperties.txt";
   public static final String REPORT_TOPLEVEL_PROPS = "/topLevelProperties.txt";
@@ -151,6 +146,7 @@ public class JSONTool {
   /**
    * Calculates all property names in the JSON-AST as ordered list.
    * 
+   * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all property names
    */
   private String allPropertyNames(ASTJSONDocument jsonDoc) {
@@ -170,14 +166,14 @@ public class JSONTool {
    * Calculates all property names in the JSON-AST as a set with additional
    * number of their respective occurrence.
    * 
+   * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all property names with the number of
    *         occurrence
    */
   public String countedPropertyNames(ASTJSONDocument jsonDoc) {
     FullPropertyCalculator fpc = new FullPropertyCalculator();
     Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc);
-    Set<Entry<String, Integer>> entries = properties.entrySet();
-    Iterator<Entry<String, Integer>> it = entries.iterator();
+    Iterator<Entry<String, Integer>> it = properties.entrySet().iterator();
     String content = "";
     while (it.hasNext()) {
       Entry<String, Integer> entry = it.next();
@@ -194,6 +190,7 @@ public class JSONTool {
    * Calculates all top-level property names in the JSON-AST as ordered list.
    * Thus, only traverses the AST shallowly.
    * 
+   * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all top-level property names
    */
   public String topLevelPropertyNames(ASTJSONDocument jsonDoc) {

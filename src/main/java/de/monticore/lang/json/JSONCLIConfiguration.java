@@ -3,6 +3,9 @@ package de.monticore.lang.json;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+/**
+ * Configuration for the command line interface for the JSON language.
+ */
 public class JSONCLIConfiguration {
   
   public static final String HELP = "h";
