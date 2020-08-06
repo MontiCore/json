@@ -61,7 +61,7 @@ repositories {
     mavenCentral()
     maven {
         credentials.username mavenUser
-        credentials.password System.getenv("cibuild")
+        credentials.password mavenPassword
         url = 'https://nexus.se.rwth-aachen.de/content/groups/se/'
     }
 }
