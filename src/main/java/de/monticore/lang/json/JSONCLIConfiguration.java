@@ -5,22 +5,21 @@ import org.apache.commons.cli.Options;
 
 public class JSONCLIConfiguration {
   
-  protected static final String HELP = "h";
-  protected static final String HELP_LONG = "help";
-  protected static final String INPUT = "i";
-  protected static final String INPUT_LONG = "input";
-  protected static final String PRINT = "pp";
-  protected static final String PRINT_LONG = "prettyprint";
-  protected static final String REPORT = "r";
-  protected static final String REPORT_LONG = "report";
-  
+  public static final String HELP = "h";
+  public static final String HELP_LONG = "help";
+  public static final String INPUT = "i";
+  public static final String INPUT_LONG = "input";
+  public static final String PRINT = "pp";
+  public static final String PRINT_LONG = "prettyprint";
+  public static final String REPORT = "r";
+  public static final String REPORT_LONG = "report";
   
   Options options;
   
   /**
    * Gets the available CLI options for the JSON tool.
    */
-  protected Options getOptions() {
+  public Options getOptions() {
     if (options == null) {
       initOptions();
     }
@@ -30,7 +29,7 @@ public class JSONCLIConfiguration {
   /**
    * Initializes the available CLI options for the JSON tool.
    */
-  private void initOptions() {
+  protected void initOptions() {
     options = new Options();
     
     // help dialog

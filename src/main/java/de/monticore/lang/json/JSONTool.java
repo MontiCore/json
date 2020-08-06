@@ -31,12 +31,9 @@ import de.se_rwth.commons.logging.Log;
  */
 public class JSONTool {
   
-  private static final String REPORT_ALL_PROPS = "/AllProperties.txt";
-  private static final String REPORT_COUNTED_PROPS = "/CountedProperties.txt";
-  private static final String REPORT_TOPLEVEL_PROPS = "/TopLevelProperties.txt";
-  
-  
-  private Optional<ASTJSONDocument> jsonDoc;
+  // TODO: diese drei Attribute werden besser als lokale Variable gespeichert und als Argumente zwischen Funktionen übergeben
+  // (teilweise ist das schon erledigt)
+  private Optional<ASTJSONDocument> jsonDoc;   // muss dann kein Optional mehr sein ...
   private FullPropertyCalculator fpc;
   private TopLevelPropertyCalculator tlpc;
   
@@ -47,28 +44,9 @@ public class JSONTool {
    */
   public static void main(String[] args) {
     JSONTool cli = new JSONTool();
-    cli.run(args);
-  }
-  
-  /**
-   * Main run method of the CLI instance. Initializes the tool and passes
-   * arguments to main program loop.
-   * 
-   * @param args The input parameters for configuring the JSON tool.
-   */
-  private void run(String[] args) {
-    init();
-    handleArgs(args);
-  }
-  
-  /**
-   * Initializes the CLI tool. Sets up the logger as well as available tooling.
-   */
-  private void init() {
+    // Initialize Logging with standard logging
     Log.init();
-    jsonDoc = Optional.empty();
-    fpc = new FullPropertyCalculator();
-    tlpc = new TopLevelPropertyCalculator();
+    cli.handleArgs(args);
   }
   
   /**
@@ -77,38 +55,39 @@ public class JSONTool {
    * 
    * @param args The input parameters for configuring the JSON tool.
    */
-  private void handleArgs(String[] args) {
+  public void handleArgs(String[] args) {
+    
     try {
       // Create CLI parser and parse input options from command line
-      CommandLineParser parser = new DefaultParser();
+      CommandLineParser cliparser = new DefaultParser();
       JSONCLIConfiguration config = new JSONCLIConfiguration();
-      CommandLine cmd = parser.parse(config.getOptions(), args);
+      CommandLine cmd = cliparser.parse(config.getOptions(), args);
       
       // help
-      if (cmd.hasOption(JSONCLIConfiguration.HELP)) {
+      if (cmd.hasOption(JSONCLIConfiguration.HELP)
+              || !cmd.hasOption(JSONCLIConfiguration.INPUT)) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("JSONTool", config.getOptions());
+        // print help, but continue ...
       }
       
       // parse input file
-      if (cmd.hasOption(JSONCLIConfiguration.INPUT)) {
-        parseFile(cmd.getOptionValue(JSONCLIConfiguration.INPUT));
-      }
+      // (only returns if successfull)
+      ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue(JSONCLIConfiguration.INPUT));
       
-      // pretty print
+      // -option pretty print
       if (cmd.hasOption(JSONCLIConfiguration.PRINT)) {
         String path = cmd.getOptionValue(JSONCLIConfiguration.PRINT, StringUtils.EMPTY);
-        prettyPrint(path);
+        prettyPrint(jsonDoc,path);
       }
       
-      // reports
+      // -option reports
       if (cmd.hasOption(JSONCLIConfiguration.REPORT)) {
         String path = cmd.getOptionValue(JSONCLIConfiguration.REPORT, StringUtils.EMPTY);
-        report(path);
+        report(jsonDoc,path);
       }
       
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       Log.error("0xA7101 Could not process CLI parameters: " + e.getMessage());
     }
     
@@ -119,15 +98,18 @@ public class JSONTool {
    * 
    * @param path The path to the JSON-file as String
    */
-  private void parseFile(String path) {
+  public ASTJSONDocument parseFile(String path) {
     Path model = Paths.get(path);
     JSONParser parser = new JSONParser();
+    Optional<ASTJSONDocument> jsonDoc;
     try {
       jsonDoc = parser.parse(model.toString());
     }
     catch (IOException e) {
       Log.error("0xA7102 File " + path + " not found.");
+      jsonDoc = null; // will not be reached
     }
+    return jsonDoc.get();
   }
   
   /**
@@ -136,16 +118,10 @@ public class JSONTool {
    * @param file The target file name for printing the JSON artifact. If empty,
    *          the content is printed to stdout instead
    */
-  private void prettyPrint(String file) {
-    // check if AST is available
-    if (!jsonDoc.isPresent()) {
-      Log.error("0xA7103 No JSON artifact available to pretty print. First specify a valid JSON artifact as input.");
-      return;
-    }
-    
+  public void prettyPrint(ASTJSONDocument jsonDoc, String file) {
     // pretty print AST
     JSONPrettyPrinter pp = new JSONPrettyPrinter();
-    String json = pp.printJSONDocument(jsonDoc.get());
+    String json = pp.printJSONDocument(jsonDoc);
     print(json, file);
   }
   
@@ -155,31 +131,31 @@ public class JSONTool {
    * @param path The target path of the directory for the report artifacts. If
    *          empty, the contents are printed to stdout instead
    */
-  private void report(String path) {
-    // check if AST is available
-    if (!jsonDoc.isPresent()) {
-      Log.error("0xA7104 No JSON artifact available for reporting. First specify a valid JSON artifact as input.");
-      return;
-    }
-    
-    // calculate reports
-    String aProps = allPropertyNames();
-    String cProps = countedPropertyNames();
-    String tlProps = topLevelPropertyNames();
-    
-    // print reports
+  public void report(ASTJSONDocument jsonDoc, String path) {
+    // calculate and print reports
+    String aProps = allPropertyNames(jsonDoc);
     print(aProps, path + REPORT_ALL_PROPS);
+
+    String cProps = countedPropertyNames(jsonDoc);
     print(cProps, path + REPORT_COUNTED_PROPS);
+
+    String tlProps = topLevelPropertyNames(jsonDoc);
     print(tlProps, path + REPORT_TOPLEVEL_PROPS);
   }
+
+  // Names of the reports:
+  public static final String REPORT_ALL_PROPS = "/allProperties.txt";
+  public static final String REPORT_COUNTED_PROPS = "/countedProperties.txt";
+  public static final String REPORT_TOPLEVEL_PROPS = "/topLevelProperties.txt";
   
   /**
    * Calculates all property names in the JSON-AST as ordered list.
    * 
    * @return A String containing all property names
    */
-  private String allPropertyNames() {
-    List<String> properties = fpc.getAllPropertyNames(jsonDoc.get());
+  private String allPropertyNames(ASTJSONDocument jsonDoc) {
+    FullPropertyCalculator fpc = new FullPropertyCalculator();
+    List<String> properties = fpc.getAllPropertyNames(jsonDoc);
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
       content += properties.get(i);
@@ -197,8 +173,9 @@ public class JSONTool {
    * @return A String containing all property names with the number of
    *         occurrence
    */
-  private String countedPropertyNames() {
-    Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc.get());
+  public String countedPropertyNames(ASTJSONDocument jsonDoc) {
+    FullPropertyCalculator fpc = new FullPropertyCalculator();
+    Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc);
     Set<Entry<String, Integer>> entries = properties.entrySet();
     Iterator<Entry<String, Integer>> it = entries.iterator();
     String content = "";
@@ -219,8 +196,9 @@ public class JSONTool {
    * 
    * @return A String containing all top-level property names
    */
-  private String topLevelPropertyNames() {
-    List<String> properties = tlpc.getTopLevelPropertyNames(jsonDoc.get());
+  public String topLevelPropertyNames(ASTJSONDocument jsonDoc) {
+    TopLevelPropertyCalculator tlpc = new TopLevelPropertyCalculator();
+    List<String> properties = tlpc.getTopLevelPropertyNames(jsonDoc);
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
       content += properties.get(i);
@@ -239,7 +217,7 @@ public class JSONTool {
    * @param path The target path to the file for printing the content. If empty,
    *          the content is printed to stdout instead
    */
-  private void print(String content, String path) {
+  public void print(String content, String path) {
     // print to stdout or file
     if (path.isEmpty()) {
       System.out.println(content);
