@@ -124,6 +124,7 @@ shadowJar {
     manifest {
         attributes "Main-Class": "de.monticore.lang.json.JSONTool"
     }
+    archiveClassifier = "cli"
     minimize()
 }
 
@@ -139,8 +140,12 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
-            artifact shadowJar
+  //          artifact shadowJar
             artifact grammarJar
+        }
+        cli(MavenPublication) {
+            artifactId = "$project.name"
+            artifact shadowJar
         }
     }
     repositories.maven {
