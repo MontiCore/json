@@ -119,6 +119,14 @@ task grammarJar(type: Jar) {
     archiveClassifier = "grammars"
 }
 
+// all in one cli-jar
+shadowJar {
+    manifest {
+        attributes "Main-Class": "de.monticore.lang.json.JSONTool"
+    }
+    minimize()
+}
+
 /* ============================================================ */
 /* ======================= Publishing ========================= */
 /* ============================================================ */
