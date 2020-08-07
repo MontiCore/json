@@ -9,6 +9,7 @@ import org.apache.commons.cli.Options;
  */
 public class JSONCLIConfiguration {
   
+  // the -o and --options (in not expanded form)
   public static final String HELP = "h";
   public static final String HELP_LONG = "help";
   public static final String INPUT = "i";
