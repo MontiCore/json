@@ -7,23 +7,15 @@ import org.apache.commons.cli.Options;
 /**
  * Configuration for the command line interface for the JSON language.
  */
+@Deprecated
 public class JSONCLIConfiguration {
-  
-  // the -o and --options (in not expanded form)
-  public static final String HELP = "h";
-  public static final String HELP_LONG = "help";
-  public static final String INPUT = "i";
-  public static final String INPUT_LONG = "input";
-  public static final String PRINT = "pp";
-  public static final String PRINT_LONG = "prettyprint";
-  public static final String REPORT = "r";
-  public static final String REPORT_LONG = "report";
   
   Options options;
   
   /**
    * Gets the available CLI options for the JSON tool.
    */
+  @Deprecated
   public Options getOptions() {
     if (options == null) {
       initOptions();
@@ -38,22 +30,22 @@ public class JSONCLIConfiguration {
     options = new Options();
     
     // help dialog
-    options.addOption(Option.builder(HELP)
-        .longOpt(HELP_LONG)
+    options.addOption(Option.builder("h")
+        .longOpt("help")
         .desc("Prints this help dialog")
         .build());
     
     // parse input file
-    options.addOption(Option.builder(INPUT)
-        .longOpt(INPUT_LONG)
+    options.addOption(Option.builder("i")
+        .longOpt("input")
         .argName("file")
         .hasArg()
         .desc("Reads the source file (mandatory) and parses the contents as JSON")
         .build());
   
     // pretty print JSON
-    options.addOption(Option.builder(PRINT)
-        .longOpt(PRINT_LONG)
+    options.addOption(Option.builder("pp")
+        .longOpt("prettyprint")
         .argName("file")
         .optionalArg(true)
         .numberOfArgs(1)
@@ -61,8 +53,8 @@ public class JSONCLIConfiguration {
         .build());
     
     // pretty print JSON
-    options.addOption(Option.builder(REPORT)
-        .longOpt(REPORT_LONG)
+    options.addOption(Option.builder("r")
+        .longOpt("report")
         .argName("dir")
         .hasArg(true)
         .desc("Prints reports of the JSON artifact to stdout or the specified directory (optional). Available reports: "

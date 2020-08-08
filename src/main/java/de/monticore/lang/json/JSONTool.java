@@ -12,11 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
@@ -28,9 +24,16 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Command line interface for the JSON language and corresponding tooling.
+ *
+ * See class JSONCLIConfiguration for the definition of the
+ * commandline options and arguments, such as --help
  */
 public class JSONTool {
-
+  
+  /*=================================================================*/
+  /* Part 1: Handling the arguments and options
+  /*=================================================================*/
+  
   /**
    * Main method that is called from command line and runs the JSON tool.
    * 
@@ -50,43 +53,65 @@ public class JSONTool {
    * @param args The input parameters for configuring the JSON tool.
    */
   public void handleArgs(String[] args) {
-    
+  
+    Options options = initOptions();
+  
     try {
       // create CLI parser and parse input options from command line
       CommandLineParser cliparser = new DefaultParser();
-      JSONCLIConfiguration config = new JSONCLIConfiguration();
-      CommandLine cmd = cliparser.parse(config.getOptions(), args);
+      CommandLine cmd = cliparser.parse(options, args);
       
-      // help
-      if (cmd.hasOption(JSONCLIConfiguration.HELP) 
-          || !cmd.hasOption(JSONCLIConfiguration.INPUT)) {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("JSONTool", config.getOptions());
+      // help: when --help
+      if (cmd.hasOption("h")) {
+        printHelp(options);
         // do not continue, when help is printed
         return;
       }
-      
-      // parse input file
+  
+      // if -i input is missing: also print help and stop
+      if (!cmd.hasOption("i")) {
+        printHelp(options);
+        // do not continue, when help is printed
+        return;
+      }
+  
+      // parse input file, which is now available
       // (only returns if successful)
-      ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue(JSONCLIConfiguration.INPUT));
+      ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue("i"));
       
       // -option pretty print
-      if (cmd.hasOption(JSONCLIConfiguration.PRINT)) {
-        String path = cmd.getOptionValue(JSONCLIConfiguration.PRINT, StringUtils.EMPTY);
+      if (cmd.hasOption("pp")) {
+        String path = cmd.getOptionValue("pp", StringUtils.EMPTY);
         prettyPrint(jsonDoc, path);
       }
       
       // -option reports
-      if (cmd.hasOption(JSONCLIConfiguration.REPORT)) {
-        String path = cmd.getOptionValue(JSONCLIConfiguration.REPORT, StringUtils.EMPTY);
+      if (cmd.hasOption("r")) {
+        String path = cmd.getOptionValue("r", StringUtils.EMPTY);
         report(jsonDoc, path);
       }
       
     } catch (ParseException e) {
+      // ann unexpected error from the apache CLI parser:
       Log.error("0xA7101 Could not process CLI parameters: " + e.getMessage());
     }
     
   }
+  
+  /**
+   * Processes user input from command line and delegates to the corresponding
+   * tools.
+   *
+   * @param options The input parameters and options.
+   */
+  public void printHelp(Options options) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp("JSONTool", options);
+  }
+  
+  /*=================================================================*/
+  /* Part 2: Executing arguments
+  /*=================================================================*/
   
   /**
    * Parses the contents of a given file as JSON.
@@ -130,20 +155,22 @@ public class JSONTool {
   public void report(ASTJSONDocument jsonDoc, String path) {
     // calculate and print reports
     String aProps = allPropertyNames(jsonDoc);
-    print(aProps, path + REPORT_ALL_PROPS);
+    print(aProps, path + "/" + REPORT_ALL_PROPS);
 
     String cProps = countedPropertyNames(jsonDoc);
-    print(cProps, path + REPORT_COUNTED_PROPS);
+    print(cProps, path + "/" + REPORT_COUNTED_PROPS);
 
     String tlProps = topLevelPropertyNames(jsonDoc);
-    print(tlProps, path + REPORT_TOPLEVEL_PROPS);
+    print(tlProps, path + "/" + REPORT_TOPLEVEL_PROPS);
   }
-
-  // names of the reports:
-  public static final String REPORT_ALL_PROPS = "/allProperties.txt";
-  public static final String REPORT_COUNTED_PROPS = "/countedProperties.txt";
-  public static final String REPORT_TOPLEVEL_PROPS = "/topLevelProperties.txt";
   
+  // names of the reports:
+  public static final String REPORT_ALL_PROPS = "allProperties.txt";
+  public static final String REPORT_COUNTED_PROPS = "countedProperties.txt";
+  public static final String REPORT_TOPLEVEL_PROPS = "topLevelProperties.txt";
+  
+  /*=================================================================*/
+
   /**
    * Calculates all property names in the JSON-AST as ordered list.
    * 
@@ -221,6 +248,7 @@ public class JSONTool {
       System.out.println(content);
     } else {
       File f = new File(path);
+      // TODO: Error, when directory cannot be created?
       // create directories
       f.getAbsoluteFile().getParentFile().mkdirs();
       
@@ -233,5 +261,52 @@ public class JSONTool {
         Log.error("0xA7105 Could not write to file " + f.getAbsolutePath());
       }
     }
+  }
+  
+  /*=================================================================*/
+  /* Part 3: Defining the options incl. help-texts
+  /*=================================================================*/
+
+  /**
+   * Initializes the available CLI options for the JSON tool.
+   */
+  protected Options initOptions() {
+    Options options = new Options();
+    
+    // help dialog
+    options.addOption(Option.builder("h")
+            .longOpt("help")
+            .desc("Prints this help dialog")
+            .build());
+    
+    // parse input file
+    options.addOption(Option.builder("i")
+            .longOpt("input")
+            .argName("file")
+            .hasArg()
+            .desc("Reads the source file (mandatory) and parses the contents as JSON")
+            .build());
+    
+    // pretty print JSON
+    options.addOption(Option.builder("pp")
+            .longOpt("prettyprint")
+            .argName("file")
+            .optionalArg(true)
+            .numberOfArgs(1)
+            .desc("Prints the JSON-AST to stdout or the specified file (optional)")
+            .build());
+    
+    // pretty print JSON
+    options.addOption(Option.builder("r")
+            .longOpt("report")
+            .argName("dir")
+            .hasArg(true)
+            .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:"
+                    + "  " + REPORT_ALL_PROPS + "      a list of all properties, "
+                    + "  " + REPORT_COUNTED_PROPS + "  a set of all properties with the number of occurrences, "
+                    + "  " + REPORT_TOPLEVEL_PROPS + " a list of all top level properties")
+            .build());
+    
+    return options;
   }
 }
