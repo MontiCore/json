@@ -15,11 +15,19 @@ import java.util.Optional;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
+import de.monticore.MontiCoreNodeIdentifierHelper;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.json._ast.ASTJSONDocument;
+import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
+import de.monticore.lang.json._symboltable.JSONArtifactScope;
+import de.monticore.lang.json._symboltable.JSONGlobalScope;
+import de.monticore.lang.json._symboltable.JSONSymbolTableCreatorDelegator;
 import de.monticore.lang.json._visitor.FullPropertyCalculator;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -78,6 +86,11 @@ public class JSONTool {
       // (only returns if successful)
       ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue("i"));
       
+      // even though JSON defines no symbols, we create the symbol table as
+      // MontiCore always expects the symbol table to exist and further tooling
+      // such as json2od requires it to compute
+      createSymbolTable(jsonDoc);
+      
       // -option pretty print
       if (cmd.hasOption("pp")) {
         String path = cmd.getOptionValue("pp", StringUtils.EMPTY);
@@ -88,6 +101,12 @@ public class JSONTool {
       if (cmd.hasOption("r")) {
         String path = cmd.getOptionValue("r", StringUtils.EMPTY);
         report(jsonDoc, path);
+      }
+      
+      // -option syntax objects
+      if (cmd.hasOption("so")) {
+        String path = cmd.getOptionValue("so", StringUtils.EMPTY);
+        json2od(jsonDoc, getModelNameFromFile(cmd.getOptionValue("i")), path);
       }
       
     } catch (ParseException e) {
@@ -234,6 +253,64 @@ public class JSONTool {
   }
   
   /**
+   * Creates the symbol table from the parsed AST.
+   *
+   * @param ast The top JSON model element.
+   * @return The artifact scope derived from the parsed AST
+   */
+  public JSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
+    JSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension(".json")
+        .build();
+
+    JSONSymbolTableCreatorDelegator symbolTable = JSONMill.jSONSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
+    
+    return symbolTable.createFromAST(ast);
+  }
+
+  /**
+   * Extracts the model name from a given file name. The model name corresponds
+   * to the unqualified file name without file extension.
+   * 
+   * @param file The path to the input file
+   * @return The extracted model name
+   */
+  public String getModelNameFromFile(String file) {
+    String modelName = new File(file).getName();
+    // cut file extension if present
+    if (modelName.length() > 0) {
+      int lastIndex = modelName.lastIndexOf(".");
+      if (lastIndex != -1) {
+        modelName = modelName.substring(0, lastIndex);
+      }
+    }
+    return modelName;
+  }
+
+  /**
+   * Creates an object diagram for the JSON-AST to stdout or a specified file.
+   * 
+   * @param jsonDoc The JSON-AST for which the object diagram is created
+   * @param modelName The derived model name for the JSON-AST
+   * @param file The target file name for printing the object diagram. If empty,
+   *          the content is printed to stdout instead
+   */
+  public void json2od(ASTJSONDocument jsonDoc, String modelName, String file) {
+    // initialize json2od printer
+    IndentPrinter printer = new IndentPrinter();
+    MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
+    ReportingRepository repository = new ReportingRepository(identifierHelper);
+    JSON2OD json2od = new JSON2OD(printer, repository);
+    
+    // print object diagram
+    String od = json2od.printObjectDiagram((new File(modelName)).getName(), jsonDoc);
+    print(od, file);
+  }
+  
+  /**
    * Prints the given content to a target file (if specified) or to stdout (if
    * the file is Optional.empty()).
    * 
@@ -305,6 +382,15 @@ public class JSONTool {
             + "  " + REPORT_ALL_PROPS + "      a list of all properties, " 
             + "  " + REPORT_COUNTED_PROPS + "  a set of all properties with the number of occurrences, " 
             + "  " + REPORT_TOPLEVEL_PROPS + " a list of all top level properties")
+        .build());
+    
+    // print object diagram
+    options.addOption(Option.builder("so")
+        .longOpt("syntaxobjects")
+        .argName("file")
+        .optionalArg(true)
+        .numberOfArgs(1)
+        .desc("Prints an object diagram of the JSON-AST to stdout or the specified file (optional)")
         .build());
     
     return options;
