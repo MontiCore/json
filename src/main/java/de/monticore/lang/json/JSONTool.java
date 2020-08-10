@@ -247,8 +247,7 @@ public class JSONTool {
       System.out.println(content);
     } else {
       File f = new File(path);
-      // TODO: Error, when directory cannot be created?
-      // create directories
+      // create directories (logs error otherwise)
       f.getAbsoluteFile().getParentFile().mkdirs();
       
       FileWriter writer;
