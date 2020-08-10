@@ -24,9 +24,8 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Command line interface for the JSON language and corresponding tooling.
- *
- * See class JSONCLIConfiguration for the definition of the
- * commandline options and arguments, such as --help
+ * Defines, handles, and executes the corresponding command line options and
+ * arguments, such as --help
  */
 public class JSONTool {
   
@@ -269,43 +268,45 @@ public class JSONTool {
 
   /**
    * Initializes the available CLI options for the JSON tool.
+   * 
+   * @return The CLI options with arguments.
    */
   protected Options initOptions() {
     Options options = new Options();
     
     // help dialog
     options.addOption(Option.builder("h")
-            .longOpt("help")
-            .desc("Prints this help dialog")
-            .build());
+        .longOpt("help")
+        .desc("Prints this help dialog")
+        .build());
     
     // parse input file
     options.addOption(Option.builder("i")
-            .longOpt("input")
-            .argName("file")
-            .hasArg()
-            .desc("Reads the source file (mandatory) and parses the contents as JSON")
-            .build());
+        .longOpt("input")
+        .argName("file")
+        .hasArg()
+        .desc("Reads the source file (mandatory) and parses the contents as JSON")
+        .build());
     
     // pretty print JSON
     options.addOption(Option.builder("pp")
-            .longOpt("prettyprint")
-            .argName("file")
-            .optionalArg(true)
-            .numberOfArgs(1)
-            .desc("Prints the JSON-AST to stdout or the specified file (optional)")
-            .build());
+        .longOpt("prettyprint")
+        .argName("file")
+        .optionalArg(true)
+        .numberOfArgs(1)
+        .desc("Prints the JSON-AST to stdout or the specified file (optional)")
+        .build());
     
     // pretty print JSON
     options.addOption(Option.builder("r")
-            .longOpt("report")
-            .argName("dir")
-            .hasArg(true)
-            .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:"
-                    + "  " + REPORT_ALL_PROPS + "      a list of all properties, "
-                    + "  " + REPORT_COUNTED_PROPS + "  a set of all properties with the number of occurrences, "
-                    + "  " + REPORT_TOPLEVEL_PROPS + " a list of all top level properties")
-            .build());
+        .longOpt("report")
+        .argName("dir")
+        .hasArg(true)
+        .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:" 
+            + "  " + REPORT_ALL_PROPS + "      a list of all properties, " 
+            + "  " + REPORT_COUNTED_PROPS + "  a set of all properties with the number of occurrences, " 
+            + "  " + REPORT_TOPLEVEL_PROPS + " a list of all top level properties")
+        .build());
     
     return options;
   }

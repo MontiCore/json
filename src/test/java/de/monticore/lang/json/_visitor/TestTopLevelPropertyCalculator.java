@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json._visitor;
 
 import static org.junit.Assert.assertFalse;
