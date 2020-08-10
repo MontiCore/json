@@ -379,9 +379,9 @@ public class JSONTool {
         .argName("dir")
         .hasArg(true)
         .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:" 
-            + "  " + REPORT_ALL_PROPS + "      a list of all properties, " 
-            + "  " + REPORT_COUNTED_PROPS + "  a set of all properties with the number of occurrences, " 
-            + "  " + REPORT_TOPLEVEL_PROPS + " a list of all top level properties")
+            + System.lineSeparator() + "  " + REPORT_ALL_PROPS + ": a list of all properties, " 
+            + System.lineSeparator() + "  " + REPORT_COUNTED_PROPS + ": a set of all properties with the number of occurrences, " 
+            + System.lineSeparator() + "  " + REPORT_TOPLEVEL_PROPS + ": a list of all top level properties")
         .build());
     
     // print object diagram
