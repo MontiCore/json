@@ -17,7 +17,8 @@ build:
     - "./gradlew build $GRADLE_OPT $ARGS1"
   artifacts:
     paths:
-      - "."
+      - "target/"
+      - ".gradle/"
     expire_in: 1 week
 
 
