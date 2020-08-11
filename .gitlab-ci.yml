@@ -4,6 +4,7 @@ image: maven:3.5.4-jdk-11
 
 stages:
   - build
+  - deploy
 
 before_script:
   - chmod +x gradlew
@@ -14,3 +15,8 @@ build:
   stage: build
   script:
     - "./gradlew build $GRADLE_OPT $ARGS1"
+    
+deploy:
+  stage: deploy
+  script:
+    - "./gradlew publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
