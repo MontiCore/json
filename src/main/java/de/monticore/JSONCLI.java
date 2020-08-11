@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.json;
+package de.monticore;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.monticore.MontiCoreNodeIdentifierHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
@@ -35,7 +36,7 @@ import de.se_rwth.commons.logging.Log;
  * Defines, handles, and executes the corresponding command line options and
  * arguments, such as --help
  */
-public class JSONTool {
+public class JSONCLI {
   
   /*=================================================================*/
   /* Part 1: Handling the arguments and options
@@ -47,7 +48,7 @@ public class JSONTool {
    * @param args The input parameters for configuring the JSON tool.
    */
   public static void main(String[] args) {
-    JSONTool cli = new JSONTool();
+    JSONCLI cli = new JSONCLI();
     // initialize logging with standard logging
     Log.init();
     cli.handleArgs(args);
@@ -125,7 +126,7 @@ public class JSONTool {
   public void printHelp(Options options) {
     HelpFormatter formatter = new HelpFormatter();
     formatter.setWidth(80);
-    formatter.printHelp("JSONTool", options);
+    formatter.printHelp("JSONCLI", options);
   }
   
   /*=================================================================*/

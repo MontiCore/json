@@ -128,9 +128,10 @@ task grammarJar(type: Jar) {
 // all in one cli-jar
 shadowJar {
     manifest {
-        attributes "Main-Class": "de.monticore.lang.json.JSONTool"
+        attributes "Main-Class": "de.monticore.${baseName.capitalize()}CLI"
     }
     archiveClassifier = "cli"
+    archiveName = "${baseName}-${classifier}.${extension}"
     minimize()
 }
 
