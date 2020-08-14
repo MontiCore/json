@@ -68,10 +68,10 @@
 * [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
   A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
 * [FullPropertyCalculator](./src/main/java/de/monticore/lang/json/_visitor/FullPropertyCalculator.java)
-  A visitor that extracts all property names from the JSON artifact.
+  A visitor that extracts all property names (as list and counted set) from the 
+  JSON artifact.
 * [TopLevelPropertyCalculator](./src/main/java/de/monticore/lang/json/_visitor/TopLevelPropertyCalculator.java)
-  A visitor that extracts the top-level property names (as list and counted set) 
-  from the JSON artifact.
+  A visitor that extracts the top-level property names from the JSON artifact.
 
 ## Usage
 
