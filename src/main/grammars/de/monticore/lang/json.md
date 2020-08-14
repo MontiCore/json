@@ -42,20 +42,10 @@
 * Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
 ## Symboltable
-* The JSON artifacts provide symbols of type JSONPropertySymbol. 
-* Symbol management:
-  * JSON artifacts provide a hierarchy of scopes along the objects they define.
-  * Each *"attribute name"* (i.e., each property key) acts as a symbol.
+* The JSON artifacts do not provide any symbols.
 
 ### Symbol kinds used by JSON (importable):
 * None, because JSON does not have mechanisms to refer to external symbols.
-
-### Symbol kinds defined by JSON:
-* `JSONPropertySymbol` contains a JSON attribute name
-* JSON attribute names act as symbol names and 
-  can be ordinary strings (which differs from 
-  standard approach to use `Name`s only and leads to problems if "."
-  is included in the symbol and qualified search is used.)
 
 ### Symbols exported by JSON:
 * JSON documents generally do NOT export any symbol to external artifacts. 
@@ -66,28 +56,50 @@
   * JSON is mainly a transport technique for data, e.g. during runtime
     of products, services, but also tools and simulators. JSON artefacts 
     are meant for reading and processing, not usually for referring to 
-    their internal information by other artefacts.
+    their internal information by other artifacts.
 * Thus there is no symbol-table to be stored.  
-  JSON Symbols are available only when the model has been loaded.
-* Please note that alternatives are possible and could be implemented
-  based on the MontiCore symboltable infrastructure. E.g. 
-  * The top-level symbols, like `"Alice"` and `"Bob"` would be available. 
-  * All symbols would be available. That would also include e.g. 
-    fully qualified `"Bob.adress.street"`. This, however, would leed to a 
-    symboltable that is larger that the original model and therefore,
-    we suggest to load the original model then instead.
-  * A special kind of JSON property, such as `"name"` within each
-    *objects* contains the usable object name.
-  * A special kind of JSON property, such as `"uuid"` within each
-    *objects* contains an anonymously generated reference allowing
-    to rebuild graph structures (if needed).
 
 ## Functionality: CoCos
 * none provided; it is assumed that the JSON model was produced correctly.
 
 ## Handwritten Extensions
+* [JSONCLI](./src/main/java/de/monticore/JSONCLI.java)
+  A command line interface for the JSON language.
 * [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
   A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
+* [FullPropertyCalculator](./src/main/java/de/monticore/lang/json/_visitor/FullPropertyCalculator.java)
+  A visitor that extracts all property names (as list and counted set) from the
+  JSON artifact.
+* [TopLevelPropertyCalculator](./src/main/java/de/monticore/lang/json/_visitor/TopLevelPropertyCalculator.java)
+  A visitor that extracts the top-level property names (as list and counted set) 
+  from the JSON artifact.
+
+## Usage
+
+### Command Line Interface
+* The JSONCLI provides a general interface for the functionalities developed for 
+  the JSON language. This includes all features such as parsing of models, 
+  pretty printing, reporting, or export as object diagram. 
+* By default, we provide a JAR `JSON-cli` that can be used via the command 
+  `java -jar JSON-cli.jar <parameters>`
+* Present Options are:
+```
+ -h,--help                    Prints this help dialog
+ -i,--input <file>            Reads the source file (mandatory) and parses the
+                              contents as JSON
+ -pp,--prettyprint <file>     Prints the JSON-AST to stdout or the specified
+                              file (optional)
+ -r,--report <dir>            Prints reports of the JSON artifact to the
+                              specified directory (optional). Available reports:
+                              allProperties.txt: a list of all properties,
+                              countedProperties.txt: a set of all properties
+                              with the number of occurrences,
+                              topLevelProperties.txt: a list of all top level
+                              properties
+ -so,--syntaxobjects <file>   Prints an object diagram of the JSON-AST to stdout
+                              or the specified file (optional)
+```
+
 
 ## Further Information
 
