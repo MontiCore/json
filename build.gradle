@@ -76,8 +76,6 @@ dependencies {
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     testImplementation "junit:junit:$junit_version"
-    testImplementation "de.monticore:monticore-runtime:$monticore_version:tests"
-    testImplementation "de.monticore:monticore-runtime:$monticore_version"
     compileOnly "de.monticore:monticore-grammar:$monticore_version"
 }
 
