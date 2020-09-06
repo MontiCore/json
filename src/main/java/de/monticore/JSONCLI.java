@@ -140,6 +140,9 @@ public class JSONCLI {
    */
   public ASTJSONDocument parseFile(String path) {
     Optional<ASTJSONDocument> jsonDoc = Optional.empty();
+    
+    // disable fail-quick to find all parsing errors
+    Log.enableFailQuick(false);
     try {
       Path model = Paths.get(path);
       JSONParser parser = new JSONParser();
@@ -148,6 +151,9 @@ public class JSONCLI {
     catch (IOException | NullPointerException e) {
       Log.error("0xA7102 Input file " + path + " not found.");
     }
+    
+    // re-enable fail-quick to print potential errors
+    Log.enableFailQuick(true);
     return jsonDoc.get();
   }
   
