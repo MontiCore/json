@@ -4,6 +4,7 @@ package de.monticore;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -14,7 +15,12 @@ import java.util.Optional;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import de.monticore.MontiCoreNodeIdentifierHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.io.paths.ModelPath;
@@ -30,6 +36,7 @@ import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * Command line interface for the JSON language and corresponding tooling.
@@ -49,8 +56,8 @@ public class JSONCLI {
    */
   public static void main(String[] args) {
     JSONCLI cli = new JSONCLI();
-    // initialize logging with standard logging
-    Log.init();
+    // initialize logging with slf4j logging variant
+    Slf4jLog.init();
     cli.handleArgs(args);
   }
   
@@ -82,7 +89,12 @@ public class JSONCLI {
         // do not continue, when help is printed
         return;
       }
-  
+      
+      // -option developer logging
+      if (cmd.hasOption("d")) {
+        useDeveloperLogbackConfiguration();
+      }
+      
       // parse input file, which is now available
       // (only returns if successful)
       ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue("i"));
@@ -132,6 +144,26 @@ public class JSONCLI {
   /*=================================================================*/
   /* Part 2: Executing arguments
   /*=================================================================*/
+  
+  /**
+   * Enables detailed developer logging. Loads and configures logback with the
+   * developer logback XML input stream.
+   */
+  public void useDeveloperLogbackConfiguration() {
+    InputStream config = JSONCLI.class.getClassLoader().getResourceAsStream("developer.logging.xml");
+    ILoggerFactory lf = LoggerFactory.getILoggerFactory();
+    if(lf instanceof LoggerContext) {
+      LoggerContext context = (LoggerContext) lf;
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(context);
+      context.reset();
+      try {
+        configurator.doConfigure(config);
+      } catch (JoranException e) {
+        Log.error("0xA7103 Could not configure devloper level logging.");
+      }
+    }
+  }
   
   /**
    * Parses the contents of a given file as JSON.
@@ -362,6 +394,12 @@ public class JSONCLI {
     options.addOption(Option.builder("h")
         .longOpt("help")
         .desc("Prints this help dialog")
+        .build());
+    
+    // developer level logging
+    options.addOption(Option.builder("d")
+        .longOpt("dev")
+        .desc("Specifies whether developer level logging should be used (default is false)")
         .build());
     
     // parse input file
