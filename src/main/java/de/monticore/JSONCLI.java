@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import de.monticore.MontiCoreNodeIdentifierHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.json.JSONMill;
@@ -56,9 +55,12 @@ public class JSONCLI {
    */
   public static void main(String[] args) {
     JSONCLI cli = new JSONCLI();
+    // TODONJ: wäre es nicht für User sinnvoller mit Log.init(); zu arbeiten?
+    // Was ist der Unterschied?
+
     // initialize logging with slf4j logging variant
     Slf4jLog.init();
-    cli.handleArgs(args);
+    cli.run(args);
   }
   
   /**
@@ -67,7 +69,7 @@ public class JSONCLI {
    * 
    * @param args The input parameters for configuring the JSON tool.
    */
-  public void handleArgs(String[] args) {
+  public void run(String[] args) {
   
     Options options = initOptions();
   
@@ -94,6 +96,9 @@ public class JSONCLI {
       if (cmd.hasOption("d")) {
         useDeveloperLogbackConfiguration();
       }
+      //TODONJ: Anstatt initialer LogBack-Config und Überschreiben hier:
+      // wie wäre es einen Else-Fall aufzubauen und da dann zu Konfigurieren
+      // Und ich sehe immer noch Default: Log.init();
       
       // parse input file, which is now available
       // (only returns if successful)
@@ -150,7 +155,8 @@ public class JSONCLI {
    * developer logback XML input stream.
    */
   public void useDeveloperLogbackConfiguration() {
-    InputStream config = JSONCLI.class.getClassLoader().getResourceAsStream("developer.logging.xml");
+    String devConfig = "developer.logging.xml";
+    InputStream config = JSONCLI.class.getClassLoader().getResourceAsStream(devConfig);
     ILoggerFactory lf = LoggerFactory.getILoggerFactory();
     if(lf instanceof LoggerContext) {
       LoggerContext context = (LoggerContext) lf;
@@ -160,7 +166,7 @@ public class JSONCLI {
       try {
         configurator.doConfigure(config);
       } catch (JoranException e) {
-        Log.error("0xA7103 Could not configure devloper level logging.");
+        Log.error("0xA7103 Could not configure logging (-d), with file " + devConfig + ".");
       }
     }
   }
@@ -181,8 +187,10 @@ public class JSONCLI {
       jsonDoc = parser.parse(model.toString());
     }
     catch (IOException | NullPointerException e) {
-      Log.error("0xA7102 Input file " + path + " not found.");
+      Log.error("0xA7102 Input file '" + path + "' not found.");
     }
+    // TODONJ: Wenn die Datei gefunden wird, aber nicht geparst werden kann. Entsteht dann auch 0xA7102?
+    // Bitte prüfen.
     
     // re-enable fail-quick to print potential errors
     Log.enableFailQuick(true);
