@@ -17,7 +17,7 @@ plugins {
 /* ========================= Versions ========================= */
 /* ============================================================ */
 
-def monticore_version = "6.3.0-SNAPSHOT"
+def monticore_version = "6.2.0"
 def junit_version = "4.12"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
