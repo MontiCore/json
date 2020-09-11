@@ -13,6 +13,30 @@ plugins {
     id 'org.unbroken-dome.test-sets' version '3.0.1'
 }
 
+// (c) https://github.com/MontiCore/monticore
+
+/* ============================================================ */
+/* ========================= Plugins ========================== */
+/* ============================================================ */
+
+plugins {
+    id 'java'
+    id "monticore" version "6.2.0"
+    id 'maven-publish'
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+    id 'org.unbroken-dome.test-sets' version '3.0.1'
+}
+
+/* ============================================================ */
+/* ========================= Project ========================== */
+/* ============================================================ */
+
+group = 'de.monticore.lang'
+version = '1.0-SNAPSHOT'
+description = 'json'
+sourceCompatibility = '1.8'
+
 /* ============================================================ */
 /* ========================= Versions ========================= */
 /* ============================================================ */
@@ -23,14 +47,6 @@ def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
 
-/* ============================================================ */
-/* ========================= Project ========================== */
-/* ============================================================ */
-
-group = 'de.monticore.lang'
-version = monticore_version
-description = 'json'
-sourceCompatibility = '1.8'
 
 /* ============================================================ */
 /* ======================= Configuration ====================== */
