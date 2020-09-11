@@ -27,8 +27,8 @@ import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
-import de.monticore.lang.json._symboltable.JSONArtifactScope;
-import de.monticore.lang.json._symboltable.JSONGlobalScope;
+import de.monticore.lang.json._symboltable.IJSONArtifactScope;
+import de.monticore.lang.json._symboltable.IJSONGlobalScope;
 import de.monticore.lang.json._symboltable.JSONSymbolTableCreatorDelegator;
 import de.monticore.lang.json._visitor.FullPropertyCalculator;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
@@ -306,8 +306,8 @@ public class JSONCLI {
    * @param ast The top JSON model element.
    * @return The artifact scope derived from the parsed AST
    */
-  public JSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
-    JSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
+  public IJSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
+    IJSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension(".json")
         .build();

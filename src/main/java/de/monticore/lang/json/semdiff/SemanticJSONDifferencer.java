@@ -135,13 +135,13 @@ public class SemanticJSONDifferencer {
   
   private List<SemanticJSONDifference> semDiffASTs(ASTJSONArray a1, ASTJSONArray a2) throws SemanticJSONDiffException {
     List<SemanticJSONDifference> result = new ArrayList<>();
-    for (int i = 0; i < a1.getJSONValuesList().size(); i++) {
-      if (i >= a2.getJSONValuesList().size()) {
+    for (int i = 0; i < a1.getJSONValueList().size(); i++) {
+      if (i >= a2.getJSONValueList().size()) {
         result.add(SemanticJSONDifference.missingProperty(a1, i));
       }
       else {
-        ASTJSONValue v1 = a1.getJSONValues(i);
-        ASTJSONValue v2 = a2.getJSONValues(i);
+        ASTJSONValue v1 = a1.getJSONValue(i);
+        ASTJSONValue v2 = a2.getJSONValue(i);
         
         List<SemanticJSONDifference> semDiffs = semDiffASTs(v1, v2);
         for (SemanticJSONDifference diff : semDiffs) {
