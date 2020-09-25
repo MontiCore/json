@@ -4,7 +4,6 @@ image: maven:3.5.4-jdk-11
 
 stages:
   - build
-  - deploy
 
 before_script:
   - chmod +x gradlew
@@ -20,11 +19,3 @@ build:
       - "target/"
       - ".gradle/"
     expire_in: 1 week
-
-
-deploy:
-  stage: deploy
-  dependencies:
-    - build
-  script:
-    - "./gradlew publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
