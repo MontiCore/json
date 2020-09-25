@@ -6,7 +6,7 @@
 
 plugins {
     id 'java'
-    id "monticore" version "6.3.0"
+    id "monticore" version "6.4.0-SNAPSHOT"
     id 'maven-publish'
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
@@ -18,7 +18,7 @@ plugins {
 /* ============================================================ */
 
 group = 'de.monticore.lang'
-version = '6.3.0'
+version = '6.4.0-SNAPSHOT'
 description = 'json'
 sourceCompatibility = '1.8'
 
@@ -26,7 +26,7 @@ sourceCompatibility = '1.8'
 /* ========================= Versions ========================= */
 /* ============================================================ */
 
-def monticore_version = "6.3.0"
+def monticore_version = "6.4.0-SNAPSHOT"
 def junit_version = "4.12"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
