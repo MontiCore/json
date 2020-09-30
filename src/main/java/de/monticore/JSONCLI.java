@@ -4,7 +4,6 @@ package de.monticore;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -13,29 +12,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
-import de.monticore.lang.json._symboltable.JSONArtifactScope;
-import de.monticore.lang.json._symboltable.JSONGlobalScope;
+import de.monticore.lang.json._symboltable.IJSONArtifactScope;
+import de.monticore.lang.json._symboltable.IJSONGlobalScope;
 import de.monticore.lang.json._symboltable.JSONSymbolTableCreatorDelegator;
 import de.monticore.lang.json._visitor.FullPropertyCalculator;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * Command line interface for the JSON language and corresponding tooling.
@@ -92,11 +91,10 @@ public class JSONCLI {
       
       // -option developer logging
       if (cmd.hasOption("d")) {
-        useDeveloperLogbackConfiguration();
+        Log.initDEBUG();
+      } else {
+        Log.init();
       }
-      //TODONJ: Anstatt initialer LogBack-Config und Überschreiben hier:
-      // wie wäre es einen Else-Fall aufzubauen und da dann zu Konfigurieren
-      // Und ich sehe immer noch Default: Log.init();
       
       // parse input file, which is now available
       // (only returns if successful)
@@ -147,27 +145,6 @@ public class JSONCLI {
   /*=================================================================*/
   /* Part 2: Executing arguments
   /*=================================================================*/
-  
-  /**
-   * Enables detailed developer logging. Loads and configures logback with the
-   * developer logback XML input stream.
-   */
-  public void useDeveloperLogbackConfiguration() {
-    String devConfig = "developer.logging.xml";
-    InputStream config = JSONCLI.class.getClassLoader().getResourceAsStream(devConfig);
-    ILoggerFactory lf = LoggerFactory.getILoggerFactory();
-    if(lf instanceof LoggerContext) {
-      LoggerContext context = (LoggerContext) lf;
-      JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(context);
-      context.reset();
-      try {
-        configurator.doConfigure(config);
-      } catch (JoranException e) {
-        Log.error("0xA7103 Could not configure logging (-d), with file " + devConfig + ".");
-      }
-    }
-  }
   
   /**
    * Parses the contents of a given file as JSON.
@@ -302,8 +279,8 @@ public class JSONCLI {
    * @param ast The top JSON model element.
    * @return The artifact scope derived from the parsed AST
    */
-  public JSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
-    JSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
+  public IJSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
+    IJSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension(".json")
         .build();
