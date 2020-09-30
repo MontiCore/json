@@ -59,7 +59,9 @@ test {
 /* ============================================================ */
 
 repositories {
-    mavenLocal()
+    if(("true").equals(getProperty('useLocalRepo'))){
+        mavenLocal()
+    }
     mavenCentral()
     maven {
         credentials.username mavenUser
