@@ -54,12 +54,10 @@ public class JSONCLI {
    * @param args The input parameters for configuring the JSON tool.
    */
   public static void main(String[] args) {
-    JSONCLI cli = new JSONCLI();
-    // TODONJ: wäre es nicht für User sinnvoller mit Log.init(); zu arbeiten?
-    // Was ist der Unterschied?
+    // initialize logging with user friendly logging 
+    Log.init();
 
-    // initialize logging with slf4j logging variant
-    Slf4jLog.init();
+    JSONCLI cli = new JSONCLI();
     cli.run(args);
   }
   
@@ -189,8 +187,6 @@ public class JSONCLI {
     catch (IOException | NullPointerException e) {
       Log.error("0xA7102 Input file '" + path + "' not found.");
     }
-    // TODONJ: Wenn die Datei gefunden wird, aber nicht geparst werden kann. Entsteht dann auch 0xA7102?
-    // Bitte prüfen.
     
     // re-enable fail-quick to print potential errors
     Log.enableFailQuick(true);
