@@ -26,7 +26,6 @@ sourceCompatibility = '1.8'
 /* ========================= Versions ========================= */
 /* ============================================================ */
 
-def monticore_version = "6.4.0-SNAPSHOT"
 def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
@@ -71,15 +70,15 @@ repositories {
 }
 
 dependencies {
-    grammar "de.monticore:monticore-grammar:$monticore_version:$grammar_classifier"
+    grammar "de.monticore:monticore-grammar:${project.properties['mc_version']}:$grammar_classifier"
     implementation "org.antlr:antlr4-runtime:4.7.1"
-    implementation "de.monticore:monticore-generator:$monticore_version"
-    implementation "de.monticore:monticore-runtime:$monticore_version"
-    implementation "de.monticore:monticore-grammar:$monticore_version"
+    implementation "de.monticore:monticore-generator:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     testImplementation "junit:junit:$junit_version"
-    compileOnly "de.monticore:monticore-grammar:$monticore_version"
+    compileOnly "de.monticore:monticore-grammar:${project.properties['mc_version']}"
 }
 
 /* ============================================================ */
