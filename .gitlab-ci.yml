@@ -35,7 +35,7 @@ deploy:
 checkMDLinks:
   stage: check
   dependencies:
-    - test
+    - build
   script:
     - "./check/downloadlinkchecker.sh $secibuildtoken"
     - "url=https://git.rwth-aachen.de/monticore/languages/json/-/blob/develop/src/main/grammars/de/monticore/lang/json.md"
