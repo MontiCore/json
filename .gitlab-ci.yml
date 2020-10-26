@@ -5,9 +5,12 @@ image: maven:3.5.4-jdk-11
 stages:
   - build
   - deploy
+  - check
 
 before_script:
   - chmod +x gradlew
+  - chmod +x check/downloadlinkchecker.sh
+  - chmod +x check/mdlinkcheck.sh
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 
@@ -28,3 +31,14 @@ deploy:
     - build
   script:
     - "./gradlew publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - test
+  script:
+    - "./check/downloadlinkchecker.sh $secibuildtoken"
+    - "url=https://git.rwth-aachen.de/monticore/languages/json/-/blob/develop/src/main/grammars/de/monticore/lang/json.md"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+  only:
+    - dev
