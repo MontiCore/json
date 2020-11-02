@@ -37,8 +37,10 @@ checkMDLinks:
   dependencies:
     - build
   script:
-    - "./check/downloadlinkchecker.sh $secibuildtoken"
-    - "url=https://git.rwth-aachen.de/monticore/languages/json/-/blob/develop/src/main/grammars/de/monticore/lang/json.md"
-    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/languages/json/-/tree/develop"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - develop
