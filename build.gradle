@@ -87,7 +87,7 @@ dependencies {
 task generateJSON(type: MCTask) {
     grammar = file "$projectDir/$grammarDir/de/monticore/lang/JSON.mc4"
     outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    handcodedPath file("$projectDir/src/main/java")
+    handcodedPath "$projectDir/src/main/java"
     def uptoDate = incCheck("de/monticore/lang/JSON.mc4")
     outputs.upToDateWhen { uptoDate }
 }
