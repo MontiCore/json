@@ -78,6 +78,7 @@ dependencies {
     implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
+    implementation 'org.apache.commons:commons-lang3:3.0'
     testImplementation "junit:junit:$junit_version"
     compileOnly "de.monticore:monticore-grammar:${project.properties['mc_version']}"
 }
