@@ -14,7 +14,7 @@
 					"NullValue": null,
 					"ISO": "ISO 2694:1243",
 					"Definition": {
-						"1.1def": "A defintion.",
+						"11def": "A defintion.",
 						"Formats": [
 							"JSON",
 							{
