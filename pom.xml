@@ -241,6 +241,13 @@
       <version>${se.commons.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>XML</artifactId>
+      <version>${monticore.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- .. Test Libraries ............................................... -->
     <dependency>
       <groupId>junit</groupId>
