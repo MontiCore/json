@@ -104,7 +104,8 @@ compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.deprecation = false
-	options.warnings = false
+    options.warnings = false
+    options.headerOutputDirectory.convention(null)
 }
 
 // build sources jar in addition
@@ -165,4 +166,8 @@ publishing {
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
     }
+}
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
 }
