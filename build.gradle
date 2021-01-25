@@ -70,11 +70,8 @@ repositories {
 }
 
 dependencies {
-    grammar ("de.monticore:monticore-grammar:$mc_version")
-            {
-      capabilities {
-        requireCapability("$group:monticore-grammar-grammars")
-      }
+    grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
+        requireCapability("$group:monticore-grammar-grammars") }
     }
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "org.antlr:antlr4-runtime:4.7.1"
@@ -175,3 +172,5 @@ publishing {
 task buildAll(type: GradleBuild) {
   tasks = [ 'build' ]
 }
+
+defaultTasks 'build'
