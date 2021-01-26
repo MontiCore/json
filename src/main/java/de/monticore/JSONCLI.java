@@ -280,15 +280,11 @@ public class JSONCLI {
    * @return The artifact scope derived from the parsed AST
    */
   public IJSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
-    IJSONGlobalScope globalScope = JSONMill.jSONGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension(".json")
-        .build();
+    IJSONGlobalScope globalScope = JSONMill.globalScope();
+    globalScope.setFileExt(".json");
 
-    JSONSymbolTableCreatorDelegator symbolTable = JSONMill.jSONSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-    
+    JSONSymbolTableCreatorDelegator symbolTable = JSONMill.jSONSymbolTableCreatorDelegator();
+
     return symbolTable.createFromAST(ast);
   }
 

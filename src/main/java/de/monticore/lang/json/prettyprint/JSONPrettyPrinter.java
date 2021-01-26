@@ -1,21 +1,38 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json.prettyprint;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.*;
 import de.monticore.lang.json._ast.ASTSignedBasicDoubleLiteral;
-import de.monticore.lang.json._visitor.JSONVisitor;
+import de.monticore.lang.json._visitor.JSONHandler;
+import de.monticore.lang.json._visitor.JSONTraverser;
+import de.monticore.lang.json._visitor.JSONVisitor2;
 import de.monticore.literals.mccommonliterals._ast.*;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 
-public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor {
-  
-  private LineState ls;
+public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor2, MCCommonLiteralsVisitor2, JSONHandler {
+  private JSONTraverser traverser;
   
   /** Default Constructor. */
   public JSONPrettyPrinter() {
-    
+    this.traverser= JSONMill.traverser();
+    this.traverser.add4JSON(this);
+    this.traverser.add4MCCommonLiterals(this);
+    this.traverser.setJSONHandler(this);
   }
-  
+
+  public JSONTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(JSONTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   /**
    * Serializes and pretty-prints the JSON-AST.
    * 
@@ -24,8 +41,7 @@ public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor {
    */
   public String printJSONDocument(ASTJSONDocument jsonDocument) {
     clearBuffer();
-    ls = LineState.OPEN_BLOCK;
-    getRealThis().handle(jsonDocument);
+    getTraverser().handle(jsonDocument);
     return getContent();
   }
 
@@ -37,159 +53,109 @@ public class JSONPrettyPrinter extends IndentPrinter implements JSONVisitor {
    */
   public String printJSONNumber(ASTJSONNumber jsonNumber) {
     clearBuffer();
-    ls = LineState.OPEN_BLOCK;
-    getRealThis().handle(jsonNumber);
+    getTraverser().handle(jsonNumber);
     return getContent();
   }
   
   @Override
-  public void visit(ASTJSONArray node) {
-    smartLineBreak();
+  public void handle(ASTJSONArray node) {
     println("[");
     indent();
-    ls = LineState.OPEN_BLOCK;
-  }
-  
-  @Override
-  public void endVisit(ASTJSONArray node) {
-    ls = LineState.CLOSE_BLOCK;
-    smartLineBreak();
+    for (int i = 0; i < node.getJSONValueList().size(); i++) {
+      node.getJSONValue(i).accept(getTraverser());
+      if(i+1<node.getJSONValueList().size()){
+        println(", ");
+      }else{
+        println();
+      }
+    }
     unindent();
     print("]");
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTJSONBoolean node) {
-    smartLineBreak();
     print(node.getBooleanLiteral().getValue());
   }
   
   @Override
-  public void endVisit(ASTJSONBoolean node) {
-    ls = LineState.INLINE;
-  }
-  
-  @Override
   public void visit(ASTJSONNull node) {
-    smartLineBreak();
     print("null");
   }
   
   @Override
-  public void endVisit(ASTJSONNull node) {
-    ls = LineState.INLINE;
-  }
-  
-  @Override
-  public void visit(ASTJSONObject node) {
-    smartLineBreak();
+  public void handle(ASTJSONObject node) {
     println("{");
     indent();
-    ls = LineState.OPEN_BLOCK;
-  }
-  
-  @Override
-  public void endVisit(ASTJSONObject node) {
-    ls = LineState.CLOSE_BLOCK;
-    smartLineBreak();
+    for (int i = 0; i < node.getPropList().size(); i++) {
+      node.getProp(i).accept(getTraverser());
+      if(i+1<node.getPropList().size()){
+        println(", ");
+      }else{
+        println();
+      }
+    }
     unindent();
     print("}");
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTJSONProperty node) {
-    smartLineBreak();
     print("\"" + node.getKey() + "\": ");
-    ls = LineState.OPEN_BLOCK;
-  }
-  
-  @Override
-  public void endVisit(ASTJSONProperty node) {
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTSignedBasicDoubleLiteral node) {
-    smartLineBreak();
     print(node.getSource());
-  }
-  
-  @Override
-  public void endVisit(ASTSignedBasicDoubleLiteral node) {
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTSignedBasicFloatLiteral node) {
-    smartLineBreak();
     print(node.getSource());
-  }
-  
-  @Override
-  public void endVisit(ASTSignedBasicFloatLiteral node) {
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTSignedBasicLongLiteral node) {
-    smartLineBreak();
     print(node.getSource());
-  }
-  
-  @Override
-  public void endVisit(ASTSignedBasicLongLiteral node) {
-    ls = LineState.INLINE;
   }
   
   @Override
   public void visit(ASTSignedNatLiteral node) {
-    smartLineBreak();
     print(node.getSource());
   }
   
   @Override
-  public void endVisit(ASTSignedNatLiteral node) {
-    ls = LineState.INLINE;
-  }
-  
-  @Override
   public void visit(ASTStringLiteral node) {
-    smartLineBreak();
     print("\"" + node.getSource() + "\"");
   }
-  
+
   @Override
-  public void endVisit(ASTStringLiteral node) {
-    ls = LineState.INLINE;
+  public void visit(ISymbol node) {
+    //Nothing
   }
-  
-  /**
-   * Prints custom line breaks with respect to the printed brackets from arrays
-   * and properties. Adds a comma for inline collections.
-   */
-  private void smartLineBreak() {
-    switch (ls) {
-      case INLINE:
-        println(",");
-        break;
-      case CLOSE_BLOCK:
-        println();
-        break;
-      case OPEN_BLOCK:
-        // no line break
-        break;
-      default:
-        break;
-    }
+
+  @Override
+  public void endVisit(ISymbol node) {
+    //Nothing
   }
-  
-  /**
-   * Enumeration to track the line state in JSON with respect to the printed
-   * brackets from arrays and properties.
-   */
-  public enum LineState {
-    INLINE, OPEN_BLOCK, CLOSE_BLOCK
+
+  @Override
+  public void visit(IScope node) {
+    //Nothing
+  }
+
+  @Override
+  public void endVisit(IScope node) {
+    //Nothing
+  }
+
+  @Override
+  public void visit(ASTNode node) {
+    //Nothing
+  }
+
+  @Override
+  public void endVisit(ASTNode node) {
+    //Nothing
   }
 }

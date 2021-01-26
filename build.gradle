@@ -6,7 +6,7 @@
 
 plugins {
     id 'java'
-    id "monticore" version "6.4.0-SNAPSHOT"
+    id "monticore" version "$mc_version"
     id 'maven-publish'
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
@@ -18,7 +18,6 @@ plugins {
 /* ============================================================ */
 
 group = 'de.monticore.lang'
-version = '6.4.0-SNAPSHOT'
 description = 'json'
 sourceCompatibility = '1.8'
 
@@ -26,11 +25,11 @@ sourceCompatibility = '1.8'
 /* ========================= Versions ========================= */
 /* ============================================================ */
 
-def monticore_version = "6.4.0-SNAPSHOT"
-def junit_version = "4.12"
+def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
+def se_commons_version = "1.7.11-SNAPSHOT"
 
 
 /* ============================================================ */
@@ -71,15 +70,19 @@ repositories {
 }
 
 dependencies {
-    grammar "de.monticore:monticore-grammar:$monticore_version:$grammar_classifier"
+    grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
+        requireCapability("$group:monticore-grammar-grammars") }
+    }
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "org.antlr:antlr4-runtime:4.7.1"
-    implementation "de.monticore:monticore-generator:$monticore_version"
-    implementation "de.monticore:monticore-runtime:$monticore_version"
-    implementation "de.monticore:monticore-grammar:$monticore_version"
+    implementation "de.monticore:monticore-generator:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
+    implementation 'org.apache.commons:commons-lang3:3.0'
+  //  testImplementation "de.monticore.lang:XML:${project.properties['mc_version']}"
     testImplementation "junit:junit:$junit_version"
-    compileOnly "de.monticore:monticore-grammar:$monticore_version"
 }
 
 /* ============================================================ */
@@ -89,7 +92,7 @@ dependencies {
 task generateJSON(type: MCTask) {
     grammar = file "$projectDir/$grammarDir/de/monticore/lang/JSON.mc4"
     outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    handcodedPath file("$projectDir/src/main/java")
+    handcodedPath "$projectDir/src/main/java"
     def uptoDate = incCheck("de/monticore/lang/JSON.mc4")
     outputs.upToDateWhen { uptoDate }
 }
@@ -102,7 +105,8 @@ compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.deprecation = false
-	options.warnings = false
+    options.warnings = false
+    options.headerOutputDirectory.convention(null)
 }
 
 // build sources jar in addition
@@ -164,3 +168,9 @@ publishing {
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
     }
 }
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+defaultTasks 'build'

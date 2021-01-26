@@ -99,7 +99,7 @@ grammar JSON extends de.monticore.literals.MCCommonLiterals {
       return (isNegative()?"-":"") + getDecimalDoublePointLiteral();
     }
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
   
