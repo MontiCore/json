@@ -25,6 +25,7 @@ sourceCompatibility = '1.8'
 /* ========================= Versions ========================= */
 /* ============================================================ */
 
+def xml_version = "6.6.0"
 def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
@@ -81,7 +82,7 @@ dependencies {
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     implementation 'org.apache.commons:commons-lang3:3.0'
-  //  testImplementation "de.monticore.lang:XML:${project.properties['mc_version']}"
+    testImplementation "de.monticore.lang:XML:$xml_version"
     testImplementation "junit:junit:$junit_version"
 }
 
