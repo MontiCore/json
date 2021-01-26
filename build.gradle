@@ -81,7 +81,7 @@ dependencies {
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     implementation 'org.apache.commons:commons-lang3:3.0'
-    testImplementation "de.monticore.lang:XML:${project.properties['mc_version']}"
+  //  testImplementation "de.monticore.lang:XML:${project.properties['mc_version']}"
     testImplementation "junit:junit:$junit_version"
 }
 
