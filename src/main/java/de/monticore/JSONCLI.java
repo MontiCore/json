@@ -53,6 +53,9 @@ public class JSONCLI {
    * @param args The input parameters for configuring the JSON tool.
    */
   public static void main(String[] args) {
+    // initialize logging with user friendly logging 
+    Log.init();
+
     JSONCLI cli = new JSONCLI();
     cli.run(args);
   }
