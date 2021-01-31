@@ -158,7 +158,6 @@ publishing {
         }
         cli(MavenPublication) {
             artifactId = "$project.name"
-            artifact shadowJar
         }
     }
     repositories.maven {
