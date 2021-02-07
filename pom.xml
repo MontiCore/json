@@ -15,7 +15,6 @@
 
     <monticore.version>6.7.0-SNAPSHOT</monticore.version>
     
-    <xml.version>6.6.0</xml.version>
     <guava.version>18.0</guava.version>
     <jsr305.version>3.0.0</jsr305.version>
     <junit.version>4.13.1</junit.version>
@@ -240,13 +239,6 @@
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
       <version>${se.commons.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang</groupId>
-      <artifactId>XML</artifactId>
-      <version>${xml.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <!-- .. Test Libraries ............................................... -->
