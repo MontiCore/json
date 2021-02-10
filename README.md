@@ -25,6 +25,7 @@ is beyond this grammar but can be applied to the AST defined here.
 
 * [JSON grammar](src/main/grammars/de/monticore/lang/JSON.mc4)
 
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
