@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
+import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
@@ -30,12 +31,15 @@ public class TestFullPropertyCalculator {
     assertFalse(parser.hasErrors());
     assertTrue(jsonDoc.isPresent());
     
+    JSONTraverser traverser = JSONMill.traverser();
     FullPropertyCalculator fpc = new FullPropertyCalculator();
+    traverser.add4JSON(fpc);
+    jsonDoc.get().accept(traverser);
     List<String> checksum = Arrays.asList(new String[] { 
         "Alice", "name", "Bob", "name", "friends", 
         "Alice", "Bob", "Alice", "Charlie" });
     
-    List<String> propList = fpc.getAllPropertyNames(jsonDoc.get());
+    List<String> propList = fpc.getAllPropertyNames();
     assertTrue(propList.equals(checksum));
   }
   
@@ -48,7 +52,10 @@ public class TestFullPropertyCalculator {
     assertFalse(parser.hasErrors());
     assertTrue(jsonDoc.isPresent());
     
+    JSONTraverser traverser = JSONMill.traverser();
     FullPropertyCalculator fpc = new FullPropertyCalculator();
+    traverser.add4JSON(fpc);
+    jsonDoc.get().accept(traverser);
     Map<String, Integer> checksum = new HashMap<String, Integer>();
     checksum.put("Alice", 3);
     checksum.put("name", 2);
@@ -56,7 +63,7 @@ public class TestFullPropertyCalculator {
     checksum.put("friends", 1);
     checksum.put("Charlie", 1);
     
-    Map<String, Integer> propMap = fpc.getAllPropertyNamesCounted(jsonDoc.get());
+    Map<String, Integer> propMap = fpc.getAllPropertyNamesCounted();
     propMap.equals(checksum);
   }
   

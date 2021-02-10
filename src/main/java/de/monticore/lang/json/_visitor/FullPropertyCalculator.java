@@ -14,7 +14,7 @@ import de.monticore.lang.json._ast.ASTJSONProperty;
  * containing the property names and as map containing the names as well as
  * their number of occurrence.
  */
-public class FullPropertyCalculator implements JSONVisitor {
+public class FullPropertyCalculator implements JSONVisitor2 {
   private List<String> properties = new ArrayList<String>();
   private Map<String, Integer> propertyMap = new HashMap<String, Integer>();
   
@@ -34,13 +34,9 @@ public class FullPropertyCalculator implements JSONVisitor {
   /**
    * Calculates all JSONProperty names and returns these as a list.
    * 
-   * @param node An arbitrary node of the JSON-AST
-   * @return The list of property names in the JSON-AST
+   * @return The list of property names in the JSON AST
    */
-  public List<String> getAllPropertyNames(ASTJSONNode node) {
-    if (properties.isEmpty()) {
-      node.accept(getRealThis());
-    }
+  public List<String> getAllPropertyNames() {
     return properties;
   }
   
@@ -48,13 +44,9 @@ public class FullPropertyCalculator implements JSONVisitor {
    * Calculates all JSONProperty names and returns these as a map with their
    * number of occurrence.
    * 
-   * @param node An arbitrary node of the JSON-AST
-   * @return The list of property names in the JSON-AST
+   * @return The list of property names in the JSON AST
    */
-  public Map<String, Integer> getAllPropertyNamesCounted(ASTJSONNode node) {
-    if (propertyMap.isEmpty()) {
-      node.accept(getRealThis());
-    }
+  public Map<String, Integer> getAllPropertyNamesCounted() {
     return propertyMap;
   }
   
