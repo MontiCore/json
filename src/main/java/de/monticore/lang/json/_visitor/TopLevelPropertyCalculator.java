@@ -11,8 +11,19 @@ import de.monticore.lang.json._ast.ASTJSONProperty;
  * Traverses the JSON-AST shallowly and finds all top-level JSONProperties.
  * Stores these as list containing the corresponding property names.
  */
-public class TopLevelPropertyCalculator implements JSONVisitor {
+public class TopLevelPropertyCalculator implements JSONVisitor2, JSONHandler {
   private List<String> properties = new ArrayList<String>();
+  protected JSONTraverser traverser;
+  
+  @Override
+  public JSONTraverser getTraverser () {
+    return traverser;
+  }
+  
+  @Override
+  public void setTraverser (JSONTraverser traverser) {
+    this.traverser = traverser;
+  }
   
   @Override
   public void visit(ASTJSONProperty node) {
@@ -29,13 +40,9 @@ public class TopLevelPropertyCalculator implements JSONVisitor {
   /**
    * Calculates all top-level JSONProperty names and returns these as a list.
    * 
-   * @param node An arbitrary node of the JSON-AST
-   * @return The list of property names in the JSON-AST
+   * @return The list of property names in the JSON AST
    */
-  public List<String> getTopLevelPropertyNames(ASTJSONNode node) {
-    if (properties.isEmpty()) {
-      node.accept(getRealThis());
-    }
+  public List<String> getTopLevelPropertyNames() {
     return properties;
   }
   

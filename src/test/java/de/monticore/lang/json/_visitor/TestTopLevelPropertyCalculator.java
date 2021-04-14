@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
+import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
@@ -28,10 +29,14 @@ public class TestTopLevelPropertyCalculator {
     assertFalse(parser.hasErrors());
     assertTrue(jsonDoc.isPresent());
     
+    JSONTraverser traverser = JSONMill.traverser();
     TopLevelPropertyCalculator tlpc = new TopLevelPropertyCalculator();
+    traverser.add4JSON(tlpc);
+    traverser.setJSONHandler(tlpc);
+    jsonDoc.get().accept(traverser);
     List<String> checksum = Arrays.asList(new String[] { "Alice", "Bob" });
     
-    List<String> propList = tlpc.getTopLevelPropertyNames(jsonDoc.get());
+    List<String> propList = tlpc.getTopLevelPropertyNames();
     assertTrue(propList.equals(checksum));
   }
   

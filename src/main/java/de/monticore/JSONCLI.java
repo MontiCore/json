@@ -29,8 +29,9 @@ import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
 import de.monticore.lang.json._symboltable.IJSONArtifactScope;
 import de.monticore.lang.json._symboltable.IJSONGlobalScope;
-import de.monticore.lang.json._symboltable.JSONSymbolTableCreatorDelegator;
+import de.monticore.lang.json._symboltable.JSONScopesGenitorDelegator;
 import de.monticore.lang.json._visitor.FullPropertyCalculator;
+import de.monticore.lang.json._visitor.JSONTraverser;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -217,8 +218,11 @@ public class JSONCLI {
    * @return A String containing all property names
    */
   private String allPropertyNames(ASTJSONDocument jsonDoc) {
+    JSONTraverser traverser = JSONMill.traverser();
     FullPropertyCalculator fpc = new FullPropertyCalculator();
-    List<String> properties = fpc.getAllPropertyNames(jsonDoc);
+    traverser.add4JSON(fpc);
+    jsonDoc.accept(traverser);
+    List<String> properties = fpc.getAllPropertyNames();
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
       content += properties.get(i);
@@ -238,8 +242,11 @@ public class JSONCLI {
    *         occurrence
    */
   public String countedPropertyNames(ASTJSONDocument jsonDoc) {
+    JSONTraverser traverser = JSONMill.traverser();
     FullPropertyCalculator fpc = new FullPropertyCalculator();
-    Map<String, Integer> properties = fpc.getAllPropertyNamesCounted(jsonDoc);
+    traverser.add4JSON(fpc);
+    jsonDoc.accept(traverser);
+    Map<String, Integer> properties = fpc.getAllPropertyNamesCounted();
     Iterator<Entry<String, Integer>> it = properties.entrySet().iterator();
     String content = "";
     while (it.hasNext()) {
@@ -261,8 +268,12 @@ public class JSONCLI {
    * @return A String containing all top-level property names
    */
   public String topLevelPropertyNames(ASTJSONDocument jsonDoc) {
+    JSONTraverser traverser = JSONMill.traverser();
     TopLevelPropertyCalculator tlpc = new TopLevelPropertyCalculator();
-    List<String> properties = tlpc.getTopLevelPropertyNames(jsonDoc);
+    traverser.add4JSON(tlpc);
+    traverser.setJSONHandler(tlpc);
+    jsonDoc.accept(traverser);
+    List<String> properties = tlpc.getTopLevelPropertyNames();
     String content = "";
     for (int i = 0; i < properties.size(); i++) {
       content += properties.get(i);
@@ -283,7 +294,7 @@ public class JSONCLI {
     IJSONGlobalScope globalScope = JSONMill.globalScope();
     globalScope.setFileExt(".json");
 
-    JSONSymbolTableCreatorDelegator symbolTable = JSONMill.jSONSymbolTableCreatorDelegator();
+    JSONScopesGenitorDelegator symbolTable = JSONMill.scopesGenitorDelegator();
 
     return symbolTable.createFromAST(ast);
   }
