@@ -5,7 +5,8 @@ package de.monticore.lang;
  * Adaptations -- if any -- are conservative. */
 
 /**
- * This grammar represents a slight superset to the official JSON standard. 
+ * This grammar describes the JSON language, but it is 
+ * a slight superset to the official JSON standard. 
  * It is intended for parsing JSON-compliant artifacts. Further well-formedness
  * checks are not included, because we assume to parse correctly produced JSON 
  * documents only.
