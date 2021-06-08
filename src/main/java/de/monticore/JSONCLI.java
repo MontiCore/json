@@ -331,8 +331,11 @@ public class JSONCLI {
     IndentPrinter printer = new IndentPrinter();
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
+    JSONTraverser traverser = JSONMill.traverser();
     JSON2OD json2od = new JSON2OD(printer, repository);
-    
+    traverser.add4JSON(json2od);
+    traverser.setJSONHandler(json2od);
+
     // print object diagram
     String od = json2od.printObjectDiagram((new File(modelName)).getName(), jsonDoc);
     print(od, file);
