@@ -1,7 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # JSON
 
-
 The MontiCore language JSON defines the parsing and processing infrastructure 
 for JSON artifacts.
 The language component (and full language) is part of the MontiCore language 
