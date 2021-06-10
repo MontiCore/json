@@ -22,7 +22,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
