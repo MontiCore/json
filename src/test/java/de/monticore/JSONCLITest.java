@@ -31,5 +31,11 @@ public class JSONCLITest {
     assertFalse(parser.hasErrors());
     assertTrue(jsonDoc.isPresent());
   }
+
+  @Test
+  public void testSyntaxObjects() throws IOException {
+    String[] args = { "-i", INPUT, "-so" };
+    JSONCLI.main(args);
+  }
   
 }
