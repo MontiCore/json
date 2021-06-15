@@ -135,6 +135,7 @@ shadowJar {
         attributes "Main-Class": "de.monticore.${archiveBaseName.get().capitalize()}CLI"
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveClassifier = "cli"
     minimize()
 }
 
@@ -153,6 +154,7 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
             artifact grammarJar
+            artifact shadowJar
         }
         cli(MavenPublication) {
             artifactId = "$project.name"
