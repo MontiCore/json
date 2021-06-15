@@ -156,9 +156,6 @@ publishing {
             artifact grammarJar
             artifact shadowJar
         }
-        cli(MavenPublication) {
-            artifactId = "$project.name"
-        }
     }
     repositories.maven {
         credentials.username mavenUser
