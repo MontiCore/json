@@ -1,28 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore;
+package de.monticore.lang.json;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.lang3.StringUtils;
-
+import de.monticore.MontiCoreNodeIdentifierHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
@@ -35,186 +15,192 @@ import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
 
-/**
- * @deprecated Use {@link de.monticore.lang.json.JSONCLI} instead.
- * Command line interface for the JSON language and corresponding tooling.
- * Defines, handles, and executes the corresponding command line options and
- * arguments, such as --help
- */
-@Deprecated
-public class JSONCLI {
-  
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public class JSONCLI extends JSONCLITOP {
+
   /*=================================================================*/
   /* Part 1: Handling the arguments and options
   /*=================================================================*/
-  
-  /**
-   * Main method that is called from command line and runs the JSON tool.
-   * 
-   * @param args The input parameters for configuring the JSON tool.
-   */
-  public static void main(String[] args) {
-    // initialize logging with user friendly logging 
-    Log.init();
 
-    JSONCLI cli = new JSONCLI();
-    cli.run(args);
-  }
-  
+
+  // names of the reports:
+  public static final String REPORT_ALL_PROPS = "allProperties.txt";
+  public static final String REPORT_COUNTED_PROPS = "countedProperties.txt";
+  public static final String REPORT_TOPLEVEL_PROPS = "topLevelProperties.txt";
+
   /**
    * Processes user input from command line and delegates to the corresponding
    * tools.
-   * 
+   *
    * @param args The input parameters for configuring the JSON tool.
    */
+  @Override
   public void run(String[] args) {
-  
+
     Options options = initOptions();
-  
+
     try {
       // create CLI parser and parse input options from command line
       CommandLineParser cliparser = new DefaultParser();
       CommandLine cmd = cliparser.parse(options, args);
-      
+
       // help: when --help
       if (cmd.hasOption("h")) {
         printHelp(options);
         // do not continue, when help is printed
         return;
       }
-  
+
       // if -i input is missing: also print help and stop
       if (!cmd.hasOption("i")) {
         printHelp(options);
         // do not continue, when help is printed
         return;
       }
-      
+
       // -option developer logging
       if (cmd.hasOption("d")) {
         Log.initDEBUG();
       } else {
         Log.init();
       }
-      
+
       // parse input file, which is now available
       // (only returns if successful)
-      ASTJSONDocument jsonDoc = parseFile(cmd.getOptionValue("i"));
-      
+      ASTJSONDocument jsonDoc = parse(cmd.getOptionValue("i"));
+
       // even though JSON defines no symbols, we create the symbol table as
       // MontiCore always expects the symbol table to exist and further tooling
       // such as json2od requires it to compute
       createSymbolTable(jsonDoc);
-      
+
       // -option pretty print
       if (cmd.hasOption("pp")) {
         String path = cmd.getOptionValue("pp", StringUtils.EMPTY);
         prettyPrint(jsonDoc, path);
       }
-      
+
       // -option reports
       if (cmd.hasOption("r")) {
         String path = cmd.getOptionValue("r", StringUtils.EMPTY);
         report(jsonDoc, path);
       }
-      
+
       // -option syntax objects
       if (cmd.hasOption("so")) {
         String path = cmd.getOptionValue("so", StringUtils.EMPTY);
         json2od(jsonDoc, getModelNameFromFile(cmd.getOptionValue("i")), path);
       }
-      
+
     } catch (ParseException e) {
       // ann unexpected error from the apache CLI parser:
       Log.error("0xA7101 Could not process CLI parameters: " + e.getMessage());
     }
-    
+
   }
-  
-  /**
-   * Processes user input from command line and delegates to the corresponding
-   * tools.
-   *
-   * @param options The input parameters and options.
-   */
-  public void printHelp(Options options) {
-    HelpFormatter formatter = new HelpFormatter();
-    formatter.setWidth(80);
-    formatter.printHelp("JSONCLI", options);
-  }
-  
+
+
   /*=================================================================*/
   /* Part 2: Executing arguments
   /*=================================================================*/
-  
-  /**
-   * Parses the contents of a given file as JSON.
-   * 
-   * @param path The path to the JSON-file as String
-   */
-  public ASTJSONDocument parseFile(String path) {
-    Optional<ASTJSONDocument> jsonDoc = Optional.empty();
-    
-    // disable fail-quick to find all parsing errors
-    Log.enableFailQuick(false);
-    try {
-      Path model = Paths.get(path);
-      JSONParser parser = new JSONParser();
-      jsonDoc = parser.parse(model.toString());
-    }
-    catch (IOException | NullPointerException e) {
-      Log.error("0xA7102 Input file '" + path + "' not found.");
-    }
-    
-    // re-enable fail-quick to print potential errors
-    Log.enableFailQuick(true);
-    return jsonDoc.get();
-  }
-  
+
   /**
    * Prints the contents of the JSON-AST to stdout or a specified file.
-   * 
+   *
    * @param jsonDoc The JSON-AST to be pretty printed
-   * @param file The target file name for printing the JSON artifact. If empty,
-   *          the content is printed to stdout instead
+   * @param file    The target file name for printing the JSON artifact. If empty,
+   *                the content is printed to stdout instead
    */
+  @Override
   public void prettyPrint(ASTJSONDocument jsonDoc, String file) {
     // pretty print AST
     JSONPrettyPrinter pp = new JSONPrettyPrinter();
     String json = pp.printJSONDocument(jsonDoc);
     print(json, file);
   }
-  
+
   /**
    * Creates reports for the JSON-AST to stdout or a specified file.
-   * 
-   * @param jsonDoc The JSON-AST for which the reports are created
+   *
+   * @param ast  The JSON-AST for which the reports are created
    * @param path The target path of the directory for the report artifacts. If
-   *          empty, the contents are printed to stdout instead
+   *             empty, the contents are printed to stdout instead
    */
-  public void report(ASTJSONDocument jsonDoc, String path) {
+  @Override
+  public void report(ASTJSONDocument ast, String path) {
     // calculate and print reports
-    String aProps = allPropertyNames(jsonDoc);
+    String aProps = allPropertyNames(ast);
     print(aProps, path + "/" + REPORT_ALL_PROPS);
 
-    String cProps = countedPropertyNames(jsonDoc);
+    String cProps = countedPropertyNames(ast);
     print(cProps, path + "/" + REPORT_COUNTED_PROPS);
 
-    String tlProps = topLevelPropertyNames(jsonDoc);
+    String tlProps = topLevelPropertyNames(ast);
     print(tlProps, path + "/" + REPORT_TOPLEVEL_PROPS);
   }
-  
-  // names of the reports:
-  public static final String REPORT_ALL_PROPS = "allProperties.txt";
-  public static final String REPORT_COUNTED_PROPS = "countedProperties.txt";
-  public static final String REPORT_TOPLEVEL_PROPS = "topLevelProperties.txt";
-  
-  /*=================================================================*/
+
+
+  /**
+   * Extracts the model name from a given file name. The model name corresponds
+   * to the unqualified file name without file extension.
+   *
+   * @param file The path to the input file
+   * @return The extracted model name
+   */
+  public String getModelNameFromFile(String file) {
+    String modelName = new File(file).getName();
+    // cut file extension if present
+    if (modelName.length() > 0) {
+      int lastIndex = modelName.lastIndexOf(".");
+      if (lastIndex != -1) {
+        modelName = modelName.substring(0, lastIndex);
+      }
+    }
+    return modelName;
+  }
+
+
+
+  /**
+   * Parses the contents of a given file as JSON.
+   *
+   * @param path The path to the JSON-file as String
+   */
+  @Override
+  public ASTJSONDocument parse(String path) {
+    Optional<ASTJSONDocument> jsonDoc = Optional.empty();
+
+    // disable fail-quick to find all parsing errors
+    Log.enableFailQuick(false);
+    try {
+      Path model = Paths.get(path);
+      JSONParser parser = new JSONParser();
+      jsonDoc = parser.parse(model.toString());
+    } catch (IOException | NullPointerException e) {
+      Log.error("0xA7102 Input file '" + path + "' not found.");
+    }
+
+    // re-enable fail-quick to print potential errors
+    Log.enableFailQuick(true);
+    return jsonDoc.get();
+  }
+
 
   /**
    * Calculates all property names in the JSON-AST as ordered list.
-   * 
+   *
    * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all property names
    */
@@ -233,14 +219,14 @@ public class JSONCLI {
     }
     return content;
   }
-  
+
   /**
    * Calculates all property names in the JSON-AST as a set with additional
    * number of their respective occurrence.
-   * 
+   *
    * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all property names with the number of
-   *         occurrence
+   * occurrence
    */
   public String countedPropertyNames(ASTJSONDocument jsonDoc) {
     JSONTraverser traverser = JSONMill.traverser();
@@ -248,10 +234,10 @@ public class JSONCLI {
     traverser.add4JSON(fpc);
     jsonDoc.accept(traverser);
     Map<String, Integer> properties = fpc.getAllPropertyNamesCounted();
-    Iterator<Entry<String, Integer>> it = properties.entrySet().iterator();
+    Iterator<Map.Entry<String, Integer>> it = properties.entrySet().iterator();
     String content = "";
     while (it.hasNext()) {
-      Entry<String, Integer> entry = it.next();
+      Map.Entry<String, Integer> entry = it.next();
       content += entry.getKey();
       content += " (" + entry.getValue() + ")";
       if (it.hasNext()) {
@@ -260,11 +246,11 @@ public class JSONCLI {
     }
     return content;
   }
-  
+
   /**
    * Calculates all top-level property names in the JSON-AST as ordered list.
    * Thus, only traverses the AST shallowly.
-   * 
+   *
    * @param jsonDoc The JSON-AST to traverse
    * @return A String containing all top-level property names
    */
@@ -284,13 +270,14 @@ public class JSONCLI {
     }
     return content;
   }
-  
+
   /**
    * Creates the symbol table from the parsed AST.
    *
    * @param ast The top JSON model element.
    * @return The artifact scope derived from the parsed AST
    */
+  @Override
   public IJSONArtifactScope createSymbolTable(ASTJSONDocument ast) {
     IJSONGlobalScope globalScope = JSONMill.globalScope();
     globalScope.setFileExt(".json");
@@ -301,31 +288,12 @@ public class JSONCLI {
   }
 
   /**
-   * Extracts the model name from a given file name. The model name corresponds
-   * to the unqualified file name without file extension.
-   * 
-   * @param file The path to the input file
-   * @return The extracted model name
-   */
-  public String getModelNameFromFile(String file) {
-    String modelName = new File(file).getName();
-    // cut file extension if present
-    if (modelName.length() > 0) {
-      int lastIndex = modelName.lastIndexOf(".");
-      if (lastIndex != -1) {
-        modelName = modelName.substring(0, lastIndex);
-      }
-    }
-    return modelName;
-  }
-
-  /**
    * Creates an object diagram for the JSON-AST to stdout or a specified file.
-   * 
-   * @param jsonDoc The JSON-AST for which the object diagram is created
+   *
+   * @param jsonDoc   The JSON-AST for which the object diagram is created
    * @param modelName The derived model name for the JSON-AST
-   * @param file The target file name for printing the object diagram. If empty,
-   *          the content is printed to stdout instead
+   * @param file      The target file name for printing the object diagram. If empty,
+   *                  the content is printed to stdout instead
    */
   public void json2od(ASTJSONDocument jsonDoc, String modelName, String file) {
     // initialize json2od printer
@@ -341,87 +309,86 @@ public class JSONCLI {
     String od = json2od.printObjectDiagram((new File(modelName)).getName(), jsonDoc);
     print(od, file);
   }
-  
-  /**
-   * Prints the given content to a target file (if specified) or to stdout (if
-   * the file is Optional.empty()).
-   * 
-   * @param content The String to be printed
-   * @param path The target path to the file for printing the content. If empty,
-   *          the content is printed to stdout instead
-   */
-  public void print(String content, String path) {
-    // print to stdout or file
-    if (path.isEmpty()) {
-      System.out.println(content);
-    } else {
-      File f = new File(path);
-      // create directories (logs error otherwise)
-      f.getAbsoluteFile().getParentFile().mkdirs();
-      
-      FileWriter writer;
-      try {
-        writer = new FileWriter(f);
-        writer.write(content);
-        writer.close();
-      } catch (IOException e) {
-        Log.error("0xA7105 Could not write to file " + f.getAbsolutePath());
-      }
-    }
-  }
-  
+
   /*=================================================================*/
   /* Part 3: Defining the options incl. help-texts
   /*=================================================================*/
 
   /**
-   * Initializes the available CLI options for the JSON tool.
-   * 
+   * Initializes the Standard CLI options for the JSON tool.
+   *
    * @return The CLI options with arguments.
    */
-  protected Options initOptions() {
-    Options options = new Options();
-    
-    // help dialog
-    options.addOption(Option.builder("h")
+
+  @Override
+  public Options addStandardOptions(Options options) {
+
+    //help
+    options.addOption(org.apache.commons.cli.Option.builder("h")
         .longOpt("help")
         .desc("Prints this help dialog")
         .build());
-    
-    // developer level logging
-    options.addOption(Option.builder("d")
-        .longOpt("dev")
-        .desc("Specifies whether developer level logging should be used (default is false)")
-        .build());
-    
-    // parse input file
-    options.addOption(Option.builder("i")
+
+    //parse input file
+    options.addOption(org.apache.commons.cli.Option.builder("i")
         .longOpt("input")
         .argName("file")
         .hasArg()
         .desc("Reads the source file (mandatory) and parses the contents as JSON")
         .build());
-    
-    // pretty print JSON
-    options.addOption(Option.builder("pp")
+
+    //pretty print JSON
+    options.addOption(org.apache.commons.cli.Option.builder("pp")
         .longOpt("prettyprint")
         .argName("file")
         .optionalArg(true)
         .numberOfArgs(1)
         .desc("Prints the JSON-AST to stdout or the specified file (optional)")
         .build());
-    
+
+    // pretty print SC
+    options.addOption(org.apache.commons.cli.Option.builder("s")
+        .longOpt("symboltable")
+        .argName("file")
+        .hasArg()
+        .desc("Serialized the Symbol table of the given artifact.")
+        .build());
+
     // pretty print JSON
     options.addOption(Option.builder("r")
         .longOpt("report")
         .argName("dir")
         .hasArg(true)
-        .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:" 
-            + System.lineSeparator() + REPORT_ALL_PROPS + ": a list of all properties, " 
-            + System.lineSeparator() + REPORT_COUNTED_PROPS + ": a set of all properties with the number of occurrences, " 
+        .desc("Prints reports of the JSON artifact to the specified directory (optional). Available reports:"
+            + System.lineSeparator() + REPORT_ALL_PROPS + ": a list of all properties, "
+            + System.lineSeparator() + REPORT_COUNTED_PROPS + ": a set of all properties with the number of occurrences, "
             + System.lineSeparator() + REPORT_TOPLEVEL_PROPS + ": a list of all top level properties")
         .build());
-    
+
+    // model paths
+    options.addOption(org.apache.commons.cli.Option.builder("path")
+        .hasArgs()
+        .desc("Sets the artifact path for imported symbols, space separated.")
+        .build());
+
+    return options;
+
+  }
+
+  /**
+   * Initializes the Additional CLI options for the JSON tool.
+   *
+   * @return The CLI options with arguments.
+   */
+  @Override
+  public Options addAdditionalOptions(Options options) {
+
+    // developer level logging
+    options.addOption(Option.builder("d")
+        .longOpt("dev")
+        .desc("Specifies whether developer level logging should be used (default is false)")
+        .build());
+
     // print object diagram
     options.addOption(Option.builder("so")
         .longOpt("syntaxobjects")
@@ -430,7 +397,7 @@ public class JSONCLI {
         .numberOfArgs(1)
         .desc("Prints an object diagram of the JSON-AST to stdout or the specified file (optional)")
         .build());
-    
     return options;
+
   }
 }
