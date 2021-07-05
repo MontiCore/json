@@ -29,7 +29,7 @@ def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
-def se_commons_version = "1.7.11-SNAPSHOT"
+def se_commons_version = "7.1.0-SNAPSHOT"
 
 
 /* ============================================================ */
@@ -98,8 +98,6 @@ task generateJSON(type: MCTask) {
 
 compileJava.dependsOn(generateJSON)
 
-// Fixes issue with java plugin in projects without resources
-compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -113,6 +111,8 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
     archiveClassifier = "sources"
 }
+
+sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask)}
 
 // build javadoc jar in addition
 task javadocJar(type: Jar) {
@@ -135,6 +135,7 @@ shadowJar {
         attributes "Main-Class": "de.monticore.${archiveBaseName.get().capitalize()}CLI"
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveClassifier = "cli"
     minimize()
 }
 
@@ -153,9 +154,7 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
             artifact grammarJar
-        }
-        cli(MavenPublication) {
-            artifactId = "$project.name"
+          //  artifact shadowJar
         }
     }
     repositories.maven {
