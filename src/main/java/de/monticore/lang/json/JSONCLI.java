@@ -35,11 +35,6 @@ public class JSONCLI extends JSONCLITOP {
   /*=================================================================*/
 
 
-  // names of the reports:
-  public static final String REPORT_ALL_PROPS = "allProperties.txt";
-  public static final String REPORT_COUNTED_PROPS = "countedProperties.txt";
-  public static final String REPORT_TOPLEVEL_PROPS = "topLevelProperties.txt";
-
   /**
    * Processes user input from command line and delegates to the corresponding
    * tools.
@@ -150,6 +145,11 @@ public class JSONCLI extends JSONCLITOP {
     String tlProps = topLevelPropertyNames(ast);
     print(tlProps, path + "/" + REPORT_TOPLEVEL_PROPS);
   }
+  // names of the reports:
+  public static final String REPORT_ALL_PROPS = "allProperties.txt";
+  public static final String REPORT_COUNTED_PROPS = "countedProperties.txt";
+  public static final String REPORT_TOPLEVEL_PROPS = "topLevelProperties.txt";
+
 
 
   /**
