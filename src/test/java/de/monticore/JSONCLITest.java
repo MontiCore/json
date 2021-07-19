@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.monticore.lang.json.JSONCLI;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
