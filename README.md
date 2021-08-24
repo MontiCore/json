@@ -2,9 +2,8 @@
 # JSON
 
 The MontiCore language JSON defines the parsing and processing infrastructure 
-for JSON artifacts.
-The language component (and full language) is part of the MontiCore language 
-library.
+for JSON artifacts. The language component (and full language) is part of the
+MontiCore language library.
 
 Please note that JSON (like XML or ASCII) is just a carrier language.
 The concrete JSON dialect and the question, how to recreate the
