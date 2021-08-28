@@ -17,7 +17,8 @@ is beyond this grammar but can be applied to the AST defined here.
 ## Functionality
 
 ### Parsing JSON artifacts and pretty printing.
-* available ([see language explanation](src/main/grammars/de/monticore/lang/json.md))
+* available under
+  ([see language explanation](src/main/grammars/de/monticore/lang/json.md))
   
 
 ## Further Links
