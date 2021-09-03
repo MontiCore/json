@@ -75,6 +75,7 @@ dependencies {
     }
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "org.antlr:antlr4-runtime:4.7.1"
+    implementation "de.monticore:monticore-generator:${project.properties['mc_version']}"
     implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
     implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
     implementation "org.assertj:assertj-core:3.7.0"
