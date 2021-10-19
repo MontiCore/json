@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json;
 
-import de.monticore.MontiCoreNodeIdentifierHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
@@ -14,6 +13,7 @@ import de.monticore.lang.json._visitor.JSONTraverser;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
 import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
@@ -298,7 +298,7 @@ public class JSONCLI extends JSONCLITOP {
   public void json2od(ASTJSONDocument jsonDoc, String modelName, String file) {
     // initialize json2od printer
     IndentPrinter printer = new IndentPrinter();
-    MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
+    MCSimpleGenericTypesNodeIdentHelper identifierHelper = new MCSimpleGenericTypesNodeIdentHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
     JSONTraverser traverser = JSONMill.traverser();
     JSON2OD json2od = new JSON2OD(printer, repository);
