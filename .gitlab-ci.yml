@@ -62,6 +62,7 @@ githubmirror:
     - echo "$SE_CIBUILD_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
     - git config --global user.email "noreply-ci@se-rwth.de"
     - git config --global user.name "MontiCore Mirroring Bot"
+    - git checkout "$CI_COMMIT_REF_NAME" # GitLab checks out a commit in detached HEAD mode by default, but we want to commit to the branch and push.
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
@@ -72,7 +73,7 @@ githubmirror:
     - rm mirror.sh
     - git add --all
     - (git commit -m "[Mirror] Replace all internal links and references") || true
-    - git remote add github git@github.com:MontiCore/$CI_PROJECT_PATH_SLUG.git
+    - git remote add github git@github.com:MontiCore/json.git
     - git push github $CI_COMMIT_BRANCH --force
   only:
     - develop
