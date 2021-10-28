@@ -67,7 +67,7 @@ githubmirror:
   script:
     - mkdir .ci
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output .ci/MDLinkChangerCLI.jar"
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%github-mirror-tools/repository/files/mirror.sh/raw\" --output .ci/mirror.sh"
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output .ci/mirror.sh"
     - sh .ci/mirror.sh
     - rm -rf .ci
     - git add -all
