@@ -101,7 +101,7 @@ public class JSONCLI extends JSONCLITOP {
 
     } catch (ParseException e) {
       // ann unexpected error from the apache CLI parser:
-      Log.error("0xA7101 Could not process CLI parameters: " + e.getMessage());
+      Log.error("0xA7104 Could not process CLI parameters: " + e.getMessage());
     }
 
   }
@@ -189,7 +189,7 @@ public class JSONCLI extends JSONCLITOP {
       JSONParser parser = new JSONParser();
       jsonDoc = parser.parse(model.toString());
     } catch (IOException | NullPointerException e) {
-      Log.error("0xA7102 Input file '" + path + "' not found.");
+      Log.error("0xA7109 Input file '" + path + "' not found.");
     }
 
     // re-enable fail-quick to print potential errors
