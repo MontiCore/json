@@ -51,9 +51,17 @@ checkMDLinks:
   only:
     - develop
 
+# Mirrors this repository's `develop` branch to GitHub.
+#
+# The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
+# For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/github-mirror-tools (Available internally only)
 githubmirror:
   stage: mirror
   variables:
+    # The repository is edited during this job. To make sure that no changes persist, we instruct GitLab to always
+    # create a fresh clone of the repository instead of caching it and attempting to remove any changes.
+    #
+    # See https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
     GIT_STRATEGY: clone
   dependencies:
     - checkMDLinks
