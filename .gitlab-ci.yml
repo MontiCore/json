@@ -53,6 +53,8 @@ checkMDLinks:
 
 githubmirror:
   stage: mirror
+  variables:
+    GIT_STRATEGY: clone
   dependencies:
     - checkMDLinks
   before_script:
@@ -75,13 +77,7 @@ githubmirror:
     # We'll simply ignore failures during commit because there is a chance that no files were changed. In this case the
     # remote will be on the same commit as the upstream repository.
     - (git commit -m "[Mirror] Replace all internal links and references") || true
-    # GitLab caches the git repository and removes any changes to the worktree, but not to the repository configuration.
-    # Thus, adding the remote will fail with `fatal: remote github already exists.`. For simplicity, we just ignore it.
-    # Should this ever cause any issues, consider migrating to `GIT_STRATEGY: clone` instead. It is the cleaner solution
-    # but comes at the cost of higher execution times.
-    #
-    # More information at https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
-    - (git remote add github git@github.com:MontiCore/json.git) || true
+    - git remote add github git@github.com:MontiCore/json.git
     - git push github $CI_COMMIT_BRANCH --force
   only:
     - develop
