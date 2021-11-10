@@ -53,6 +53,11 @@ checkMDLinks:
 
 githubmirror:
   stage: mirror
+  # By default, GitLab caches the repository it sets us up with. We could edit this repository just fine because it is
+  # forcefully updated anyway, but to avoid bloating the cache by accident (if this script is ever changed), we disable
+  # caching for this job. Consequentially, this job will always run in a fresh clone and no configuration (e.g. the
+  # added remote/s) will persist.
+  cache: []
   dependencies:
     - checkMDLinks
   before_script:
@@ -72,6 +77,8 @@ githubmirror:
     - rm MDLinkChangerCLI.jar
     - rm mirror.sh
     - git add --all
+    # We'll simply ignore failures during commit because there is a chance that no files were changed. In this case the
+    # remote will be on the same commit as the upstream repository.
     - (git commit -m "[Mirror] Replace all internal links and references") || true
     - git remote add github git@github.com:MontiCore/json.git
     - git push github $CI_COMMIT_BRANCH --force
