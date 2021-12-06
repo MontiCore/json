@@ -41,7 +41,7 @@ sourceSets {
     main.java.srcDirs += [ "$projectDir/target/generated-sources/monticore/sourcecode"]
     grammars {
       resources {
-        srcDirs([grammarDir, grammarOutDir])
+        srcDirs([grammarDir])
         include "**/*.mc4"
       }
     }
