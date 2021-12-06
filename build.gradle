@@ -49,6 +49,12 @@ buildDir = file("$projectDir/target")
 
 configurations {grammar}
 
+java {
+    registerFeature('grammars') {
+        usingSourceSet(sourceSets.grammars)
+    }
+}
+
 test {
     useJUnit()
 }
