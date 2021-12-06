@@ -39,7 +39,12 @@ def se_commons_version = "7.1.0-SNAPSHOT"
 // configure non-standard source sets
 sourceSets {
     main.java.srcDirs += [ "$projectDir/target/generated-sources/monticore/sourcecode"]
-
+    grammars {
+      resources {
+        srcDirs([grammarDir, grammarOutDir])
+        include "**/*.mc4"
+      }
+    }
     test {
         java.srcDir "$projectDir/src/test/java"
         resources.srcDir "$projectDir/src/test/resources"
