@@ -19,7 +19,6 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JSONCLI extends JSONCLITOP {
+public class JSONTool extends JSONToolTOP {
 
   /*=================================================================*/
   /* Part 1: Handling the arguments and options

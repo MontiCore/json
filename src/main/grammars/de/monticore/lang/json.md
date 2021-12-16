@@ -64,7 +64,7 @@
 * none provided; it is assumed that the JSON model was produced correctly.
 
 ## Handwritten Extensions
-* [JSONCLI](./src/main/java/de/monticore/JSONCLI.java)
+* [JSONTool](./src/main/java/de/monticore/JSONCLI.java)
   A command line interface for the JSON language.
 * [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
   A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.

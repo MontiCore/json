@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+on// (c) https://github.com/MontiCore/monticore
 
 /* ============================================================ */
 /* ========================= Plugins ========================== */
@@ -143,10 +143,10 @@ task grammarJar(type: Jar) {
 // all in one cli-jar
 shadowJar {
     manifest {
-        attributes "Main-Class": "de.monticore.lang.json.JSONCLI"
+        attributes "Main-Class": "de.monticore.lang.json.JSONTool"
     }
-    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
-    archiveClassifier = "cli"
+    archiveFileName = "${archiveBaseName.get()}-tool.${archiveExtension.get()}"
+    archiveClassifier = "tool"
     minimize()
 }
 
