@@ -1,4 +1,4 @@
-on// (c) https://github.com/MontiCore/monticore
+// (c) https://github.com/MontiCore/monticore
 
 /* ============================================================ */
 /* ========================= Plugins ========================== */
@@ -145,8 +145,8 @@ shadowJar {
     manifest {
         attributes "Main-Class": "de.monticore.lang.json.JSONTool"
     }
-    archiveFileName = "${archiveBaseName.get()}-tool.${archiveExtension.get()}"
-    archiveClassifier = "tool"
+    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveClassifier = "cli"
     minimize()
 }
 
