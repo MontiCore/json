@@ -19,7 +19,6 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JSONCLI extends JSONCLITOP {
+public class JSONTool extends JSONToolTOP {
 
   /*=================================================================*/
   /* Part 1: Handling the arguments and options
@@ -48,8 +47,8 @@ public class JSONCLI extends JSONCLITOP {
 
     try {
       // create CLI parser and parse input options from command line
-      CommandLineParser cliparser = new DefaultParser();
-      CommandLine cmd = cliparser.parse(options, args);
+      CommandLineParser cliParser = new DefaultParser();
+      CommandLine cmd = cliParser.parse(options, args);
 
       // help: when --help
       if (cmd.hasOption("h")) {
@@ -100,8 +99,8 @@ public class JSONCLI extends JSONCLITOP {
       }
 
     } catch (ParseException e) {
-      // ann unexpected error from the apache CLI parser:
-      Log.error("0xA7104 Could not process CLI parameters: " + e.getMessage());
+      // an unexpected error from the apache CLI parser:
+      Log.error("0xA7104 Could not process parameters: " + e.getMessage());
     }
 
   }
@@ -324,13 +323,13 @@ public class JSONCLI extends JSONCLITOP {
   public Options addStandardOptions(Options options) {
 
     //help
-    options.addOption(org.apache.commons.cli.Option.builder("h")
+    options.addOption(Option.builder("h")
         .longOpt("help")
         .desc("Prints this help dialog")
         .build());
 
     //parse input file
-    options.addOption(org.apache.commons.cli.Option.builder("i")
+    options.addOption(Option.builder("i")
         .longOpt("input")
         .argName("file")
         .hasArg()
@@ -338,7 +337,7 @@ public class JSONCLI extends JSONCLITOP {
         .build());
 
     //pretty print JSON
-    options.addOption(org.apache.commons.cli.Option.builder("pp")
+    options.addOption(Option.builder("pp")
         .longOpt("prettyprint")
         .argName("file")
         .optionalArg(true)
@@ -347,7 +346,7 @@ public class JSONCLI extends JSONCLITOP {
         .build());
 
     // pretty print SC
-    options.addOption(org.apache.commons.cli.Option.builder("s")
+    options.addOption(Option.builder("s")
         .longOpt("symboltable")
         .argName("file")
         .hasArg()
@@ -366,7 +365,7 @@ public class JSONCLI extends JSONCLITOP {
         .build());
 
     // model paths
-    options.addOption(org.apache.commons.cli.Option.builder("path")
+    options.addOption(Option.builder("path")
         .hasArgs()
         .desc("Sets the artifact path for imported symbols, space separated.")
         .build());

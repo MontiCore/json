@@ -154,7 +154,7 @@ task grammarJar(type: Jar) {
 // all in one cli-jar
 shadowJar {
     manifest {
-        attributes "Main-Class": "de.monticore.lang.json.JSONCLI"
+        attributes "Main-Class": "de.monticore.lang.json.JSONTool"
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
     archiveClassifier = "cli"
