@@ -80,8 +80,8 @@
 * The JSONTool provides a general interface for the functionalities developed for 
   the JSON language. This includes all features such as parsing of models, 
   pretty printing, reporting, or export as object diagram. 
-* By default, we provide a JAR `JSON-tool` that can be used via the command 
-  `java -jar JSON-tool.jar <parameters>`
+* By default, we provide a JAR `JSON-cli` that can be used via the command 
+  `java -jar JSON-cli.jar <parameters>`
 * Present Options are:
 ```
  -h,--help                    Prints this help dialog

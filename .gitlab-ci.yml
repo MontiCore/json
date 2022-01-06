@@ -31,7 +31,7 @@ deploy:
     - "gradle publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
   artifacts:
     paths:
-      - target/libs/JSON-tool.jar
+      - target/libs/JSON-cli.jar
     expire_in: 1 week
   only:
     refs:

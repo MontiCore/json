@@ -140,13 +140,13 @@ task grammarJar(type: Jar) {
     archiveClassifier = "grammars"
 }
 
-// all in one tool-jar
+// all in one cli-jar
 shadowJar {
     manifest {
         attributes "Main-Class": "de.monticore.lang.json.JSONTool"
     }
-    archiveFileName = "${archiveBaseName.get()}-tool.${archiveExtension.get()}"
-    archiveClassifier = "tool"
+    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveClassifier = "cli"
     minimize()
 }
 
