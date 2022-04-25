@@ -9,12 +9,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.monticore.lang.json.JSONTool;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
-public class JSONCLITest {
+public class JSONToolTest {
   
   private static final String INPUT = "src/test/resources/json/parser/bookstore.json";
   private static final String PRINT = "target/generated-test-sources/bookstore.txt";
@@ -22,7 +23,7 @@ public class JSONCLITest {
   @Test
   public void testParseAndPrint() throws IOException {
     String[] args = { "-i", INPUT, "-pp", PRINT };
-    JSONCLI.main(args);
+    JSONTool.main(args);
     
     // check if printed JSON is valid
     JSONParser parser = new JSONParser();
@@ -35,7 +36,7 @@ public class JSONCLITest {
   @Test
   public void testSyntaxObjects() throws IOException {
     String[] args = { "-i", INPUT, "-so" };
-    JSONCLI.main(args);
+    JSONTool.main(args);
   }
   
 }

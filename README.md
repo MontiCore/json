@@ -2,22 +2,23 @@
 # JSON
 
 The MontiCore language JSON defines the parsing and processing infrastructure 
-for JSON artifacts.
-The language component (and full language) is part of the MontiCore language 
-library.
+for JSON artifacts. The language component (and full language) is part of the
+MontiCore language library.
 
 Please note that JSON (like XML or ASCII) is just a carrier language.
-The concrete JSON dialect and the question, how to recreate the
-real objects / data structures, etc. behind the JSON tree structure
+The concrete JSON dialect and the question, how to recreate the real
+objects / data structures, etc., behind the JSON tree structure
 is beyond this grammar but can be applied to the AST defined here.
 
-* Main grammar [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
+* Main grammar
+  [`de.monticore.lang.JSON.mc4`](src/main/grammars/de/monticore/lang/JSON.mc4).
 
 
 ## Functionality
 
 ### Parsing JSON artifacts and pretty printing.
-* available ([see language explanation](src/main/grammars/de/monticore/lang/json.md))
+* available 
+  ([see language explanation](src/main/grammars/de/monticore/lang/json.md))
   
 
 ## Further Links

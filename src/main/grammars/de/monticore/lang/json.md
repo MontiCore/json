@@ -28,7 +28,8 @@
     }
 ```
 * The main purpose of this language is parsing general artifacts in JSON format
-  that adhere to the common [standard](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+  that adhere to the common
+  [standard](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 * The JSON grammar adheres to the common **standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
@@ -63,7 +64,7 @@
 * none provided; it is assumed that the JSON model was produced correctly.
 
 ## Handwritten Extensions
-* [JSONCLI](./src/main/java/de/monticore/JSONCLI.java)
+* [JSONTool](./src/main/java/de/monticore/JSONTool.java)
   A command line interface for the JSON language.
 * [JSONPrettyPrinter](./src/main/java/de/monticore/lang/json/prettyprint/JSONPrettyPrinter.java)
   A pretty-printer for serialzing JSON-ASTs into JSON-compliant artifacts.
@@ -76,11 +77,11 @@
 ## Usage
 
 ### Command Line Interface
-* The JSONCLI provides a general interface for the functionalities developed for 
+* The JSONTool provides a general interface for the functionalities developed for 
   the JSON language. This includes all features such as parsing of models, 
   pretty printing, reporting, or export as object diagram. 
-* By default, we provide a JAR `JSON-cli` that can be used via the command 
-  `java -jar JSON-cli.jar <parameters>`
+* By default, we provide a JAR `MCJSON.jar` that can be used via the command 
+  `java -jar MCJSON.jar <parameters>`
 * Present Options are:
 ```
  -h,--help                    Prints this help dialog
