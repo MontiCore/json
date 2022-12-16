@@ -21,19 +21,20 @@ import de.monticore.lang.json._ast.ASTJSONProperty;
 import de.monticore.lang.json._ast.ASTJSONString;
 import de.monticore.lang.json._ast.ASTJSONValue;
 import de.monticore.lang.json._parser.JSONParser;
-import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
+import de.monticore.lang.json._prettyprint.JSONFullPrettyPrinter;
 import de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffException;
 import de.monticore.lang.json.semdiff.messages.DifferentPropertyTypeMessage;
 import de.monticore.lang.json.semdiff.messages.DifferentPropertyValueMessage;
 import de.monticore.lang.json.semdiff.messages.EquivalentModelsMessage;
 import de.monticore.lang.json.semdiff.messages.JSONSemDiffMessage;
 import de.monticore.lang.json.semdiff.messages.MissingPropertyMessage;
+import de.monticore.prettyprint.IndentPrinter;
 
 public class SemanticJSONDifferencer {
   
   private final JSONParser parser = new JSONParser();
   
-  private final JSONPrettyPrinter prettyPrinter = new JSONPrettyPrinter();
+  private final JSONFullPrettyPrinter prettyPrinter = new JSONFullPrettyPrinter(new IndentPrinter());
   
   public List<JSONSemDiffMessage> semDiffJSONArtifacts(String artifactName1, String artifactName2) throws SemanticJSONDiffException {
     ASTJSONDocument d1 = parse(artifactName1), d2 = parse(artifactName2);
@@ -173,7 +174,7 @@ public class SemanticJSONDifferencer {
     if (n1.deepEquals(n2)) {
       return Collections.emptyList();
     }
-    return Collections.singletonList(SemanticJSONDifference.differentValue(n1, prettyPrinter.printJSONNumber(n2)));
+    return Collections.singletonList(SemanticJSONDifference.differentValue(n1, prettyPrinter.prettyprint(n2)));
   }
   
   private static boolean equalJSONType(ASTJSONValue n1, ASTJSONValue n2) {

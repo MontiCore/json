@@ -5,13 +5,13 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._od.JSON2OD;
 import de.monticore.lang.json._parser.JSONParser;
+import de.monticore.lang.json._prettyprint.JSONFullPrettyPrinter;
 import de.monticore.lang.json._symboltable.IJSONArtifactScope;
 import de.monticore.lang.json._symboltable.IJSONGlobalScope;
 import de.monticore.lang.json._symboltable.JSONScopesGenitorDelegator;
 import de.monticore.lang.json._visitor.FullPropertyCalculator;
 import de.monticore.lang.json._visitor.JSONTraverser;
 import de.monticore.lang.json._visitor.TopLevelPropertyCalculator;
-import de.monticore.lang.json.prettyprint.JSONPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
 import de.se_rwth.commons.logging.Log;
@@ -120,8 +120,8 @@ public class JSONTool extends JSONToolTOP {
   @Override
   public void prettyPrint(ASTJSONDocument jsonDoc, String file) {
     // pretty print AST
-    JSONPrettyPrinter pp = new JSONPrettyPrinter();
-    String json = pp.printJSONDocument(jsonDoc);
+    JSONFullPrettyPrinter pp = new JSONFullPrettyPrinter(new IndentPrinter());
+    String json = pp.prettyprint(jsonDoc);
     print(json, file);
   }
 
