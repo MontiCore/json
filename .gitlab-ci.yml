@@ -5,7 +5,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk
 stages:
   - build
   - deploy
-  - trigger_languages
+  - trigger
   - mirror
 
 before_script:
@@ -57,12 +57,12 @@ deploy:
 
 
 trigger-gui-generator-dev:
-  stage: trigger_languages
+  stage: trigger
   trigger:
     project: monticore/montigem/gui-generator
     branch: master
   only:
-    - dev
+    - develop
 
 
 # Mirrors this repository's `develop` and `master` branches to GitHub.
