@@ -60,7 +60,7 @@ trigger-gui-generator-dev:
   stage: trigger_languages
   trigger:
     project: monticore/montigem/gui-generator
-    branch: dev
+    branch: master
   only:
     - dev
 
