@@ -5,6 +5,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk
 stages:
   - build
   - deploy
+  - trigger_languages
   - mirror
 
 before_script:
@@ -57,8 +58,6 @@ deploy:
 
 trigger-gui-generator-dev:
   stage: trigger_languages
-  dependencies:
-    - deploy
   trigger:
     project: monticore/montigem/gui-generator
     branch: dev
