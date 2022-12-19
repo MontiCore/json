@@ -55,6 +55,17 @@ deploy:
       - develop
 
 
+trigger-gui-generator-dev:
+  stage: trigger_languages
+  dependencies:
+    - deploy
+  trigger:
+    project: monticore/montigem/gui-generator
+    branch: dev
+  only:
+    - dev
+
+
 # Mirrors this repository's `develop` and `master` branches to GitHub.
 #
 # The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
