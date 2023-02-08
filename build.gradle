@@ -158,7 +158,9 @@ shadowJar {
     }
     archiveFileName = "MC${archiveBaseName.get()}.${archiveExtension.get()}"
     archiveClassifier = "mc-tool"
-    minimize()
+    minimize {
+        exclude(dependency('org.freemarker:freemarker:.*'))
+    }
 }
 
 jar.dependsOn shadowJar
