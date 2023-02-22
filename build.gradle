@@ -115,6 +115,7 @@ task generateJSON(type: MCTask) {
 
 compileJava.dependsOn(generateJSON)
 
+tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
 
 tasks.withType(JavaCompile) {
     options.fork = true
