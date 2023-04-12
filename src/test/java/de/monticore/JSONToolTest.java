@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import de.monticore.lang.json.JSONTool;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
@@ -19,6 +22,12 @@ public class JSONToolTest {
   
   private static final String INPUT = "src/test/resources/json/parser/bookstore.json";
   private static final String PRINT = "target/generated-test-sources/bookstore.txt";
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testParseAndPrint() throws IOException {

@@ -11,13 +11,22 @@ import java.util.Optional;
 
 import de.monticore.lang.json._prettyprint.JSONFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
 public class JSONPrettyPrinterTest {
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testBookstore() throws RecognitionException, IOException {

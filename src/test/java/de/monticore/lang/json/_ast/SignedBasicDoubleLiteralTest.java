@@ -8,11 +8,21 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.monticore.lang.json.semdiff.SemanticJSONDifferencer;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json._parser.JSONParser;
 
 public class SignedBasicDoubleLiteralTest {
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testBookstore() {

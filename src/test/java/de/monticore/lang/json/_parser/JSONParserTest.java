@@ -9,12 +9,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
 
 public class JSONParserTest {
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testBookstore() throws RecognitionException, IOException {
