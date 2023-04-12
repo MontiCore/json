@@ -7,6 +7,8 @@ import de.monticore.lang.json.semdiff.messages.MissingPropertyMessage;
 
 import java.util.List;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +22,8 @@ public class JSONSemDiffTest {
   
   @Before
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
     semJsonDiffer = new SemanticJSONDifferencer();
   }
   
