@@ -9,13 +9,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.monticore.lang.json._prettyprint.JSONFullPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
 public class JSONPrettyPrinterTest {
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testBookstore() throws RecognitionException, IOException {
@@ -28,8 +39,8 @@ public class JSONPrettyPrinterTest {
     assertTrue(jsonDoc.isPresent());
     
     // pretty print AST
-    JSONPrettyPrinter pp = new JSONPrettyPrinter();
-    String printedModel = pp.printJSONDocument(jsonDoc.get());
+    JSONFullPrettyPrinter pp = new JSONFullPrettyPrinter(new IndentPrinter());
+    String printedModel = pp.prettyprint(jsonDoc.get());
     
     // parse printed model
     Optional<ASTJSONDocument> printedJsonDoc = parser.parse_StringJSONDocument(printedModel);

@@ -11,7 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.lang.json.JSONMill;
@@ -19,7 +22,12 @@ import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 
 public class TestTopLevelPropertyCalculator {
-  
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   @Test
   public void testTopLevelProperties() throws RecognitionException, IOException {
     Path model = Paths.get("src/test/resources/json/visitor/persons.json");

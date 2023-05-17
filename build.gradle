@@ -29,7 +29,7 @@ def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
-def se_commons_version = "7.3.0"
+def se_commons_version = "7.5.0"
 
 
 /* ============================================================ */
@@ -85,7 +85,7 @@ dependencies {
         requireCapability("de.monticore:monticore-grammar-grammars") }
     }
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "org.antlr:antlr4-runtime:4.7.1"
+    implementation "org.antlr:antlr4-runtime:4.12.0"
     implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
     implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
     implementation "org.assertj:assertj-core:3.7.0"
@@ -115,6 +115,7 @@ task generateJSON(type: MCTask) {
 
 compileJava.dependsOn(generateJSON)
 
+tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
 
 tasks.withType(JavaCompile) {
     options.fork = true
@@ -158,7 +159,9 @@ shadowJar {
     }
     archiveFileName = "MC${archiveBaseName.get()}.${archiveExtension.get()}"
     archiveClassifier = "mc-tool"
-    minimize()
+    minimize {
+        exclude(dependency('org.freemarker:freemarker:.*'))
+    }
 }
 
 jar.dependsOn shadowJar
