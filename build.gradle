@@ -195,4 +195,3 @@ task buildAll(type: GradleBuild) {
 }
 
 defaultTasks 'build'
-
