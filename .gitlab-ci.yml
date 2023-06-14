@@ -4,7 +4,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk
 
 stages:
   - build
-  - deploy
+  #- deploy
   - trigger
   - mirror
 
@@ -41,19 +41,19 @@ check-links:
     - 'java -jar MDLinkChecker.jar -t "$secibuildtoken" -r . -p'
 
 
-deploy:
-  stage: deploy
-  dependencies:
-    - build
-  script:
-    - "gradle publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
-  artifacts:
-    paths:
-      - target/libs/MCJSON.jar
-    expire_in: 1 week
-  only:
-    refs:
-      - develop
+# deploy:
+#  stage: deploy
+#  dependencies:
+#    - build
+#  script:
+#    - "gradle publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
+#  artifacts:
+#    paths:
+#      - target/libs/MCJSON.jar
+#    expire_in: 1 week
+#  only:
+#    refs:
+#      - develop
 
 
 trigger-gui-generator-dev:
