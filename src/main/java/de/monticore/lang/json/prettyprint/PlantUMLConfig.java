@@ -1,0 +1,173 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.json.prettyprint;
+
+/**
+ * This class is used to configure the PlantUML pretty printer. It was taken
+ * from the CD4Analysis project.
+ * In the context of this JSON project, only the `useStyling` property is of
+ * relevance as of time being.
+ */
+public class PlantUMLConfig {
+    protected Boolean showAtt = false;
+    protected Boolean showAssoc = false;
+    protected Boolean showRoles = false;
+    protected Boolean showCard = false;
+    protected Boolean showModifier = false;
+    protected int nodesep = -1;
+    protected int ranksep = -1;
+    protected Boolean ortho = false;
+    protected Boolean shortenWords = false;
+    protected Boolean showComments = false;
+    protected Boolean useStyling = false;
+
+    public PlantUMLConfig() {
+    }
+
+    public PlantUMLConfig(
+            Boolean showAtt,
+            Boolean showAssoc,
+            Boolean showRoles,
+            Boolean showCard,
+            Boolean showModifier,
+            int nodesep,
+            int ranksep,
+            Boolean ortho,
+            Boolean shortenWords,
+            Boolean showComments,
+            Boolean useStyling) {
+        this.showAtt = showAtt;
+        this.showAssoc = showAssoc;
+        this.showRoles = showRoles;
+        this.showCard = showCard;
+        this.showModifier = showModifier;
+        this.nodesep = nodesep;
+        this.ranksep = ranksep;
+        this.ortho = ortho;
+        this.shortenWords = shortenWords;
+        this.showComments = showComments;
+        this.useStyling = useStyling;
+    }
+
+    public PlantUMLConfig(
+            Boolean showAtt,
+            Boolean showAssoc,
+            Boolean showRoles,
+            Boolean showCard,
+            Boolean showModifier) {
+        this.showAtt = showAtt;
+        this.showAssoc = showAssoc;
+        this.showRoles = showRoles;
+        this.showCard = showCard;
+        this.showModifier = showModifier;
+    }
+
+    public PlantUMLConfig(Boolean useStyling) {
+        this.useStyling = useStyling;
+    }
+
+    public Boolean getShowAtt() {
+        return showAtt;
+    }
+
+    public void setShowAtt(Boolean showAtt) {
+        this.showAtt = showAtt;
+    }
+
+    public Boolean getShowAssoc() {
+        return showAssoc;
+    }
+
+    public void setShowAssoc(Boolean showAssoc) {
+        this.showAssoc = showAssoc;
+    }
+
+    public Boolean getShowRoles() {
+        return showRoles;
+    }
+
+    public void setShowRoles(Boolean showRoles) {
+        this.showRoles = showRoles;
+    }
+
+    public Boolean getShowCard() {
+        return showCard;
+    }
+
+    public void setShowCard(Boolean showCard) {
+        this.showCard = showCard;
+    }
+
+    public Boolean getShowModifier() {
+        return showModifier;
+    }
+
+    public void setShowModifier(Boolean showModifier) {
+        this.showModifier = showModifier;
+    }
+
+    public int getNodesep() {
+        return nodesep;
+    }
+
+    public void setNodesep(int nodesep) {
+        this.nodesep = nodesep;
+    }
+
+    public int getRanksep() {
+        return ranksep;
+    }
+
+    public void setRanksep(int ranksep) {
+        this.ranksep = ranksep;
+    }
+
+    public Boolean getOrtho() {
+        return ortho;
+    }
+
+    public void setOrtho(Boolean ortho) {
+        this.ortho = ortho;
+    }
+
+    public Boolean getShortenWords() {
+        return shortenWords;
+    }
+
+    public void setShortenWords(Boolean shortenWords) {
+        this.shortenWords = shortenWords;
+    }
+
+    public Boolean getShowComments() {
+        return showComments;
+    }
+
+    public void setShowComments(Boolean showComments) {
+        this.showComments = showComments;
+    }
+
+    @Override
+    public String toString() {
+        return "PlantUMLConfig{"
+                + "showAtt="
+                + showAtt
+                + ", showAssoc="
+                + showAssoc
+                + ", showRoles="
+                + showRoles
+                + ", showCard="
+                + showCard
+                + ", showModifier="
+                + showModifier
+                + ", nodesep="
+                + nodesep
+                + ", ranksep="
+                + ranksep
+                + ", ortho="
+                + ortho
+                + ", shortenWords="
+                + shortenWords
+                + ", showComments="
+                + showComments
+                + '}';
+    }
+}

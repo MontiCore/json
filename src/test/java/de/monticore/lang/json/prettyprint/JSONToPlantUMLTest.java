@@ -37,7 +37,7 @@ public class JSONToPlantUMLTest {
         assertTrue(jsonDoc.isPresent());
 
         // print PlantUML JSON
-        JSONToPlantUML pumlPrinter = new JSONToPlantUML(false);
+        JSONToPlantUML pumlPrinter = new JSONToPlantUML();
         String printedModel = pumlPrinter.printJSONDocument(jsonDoc.get());
 
         // Assert that is has been printed correctly
@@ -69,7 +69,7 @@ public class JSONToPlantUMLTest {
         assertTrue(jsonDoc.isPresent());
 
         // print PlantUML JSON
-        JSONToPlantUML pumlPrinter = new JSONToPlantUML(true);
+        JSONToPlantUML pumlPrinter = new JSONToPlantUML(new PlantUMLConfig(true));
         String printedModel = pumlPrinter.printJSONDocument(jsonDoc.get());
 
         // Assert that is has been printed correctly
