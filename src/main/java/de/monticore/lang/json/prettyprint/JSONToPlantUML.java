@@ -211,6 +211,10 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Auxiliary methods
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Auxiliary method used by all visit callbacks handling numbers
      *
