@@ -1,9 +1,7 @@
 package de.monticore.lang.json.prettyprint;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.*;
-import de.monticore.lang.json._prettyprint.JSONFullPrettyPrinter;
 import de.monticore.lang.json._visitor.JSONHandler;
 import de.monticore.lang.json._visitor.JSONTraverser;
 import de.monticore.lang.json._visitor.JSONVisitor2;
@@ -13,8 +11,6 @@ import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.ISymbol;
 
 public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, JSONHandler {
 
