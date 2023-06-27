@@ -12,7 +12,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +27,7 @@ public class JSONToPlantUMLTest {
     }
 
     @Test
-    public void testBookstore() throws RecognitionException, IOException {
+    public void testPlainPlantUML() throws RecognitionException, IOException {
         Path model = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
         JSONParser parser = new JSONParser();
 
@@ -35,7 +37,7 @@ public class JSONToPlantUMLTest {
         assertTrue(jsonDoc.isPresent());
 
         // print PlantUML JSON
-        JSONToPlantUML pumlPrinter = new JSONToPlantUML();
+        JSONToPlantUML pumlPrinter = new JSONToPlantUML(false);
         String printedModel = pumlPrinter.printJSONDocument(jsonDoc.get());
 
         // Assert that is has been printed correctly
@@ -47,6 +49,42 @@ public class JSONToPlantUMLTest {
 
         // remove surrounding PlantUML
         String strippedPrintedModel = printedModel.substring(10, printedModel.length() - 8);
+
+        // parse printed model
+        Optional<ASTJSONDocument> printedJsonDoc = parser.parse_StringJSONDocument(strippedPrintedModel);
+        assertFalse(parser.hasErrors());
+        assertTrue(printedJsonDoc.isPresent());
+
+        // Note: original model and printed model is not necessarily the same because of stripped comments
+    }
+
+    @Test
+    public void testStylesPlantUML() throws RecognitionException, IOException {
+        Path model = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
+        JSONParser parser = new JSONParser();
+
+        // parse model
+        Optional<ASTJSONDocument> jsonDoc = parser.parse(model.toString());
+        assertFalse(parser.hasErrors());
+        assertTrue(jsonDoc.isPresent());
+
+        // print PlantUML JSON
+        JSONToPlantUML pumlPrinter = new JSONToPlantUML(true);
+        String printedModel = pumlPrinter.printJSONDocument(jsonDoc.get());
+
+        // Assert that is has been printed correctly
+        assertNotNull(printedModel);
+        assertNotEquals("", printedModel);
+
+        assertTrue(printedModel.startsWith("@startjson"));
+        assertTrue(printedModel.endsWith("@endjson"));
+
+        String[] lines = printedModel.split("\n");
+        assertEquals("<style>", lines[1]);
+        assertEquals("</style>", lines[8]);
+
+        // remove surrounding PlantUML with style block
+        String strippedPrintedModel = String.join("\n", Arrays.copyOfRange(lines, 9, lines.length - 1));
 
         // parse printed model
         Optional<ASTJSONDocument> printedJsonDoc = parser.parse_StringJSONDocument(strippedPrintedModel);
