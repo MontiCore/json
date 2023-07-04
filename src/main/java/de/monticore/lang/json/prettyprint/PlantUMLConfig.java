@@ -2,172 +2,58 @@
 package de.monticore.lang.json.prettyprint;
 
 /**
- * This class is used to configure the PlantUML pretty printer. It was taken
- * from the CD4Analysis project.
- * In the context of this JSON project, only the `useStyling` property is of
- * relevance as of time being.
+ * This class is used to configure the PlantUML pretty printer.
  */
 public class PlantUMLConfig {
-    protected Boolean showAtt = false;
-    protected Boolean showAssoc = false;
-    protected Boolean showRoles = false;
-    protected Boolean showCard = false;
-    protected Boolean showModifier = false;
-    protected int nodesep = -1;
-    protected int ranksep = -1;
-    protected Boolean ortho = false;
-    protected Boolean shortenWords = false;
-    protected Boolean showComments = false;
     protected Boolean useStyling = false;
+    protected String nodeBackgroundColor = "#2b2b2b";
+    protected String propKeyColor = "#8872b0";
+    protected String propValueNullColor = "#6798c1";
+    protected String propValueNumberColor = "#6798c1";
+    protected String propValueStringColor = "#688153";
+    protected String propValueBooleanColor = "#cb742f";
 
     public PlantUMLConfig() {
     }
 
     public PlantUMLConfig(
-            Boolean showAtt,
-            Boolean showAssoc,
-            Boolean showRoles,
-            Boolean showCard,
-            Boolean showModifier,
-            int nodesep,
-            int ranksep,
-            Boolean ortho,
-            Boolean shortenWords,
-            Boolean showComments,
-            Boolean useStyling) {
-        this.showAtt = showAtt;
-        this.showAssoc = showAssoc;
-        this.showRoles = showRoles;
-        this.showCard = showCard;
-        this.showModifier = showModifier;
-        this.nodesep = nodesep;
-        this.ranksep = ranksep;
-        this.ortho = ortho;
-        this.shortenWords = shortenWords;
-        this.showComments = showComments;
+            Boolean useStyling,
+            String nodeBackgroundColor,
+            String propKeyColor,
+            String propValueNullColor,
+            String propValueNumberColor,
+            String propValueStringColor,
+            String propValueBooleanColor) {
         this.useStyling = useStyling;
-    }
-
-    public PlantUMLConfig(
-            Boolean showAtt,
-            Boolean showAssoc,
-            Boolean showRoles,
-            Boolean showCard,
-            Boolean showModifier) {
-        this.showAtt = showAtt;
-        this.showAssoc = showAssoc;
-        this.showRoles = showRoles;
-        this.showCard = showCard;
-        this.showModifier = showModifier;
+        this.nodeBackgroundColor = nodeBackgroundColor;
+        this.propKeyColor = propKeyColor;
+        this.propValueNullColor = propValueNullColor;
+        this.propValueNumberColor = propValueNumberColor;
+        this.propValueStringColor = propValueStringColor;
+        this.propValueBooleanColor = propValueBooleanColor;
     }
 
     public PlantUMLConfig(Boolean useStyling) {
         this.useStyling = useStyling;
     }
 
-    public Boolean getShowAtt() {
-        return showAtt;
-    }
-
-    public void setShowAtt(Boolean showAtt) {
-        this.showAtt = showAtt;
-    }
-
-    public Boolean getShowAssoc() {
-        return showAssoc;
-    }
-
-    public void setShowAssoc(Boolean showAssoc) {
-        this.showAssoc = showAssoc;
-    }
-
-    public Boolean getShowRoles() {
-        return showRoles;
-    }
-
-    public void setShowRoles(Boolean showRoles) {
-        this.showRoles = showRoles;
-    }
-
-    public Boolean getShowCard() {
-        return showCard;
-    }
-
-    public void setShowCard(Boolean showCard) {
-        this.showCard = showCard;
-    }
-
-    public Boolean getShowModifier() {
-        return showModifier;
-    }
-
-    public void setShowModifier(Boolean showModifier) {
-        this.showModifier = showModifier;
-    }
-
-    public int getNodesep() {
-        return nodesep;
-    }
-
-    public void setNodesep(int nodesep) {
-        this.nodesep = nodesep;
-    }
-
-    public int getRanksep() {
-        return ranksep;
-    }
-
-    public void setRanksep(int ranksep) {
-        this.ranksep = ranksep;
-    }
-
-    public Boolean getOrtho() {
-        return ortho;
-    }
-
-    public void setOrtho(Boolean ortho) {
-        this.ortho = ortho;
-    }
-
-    public Boolean getShortenWords() {
-        return shortenWords;
-    }
-
-    public void setShortenWords(Boolean shortenWords) {
-        this.shortenWords = shortenWords;
-    }
-
-    public Boolean getShowComments() {
-        return showComments;
-    }
-
-    public void setShowComments(Boolean showComments) {
-        this.showComments = showComments;
-    }
-
     @Override
     public String toString() {
         return "PlantUMLConfig{"
-                + "showAtt="
-                + showAtt
-                + ", showAssoc="
-                + showAssoc
-                + ", showRoles="
-                + showRoles
-                + ", showCard="
-                + showCard
-                + ", showModifier="
-                + showModifier
-                + ", nodesep="
-                + nodesep
-                + ", ranksep="
-                + ranksep
-                + ", ortho="
-                + ortho
-                + ", shortenWords="
-                + shortenWords
-                + ", showComments="
-                + showComments
+                + "useStyling="
+                + this.useStyling
+                + ", nodeBackgroundColor="
+                + this.nodeBackgroundColor
+                + ", propKeyColor="
+                + this.propKeyColor
+                + ", propValueNullColor="
+                + this.propValueNullColor
+                + ", propValueNumberColor="
+                + this.propValueNumberColor
+                + ", propValueStringColor="
+                + this.propValueStringColor
+                + ", propValueBooleanColor="
+                + this.propValueBooleanColor
                 + '}';
     }
 }

@@ -110,7 +110,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
             this.printer.indent();
             this.printer.println("node {");
             this.printer.indent();
-            this.printer.println("BackGroundColor #2b2b2b");
+            this.printer.println("BackGroundColor " + this.config.nodeBackgroundColor);
             this.printer.println("RoundCorner 0");
             this.printer.unindent();
             this.printer.println("}");
@@ -153,7 +153,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
     @Override
     public void visit(ASTJSONBoolean node) {
         if (this.config.useStyling) {
-            this.printer.print(this.colored(Boolean.toString(node.getBooleanLiteral().getValue()), "#cb742f"));
+            this.printer.print(this.colored(Boolean.toString(node.getBooleanLiteral().getValue()), this.config.propValueBooleanColor));
         } else {
             this.printer.print(node.getBooleanLiteral().getValue());
         }
@@ -162,7 +162,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
     @Override
     public void visit(ASTJSONNull node) {
         if (this.config.useStyling) {
-            this.printer.print(this.colored("null", "#6798c1"));
+            this.printer.print(this.colored("null", this.config.propValueNullColor));
         } else {
             this.printer.print("null");
 
@@ -172,7 +172,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
     @Override
     public void visit(ASTJSONProperty node) {
         if (this.config.useStyling) {
-            this.printer.print(this.colored(node.getKey(), "#8872b0") + ": ");
+            this.printer.print(this.colored(node.getKey(), this.config.propKeyColor) + ": ");
         } else {
             this.printer.print("\"" + node.getKey() + "\": ");
         }
@@ -201,7 +201,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
     @Override
     public void visit(ASTStringLiteral node) {
         if (this.config.useStyling) {
-            this.printer.print(this.colored(node.getSource(), "#688153"));
+            this.printer.print(this.colored(node.getSource(), this.config.propValueStringColor));
         } else {
             this.printer.print("\"" + node.getSource() + "\"");
         }
@@ -218,7 +218,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
      */
     private void printNumber(String number) {
         if (this.config.useStyling) {
-            this.printer.print(this.colored(number, "#6798c1"));
+            this.printer.print(this.colored(number, this.config.propValueNumberColor));
         } else {
             this.printer.print(number);
         }
