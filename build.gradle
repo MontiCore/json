@@ -91,6 +91,7 @@ dependencies {
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     implementation 'org.apache.commons:commons-lang3:3.0'
+    implementation "net.sourceforge.plantuml:plantuml:1.2020.15"
     testImplementation "junit:junit:$junit_version"
 }
 
