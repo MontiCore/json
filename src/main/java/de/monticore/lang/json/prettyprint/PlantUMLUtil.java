@@ -52,9 +52,9 @@ public class PlantUMLUtil {
     public static void writeJsonToPlantUmlSvg(
             String pathJSON, Path outputPathSVG, PlantUMLConfig plantUMLConfig) throws IOException {
 
-        final String cdString = new String(Files.readAllBytes(Paths.get(pathJSON)));
+        final String jsonString = new String(Files.readAllBytes(Paths.get(pathJSON)));
 
-        final String plantUMLString = toPlantUmlModelString(cdString, plantUMLConfig);
+        final String plantUMLString = toPlantUmlModelString(jsonString, plantUMLConfig);
         final SourceStringReader reader = new SourceStringReader(plantUMLString);
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         // Write the first image to "os"
@@ -68,7 +68,7 @@ public class PlantUMLUtil {
         }
     }
 
-    public static Path writeCdToPlantUmlModelFile(
+    public static Path writeJsonToPlantUmlModelFile(
             @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
             Path outputPath,
             PlantUMLConfig plantUMLConfig)
@@ -82,11 +82,11 @@ public class PlantUMLUtil {
         return outputPath;
     }
 
-    public static void writeCdToPlantUmlModelFile(
+    public static void writeJsonToPlantUmlModelFile(
             String pathJSON, Path outputPath, PlantUMLConfig plantUMLConfig) throws IOException {
-        final String cdString = new String(Files.readAllBytes(Paths.get(pathJSON)));
+        final String jsonString = new String(Files.readAllBytes(Paths.get(pathJSON)));
 
-        final String plantUMLString = toPlantUmlModelString(cdString, plantUMLConfig);
+        final String plantUMLString = toPlantUmlModelString(jsonString, plantUMLConfig);
 
         try (PrintWriter out = new PrintWriter(outputPath.toString())) {
             out.println(plantUMLString);
@@ -112,7 +112,7 @@ public class PlantUMLUtil {
             Optional<ASTJSONDocument> astJSON = parser.parse_String(jsonString);
             return toPlantUmlModelString(astJSON, config);
         } catch (IOException e) {
-            Log.error("Cannot display CD since it contains errors!");
+            Log.error("Cannot display JSON since it contains errors!");
         }
 
         return PLANTUML_EMPTY;
