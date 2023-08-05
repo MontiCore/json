@@ -81,7 +81,7 @@ public class JSONTool extends JSONToolTOP {
             // MontiCore always expects the symbol table to exist and further tooling
             // such as json2od requires it to compute
             createSymbolTable(jsonDoc);
-
+            
             // -option pretty print "-pp (json [file] | puml (txt [file] | svg file))"
             if (cmd.hasOption("pp")) {
                 String[] params = cmd.getOptionValues("pp");
@@ -89,31 +89,36 @@ public class JSONTool extends JSONToolTOP {
                     printHelp(options);
                     return;
                 }
-
+                
                 if (params[0].equals("json")) {
                     String path = params.length == 2 ? params[1] : "";
                     prettyPrint(jsonDoc, path);
-                } else if (params[0].equals("puml")) {
+                }
+                else if (params[0].equals("puml")) {
                     if (params.length < 2) {
                         printHelp(options);
                         return;
                     }
                     String format = params[1];
                     String file = params.length < 3 ? StringUtils.EMPTY : params[2];
-
+                    
                     if (format.equals("txt")) {
                         if (file.equals("")) {
                             prettyPrintPlantUmlCli(jsonDoc);
-                        } else {
+                        }
+                        else {
                             prettyPrintPlantUmlTxt(jsonDoc, file);
                         }
-                    } else if (format.equals("svg")) {
+                    }
+                    else if (format.equals("svg")) {
                         prettyPrintPlantUmlSvg(jsonDoc, file);
-                    } else {
+                    }
+                    else {
                         printHelp(options);
                         return;
                     }
-                } else {
+                }
+                else {
                     printHelp(options);
                     return;
                 }
@@ -157,32 +162,34 @@ public class JSONTool extends JSONToolTOP {
         String json = pp.prettyprint(jsonDoc);
         print(json, file);
     }
-
+    
     public void prettyPrintPlantUmlCli(ASTJSONDocument jsonDoc) {
         PlantUMLConfig config = new PlantUMLConfig();
         String modelString = PlantUMLUtil.toPlantUmlModelString(Optional.of(jsonDoc), config);
         print(modelString, StringUtils.EMPTY);
     }
-
+    
     public void prettyPrintPlantUmlTxt(ASTJSONDocument jsonDoc, String file) {
         Path outputPath = Paths.get(file);
         PlantUMLConfig config = new PlantUMLConfig();
-
+        
         try {
             PlantUMLUtil.writeJsonToPlantUmlModelFile(Optional.of(jsonDoc), outputPath, config);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             System.err.println(ex.getMessage());
             System.exit(1);
         }
     }
-
+    
     public void prettyPrintPlantUmlSvg(ASTJSONDocument jsonDoc, String file) {
         Path outputPath = Paths.get(file);
         PlantUMLConfig config = new PlantUMLConfig();
-
+        
         try {
             PlantUMLUtil.writeJsonToPlantUmlSvg(Optional.of(jsonDoc), outputPath, config);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             System.err.println(ex.getMessage());
             System.exit(1);
         }
