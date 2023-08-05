@@ -2,7 +2,8 @@
 package de.monticore.lang.json.prettyprint;
 
 /**
- * This class is used to configure the PlantUML pretty printer.
+ * This class is used to configure the PlantUML pretty printer. Currently, it provides parameters to
+ * configure some styling for rendering PlantUML JSON diagrams.
  */
 public class PlantUMLConfig {
   protected Boolean useStyling = false;
@@ -13,9 +14,23 @@ public class PlantUMLConfig {
   protected String propValueStringColor = "#688153";
   protected String propValueBooleanColor = "#cb742f";
   
+  /**
+   * Default constructor applying no styling.
+   */
   public PlantUMLConfig() {
   }
   
+  /**
+   * Constructor to override the default styling parameters.
+   *
+   * @param useStyling            whether to apply styling
+   * @param nodeBackgroundColor   background color of JSON diagram nodes
+   * @param propKeyColor          text color of property keys
+   * @param propValueNullColor    text color of null values
+   * @param propValueNumberColor  text color of number values
+   * @param propValueStringColor  text color of string values
+   * @param propValueBooleanColor text color of boolean values
+   */
   public PlantUMLConfig(
       Boolean useStyling,
       String nodeBackgroundColor,
@@ -33,6 +48,11 @@ public class PlantUMLConfig {
     this.propValueBooleanColor = propValueBooleanColor;
   }
   
+  /**
+   * Constructor to apply default styling.
+   *
+   * @param useStyling whether to apply styling
+   */
   public PlantUMLConfig(Boolean useStyling) {
     this.useStyling = useStyling;
   }

@@ -142,8 +142,8 @@ public class JSONTool extends JSONToolTOP {
         }
 
     }
-
-
+    
+    
     /*=================================================================*/
   /* Part 2: Executing arguments
   /*=================================================================*/
@@ -163,12 +163,25 @@ public class JSONTool extends JSONToolTOP {
         print(json, file);
     }
     
+    /**
+     * Auxiliary method translating the given JSON document to PlantUML DSL code and printing them to
+     * the CLI.
+     *
+     * @param jsonDoc JSON document to generate code for
+     */
     public void prettyPrintPlantUmlCli(ASTJSONDocument jsonDoc) {
         PlantUMLConfig config = new PlantUMLConfig();
         String modelString = PlantUMLUtil.toPlantUmlModelString(Optional.of(jsonDoc), config);
         print(modelString, StringUtils.EMPTY);
     }
     
+    /**
+     * Auxiliary method translating the given JSON document to PlantUML DSL code and writing it to the
+     * given file.
+     *
+     * @param jsonDoc JSON document to generate code for
+     * @param file    file to write the generated code to
+     */
     public void prettyPrintPlantUmlTxt(ASTJSONDocument jsonDoc, String file) {
         Path outputPath = Paths.get(file);
         PlantUMLConfig config = new PlantUMLConfig();
@@ -182,6 +195,13 @@ public class JSONTool extends JSONToolTOP {
         }
     }
     
+    /**
+     * Auxiliary method rendering the given JSON document as PlantUML JSON diagram in SVG format and
+     * saving it to the given file.
+     *
+     * @param jsonDoc JSON document to render a diagram for
+     * @param file    file to save the diagram to
+     */
     public void prettyPrintPlantUmlSvg(ASTJSONDocument jsonDoc, String file) {
         Path outputPath = Paths.get(file);
         PlantUMLConfig config = new PlantUMLConfig();

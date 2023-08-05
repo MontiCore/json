@@ -17,11 +17,19 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 
+/**
+ * Provides utilities to translate JSONs to PlantUML DSL code as well as rendered diagrams in SVG
+ * format.
+ */
 public class PlantUMLUtil {
   public static final String PLANTUML_EMPTY = "@startuml\n@enduml";
   
   /**
-   * this needs GraphViz/JDOT installed on your PC
+   * Renders the JSON of the given AST as PlantUML SVG and saves it at the given target location.
+   *
+   * @param astJSON        AST of the JSON to render
+   * @param outputPathSVG  path to SVG file where to save the rendered model
+   * @param plantUMLConfig config containing options for pretty printing
    */
   public static Path writeJsonToPlantUmlSvg(
       @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
@@ -46,7 +54,12 @@ public class PlantUMLUtil {
   }
   
   /**
-   * this needs GraphViz/JDOT installed on your PC
+   * Loads a JSON object from a given file, renders a corresponding PlantUML SVG and saves it at the
+   * given target location.
+   *
+   * @param pathJSON       path to JSON file from which to load the model
+   * @param outputPathSVG  path to SVG file where to save the rendered model
+   * @param plantUMLConfig config containing options for pretty printing
    */
   public static void writeJsonToPlantUmlSvg(
       String pathJSON, Path outputPathSVG, PlantUMLConfig plantUMLConfig) throws IOException {
@@ -67,6 +80,14 @@ public class PlantUMLUtil {
     }
   }
   
+  /**
+   * Generates PlantUML DSL code for the JSON of the given AST and saves it at the given target
+   * location.
+   *
+   * @param astJSON        AST of the JSON to generate DSL code for
+   * @param outputPath     path to the file where to save the generated code
+   * @param plantUMLConfig config containing options for pretty printing
+   */
   public static Path writeJsonToPlantUmlModelFile(
       @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
       Path outputPath,
@@ -81,6 +102,14 @@ public class PlantUMLUtil {
     return outputPath;
   }
   
+  /**
+   * Loads a JSON object from a given file, generates corresponding PlantUML DSL code and saves it
+   * at the given target location.
+   *
+   * @param pathJSON       path to JSON file from which to load the model
+   * @param outputPath     path to the file where to save the generated code
+   * @param plantUMLConfig config containing options for pretty printing
+   */
   public static void writeJsonToPlantUmlModelFile(
       String pathJSON, Path outputPath, PlantUMLConfig plantUMLConfig) throws IOException {
     final String jsonString = new String(Files.readAllBytes(Paths.get(pathJSON)));
@@ -92,10 +121,17 @@ public class PlantUMLUtil {
     }
   }
   
+  /**
+   * Generates PlantUML DSL code for the JSON of the given AST and returns it.
+   *
+   * @param astJSON        AST of the JSON to generate DSL code for
+   * @param plantUMLConfig config containing options for pretty printing
+   * @return generated PlantUML DSL code
+   */
   public static String toPlantUmlModelString(
       @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
-      PlantUMLConfig config) {
-    JSONToPlantUML prettyPrinter = new JSONToPlantUML(config);
+      PlantUMLConfig plantUMLConfig) {
+    JSONToPlantUML prettyPrinter = new JSONToPlantUML(plantUMLConfig);
     
     if (astJSON.isPresent()) {
       return prettyPrinter.printJSONDocument(astJSON.get());
@@ -104,12 +140,19 @@ public class PlantUMLUtil {
     return PLANTUML_EMPTY;
   }
   
-  public static String toPlantUmlModelString(String jsonString, PlantUMLConfig config) {
+  /**
+   * Generates PlantUML DSL code for the given JSON string and returns it.
+   *
+   * @param jsonString     JSON to translate to PlantUML DSL code
+   * @param plantUMLConfig config containing options for pretty printing
+   * @return generated PlantUML DSL code
+   */
+  public static String toPlantUmlModelString(String jsonString, PlantUMLConfig plantUMLConfig) {
     JSONParser parser = new JSONParser();
     
     try {
       Optional<ASTJSONDocument> astJSON = parser.parse_String(jsonString);
-      return toPlantUmlModelString(astJSON, config);
+      return toPlantUmlModelString(astJSON, plantUMLConfig);
     }
     catch (IOException e) {
       Log.error("Cannot display JSON since it contains errors!");

@@ -12,12 +12,20 @@ import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
+/**
+ * Parser translating JSON documents to PlantUML DSL code.
+ */
 public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, JSONHandler {
   
   final private PlantUMLConfig config;
   private IndentPrinter printer;
   private JSONTraverser traverser;
   
+  /**
+   * Constructor supporting custom PlantUML configs.
+   *
+   * @param config defines pretty print options
+   */
   public JSONToPlantUML(PlantUMLConfig config) {
     this.config = config;
     this.printer = new IndentPrinter();
@@ -27,15 +35,18 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
     this.traverser.setJSONHandler(this);
   }
   
+  /**
+   * Default constructor using the default PlantUML config.
+   */
   public JSONToPlantUML() {
     this(new PlantUMLConfig());
   }
   
   /**
-   * Serializes and pretty-prints the JSON-AST.
+   * Translates the given JSON document to PlantUML DSL code.
    *
-   * @param jsonDocument The root node of the input AST
-   * @return The pretty-printed JSON-AST as String
+   * @param jsonDocument JSON document to translate
+   * @return generated PlantUML DSL code
    */
   public String printJSONDocument(ASTJSONDocument jsonDocument) {
     this.printer.clearBuffer();
@@ -219,7 +230,7 @@ public class JSONToPlantUML implements JSONVisitor2, MCCommonLiteralsVisitor2, J
   ///////////////////////////////////////////////////////////////////////////
   
   /**
-   * Auxiliary method used by all visit callbacks handling numbers
+   * Auxiliary method used by all visit callbacks handling numbers.
    *
    * @param number number source string
    */
