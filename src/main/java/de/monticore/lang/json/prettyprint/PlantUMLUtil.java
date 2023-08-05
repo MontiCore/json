@@ -93,7 +93,7 @@ public class PlantUMLUtil {
         }
     }
 
-    protected static String toPlantUmlModelString(
+    public static String toPlantUmlModelString(
             @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
             PlantUMLConfig config) {
         JSONToPlantUML prettyPrinter = new JSONToPlantUML(config);
@@ -105,7 +105,7 @@ public class PlantUMLUtil {
         return PLANTUML_EMPTY;
     }
 
-    protected static String toPlantUmlModelString(String jsonString, PlantUMLConfig config) {
+    public static String toPlantUmlModelString(String jsonString, PlantUMLConfig config) {
         JSONParser parser = new JSONParser();
 
         try {
