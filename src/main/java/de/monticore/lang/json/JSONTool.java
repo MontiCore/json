@@ -459,7 +459,11 @@ public class JSONTool extends JSONToolTOP {
     options.addOption(Option.builder("pp").longOpt("prettyprint")
         .argName("(json [file] | puml (plain | styled) (txt [file] | svg file | png file))")
         .optionalArg(true).numberOfArgs(4)
-        .desc("Prints the JSON-AST to stdout or the specified file (optional)").build());
+        .desc("Prints the JSON either as pretty printed JSON (json), PlantUML DSL code (puml" +
+            " txt), or PlantUML SVG/PNG diagram (puml svg|png), and writes it to the given " +
+            "file (mandatory for SVG/PNG). When using PlantUML it must be specified whether " +
+            "to use default styling (plain) or the \"Darkula\"-themed style (styled).")
+        .build());
     
     // pretty print SC
     options.addOption(Option.builder("s").longOpt("symboltable").argName("file").hasArg()
