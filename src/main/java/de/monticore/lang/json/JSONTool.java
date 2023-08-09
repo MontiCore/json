@@ -113,6 +113,9 @@ public class JSONTool extends JSONToolTOP {
                     else if (format.equals("svg")) {
                         prettyPrintPlantUmlSvg(jsonDoc, file);
                     }
+                    else if (format.equals("png")) {
+                        prettyPrintPlantUmlPng(jsonDoc, file);
+                    }
                     else {
                         printHelp(options);
                         return;
@@ -208,6 +211,26 @@ public class JSONTool extends JSONToolTOP {
         
         try {
             PlantUMLUtil.writeJsonToPlantUmlSvg(Optional.of(jsonDoc), outputPath, config);
+        }
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+            System.exit(1);
+        }
+    }
+    
+    /**
+     * Auxiliary method rendering the given JSON document as PlantUML JSON diagram in PNG format and
+     * saving it to the given file.
+     *
+     * @param jsonDoc JSON document to render a diagram for
+     * @param file    file to save the diagram to
+     */
+    public void prettyPrintPlantUmlPng(ASTJSONDocument jsonDoc, String file) {
+        Path outputPath = Paths.get(file);
+        PlantUMLConfig config = new PlantUMLConfig();
+        
+        try {
+            PlantUMLUtil.writeJsonToPlantUmlPng(Optional.of(jsonDoc), outputPath, config);
         }
         catch (IOException ex) {
             System.err.println(ex.getMessage());

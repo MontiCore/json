@@ -81,4 +81,22 @@ public class PlantUMLUtilTest {
       fail(ex.getMessage());
     }
   }
+  
+  @Test
+  public void testWriteCdToPlantUmlPng() {
+    Path pathJSON = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
+    Path outputPath = Paths.get(folder.getRoot().getAbsolutePath().toString(), "bookstore.png");
+    PlantUMLConfig config = new PlantUMLConfig();
+    
+    try {
+      PlantUMLUtil.writeJsonToPlantUmlPng(pathJSON.toFile().getAbsolutePath(), outputPath, config);
+    }
+    catch (IOException ex) {
+      fail(ex.getMessage());
+    }
+    
+    assertTrue(outputPath.toFile().exists());
+    
+    // No more proper ways to check the contents of the PNG.
+  }
 }

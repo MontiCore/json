@@ -4,17 +4,17 @@ import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceStringReader;
 
 /**
@@ -160,5 +160,59 @@ public class PlantUMLUtil {
     
     return PLANTUML_EMPTY;
   }
+  
+  /**
+   * Loads a JSON object from a given file, renders a corresponding PlantUML PNG and saves it at the
+   * given target location.
+   *
+   * @param astJSON        AST of the JSON to generate DSL code for
+   * @param outputPathPNG  path to PNG file where to save the rendered model
+   * @param plantUMLConfig config containing options for pretty printing
+   */
+  public static void writeJsonToPlantUmlPng(
+      @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ASTJSONDocument> astJSON,
+      Path outputPathPNG,
+      PlantUMLConfig plantUMLConfig)
+      throws IOException {
+    
+    final String plantUMLString = toPlantUmlModelString(astJSON, plantUMLConfig);
+    final SourceStringReader reader = new SourceStringReader(plantUMLString);
+    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+    // Write the first image to "os"
+    reader.outputImage(os, new FileFormatOption(FileFormat.PNG));
+    os.close();
+    
+    final File png = new File(outputPathPNG.toString());
+    try (FileOutputStream outputStream = new FileOutputStream(png)) {
+      outputStream.write(os.toByteArray());
+    }
+  }
+  
+  /**
+   * Loads a JSON object from a given file, renders a corresponding PlantUML PNG and saves it at the
+   * given target location.
+   *
+   * @param pathJSON       path to JSON file from which to load the model
+   * @param outputPathPNG  path to PNG file where to save the rendered model
+   * @param plantUMLConfig config containing options for pretty printing
+   */
+  public static void writeJsonToPlantUmlPng(
+      String pathJSON, Path outputPathPNG, PlantUMLConfig plantUMLConfig) throws IOException {
+    
+    final String jsonString = new String(Files.readAllBytes(Paths.get(pathJSON)));
+    
+    final String plantUMLString = toPlantUmlModelString(jsonString, plantUMLConfig);
+    final SourceStringReader reader = new SourceStringReader(plantUMLString);
+    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+    // Write the first image to "os"
+    reader.outputImage(os, new FileFormatOption(FileFormat.SVG));
+    os.close();
+    
+    final File png = new File(outputPathPNG.toString());
+    try (FileOutputStream outputStream = new FileOutputStream(png)) {
+      outputStream.write(os.toByteArray());
+    }
+  }
+  
 }
 
