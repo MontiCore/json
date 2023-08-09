@@ -97,13 +97,13 @@
   `java -jar MCJSON.jar <parameters>`
 * Present Options are:
 
-| Option                                                                                                   | Explanation                                                                                                                                                                                                                                                                                                       |
-|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `-h,--help`                                                                                              | Prints this help dialog.                                                                                                                                                                                                                                                                                          |
-| `-i,--input <file>`                                                                                      | Reads the source file (mandatory) and parses the contents as JSON.                                                                                                                                                                                                                                                |
+| Option | Explanation |
+|----|----|
+| `-h,--help` | Prints this help dialog. |
+| `-i,--input <file>` | Reads the source file (mandatory) and parses the contents as JSON. |
 | `-pp,--prettyprint (json [<file>] \| puml (plain \| styled) (txt [<file>] \| svg <file> \| png <file>))` | Prints the JSON either as pretty printed JSON (json), PlantUML DSL code (puml txt), or PlantUML SVG/PNG diagram (puml svg\|png), and writes it to the given file (mandatory for SVG/PNG). When using PlantUML it must be specified whether to use default styling (plain) or the "Darkula"-themed style (styled). |
-| `-r,--report <dir>`                                                                                      | Prints reports of the JSON artifact to the specified directory (optional). Available reports: allProperties.txt: a list of all properties, countedProperties.txt: a set of all properties with the number of occurrences, topLevelProperties.txt: a list of all top level properties.                             |
-| `-so,--syntaxobjects <file>`                                                                             | Prints an object diagram of the JSON-AST to stdout or the specified file (optional).                                                                                                                                                                                                                              |
+| `-r,--report <dir>` | Prints reports of the JSON artifact to the specified directory (optional). Available reports: allProperties.txt: a list of all properties, countedProperties.txt: a set of all properties with the number of occurrences, topLevelProperties.txt: a list of all top level properties. |
+| `-so,--syntaxobjects <file>` | Prints an object diagram of the JSON-AST to stdout or the specified file (optional). |
 
 ### Examples
 
