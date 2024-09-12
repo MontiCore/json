@@ -449,14 +449,28 @@ public class JSONTool extends JSONToolTOP {
   public Options addStandardOptions(Options options) {
     
     //help
-    options.addOption(Option.builder("h").longOpt("help").desc("Prints this help dialog").build());
+    options.addOption(Option.builder("h")
+        .longOpt("help")
+        .desc("Prints this help dialog")
+        .build());
+    
+    //version
+    options.addOption(org.apache.commons.cli.Option.builder("v")
+        .longOpt("version")
+        .desc("Prints version information")
+        .build());
     
     //parse input file
-    options.addOption(Option.builder("i").longOpt("input").argName("file").hasArg()
-        .desc("Reads the source file (mandatory) and parses the contents as JSON").build());
+    options.addOption(Option.builder("i")
+        .longOpt("input")
+        .argName("file")
+        .hasArg()
+        .desc("Reads the source file (mandatory) and parses the contents as JSON")
+        .build());
     
     //pretty print JSON
-    options.addOption(Option.builder("pp").longOpt("prettyprint")
+    options.addOption(Option.builder("pp")
+        .longOpt("prettyprint")
         .argName("(json [file] | puml (plain | styled) (txt [file] | svg file | png file))")
         .optionalArg(true).numberOfArgs(4)
         .desc("Prints the JSON either as pretty printed JSON (json), PlantUML DSL code (puml" +
@@ -465,24 +479,18 @@ public class JSONTool extends JSONToolTOP {
             "to use default styling (plain) or the \"Darkula\"-themed style (styled).")
         .build());
     
-    // pretty print SC
-    options.addOption(Option.builder("s").longOpt("symboltable").argName("file").hasArg()
-        .desc("Serialized the Symbol table of the given artifact.").build());
-    
-    // pretty print JSON
-    options.addOption(Option.builder("r").longOpt("report").argName("dir").hasArg(true).desc(
+    //reports
+    options.addOption(Option.builder("r")
+        .longOpt("report")
+        .argName("dir")
+        .hasArg(true).desc(
         "Prints reports of the JSON artifact to the specified directory (optional). Available reports:" +
             System.lineSeparator() + REPORT_ALL_PROPS + ": a list of all properties, " +
             System.lineSeparator() + REPORT_COUNTED_PROPS +
             ": a set of all properties with the number of occurrences, " + System.lineSeparator() +
             REPORT_TOPLEVEL_PROPS + ": a list of all top level properties").build());
     
-    // model paths
-    options.addOption(Option.builder("path").hasArgs()
-        .desc("Sets the artifact path for imported symbols, space separated.").build());
-    
     return options;
-    
   }
   
   /**
