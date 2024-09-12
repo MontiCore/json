@@ -81,60 +81,44 @@ public class JSONTool extends JSONToolTOP {
       // such as json2od requires it to compute
       createSymbolTable(jsonDoc);
       
-      // -option pretty print "-pp (json [file] | puml (plain | styled) (txt [file] | svg file | png file))"
+      // -option pretty print
       if (cmd.hasOption("pp")) {
-        String[] params = cmd.getOptionValues("pp");
-        if (params.length == 0) {
-          printHelp(options);
-          return;
-        }
+        String path = cmd.getOptionValue("pp", StringUtils.EMPTY);
+        prettyPrint(jsonDoc, path);
+      }
+      
+      boolean styled = cmd.hasOption("t") && cmd.getOptionValue("t").equals("dark");
+      
+      if (cmd.hasOption("puml")) {
+        Optional<String> file = Optional.ofNullable(cmd.getOptionValue("puml"));
         
-        if (params[0].equals("json")) {
-          String path = params.length == 2 ? params[1] : "";
-          prettyPrint(jsonDoc, path);
+        if (file.isPresent()) {
+          prettyPrintPlantUmlTxt(jsonDoc, file.get(), styled);
         }
-        else if (params[0].equals("puml")) {
-          if (params.length < 3) {
-            printHelp(options);
-            return;
-          }
-          boolean styled = false;
-          final String style = params[1];
-          if (style.equals("plain")) {
-            styled = false;
-          }
-          else if (style.equals("styled")) {
-            styled = true;
-          }
-          else {
-            printHelp(options);
-            return;
-          }
-          String format = params[2];
-          String file = params.length < 4 ? StringUtils.EMPTY : params[3];
-          
-          if (format.equals("txt")) {
-            if (file.equals("")) {
-              prettyPrintPlantUmlCli(jsonDoc, styled);
-            }
-            else {
-              prettyPrintPlantUmlTxt(jsonDoc, file, styled);
-            }
-          }
-          else if (format.equals("svg")) {
-            prettyPrintPlantUmlSvg(jsonDoc, file, styled);
-          }
-          else if (format.equals("png")) {
-            prettyPrintPlantUmlPng(jsonDoc, file, styled);
-          }
-          else {
-            printHelp(options);
-            return;
-          }
+        else {
+          prettyPrintPlantUmlCli(jsonDoc, styled);
+        }
+      }
+      
+      if (cmd.hasOption("svg")) {
+        Optional<String> file = Optional.ofNullable(cmd.getOptionValue("svg"));
+        
+        if (file.isPresent()) {
+          prettyPrintPlantUmlSvg(jsonDoc, file.get(), styled);
         }
         else {
           printHelp(options);
-          return;
+        }
+      }
+      
+      if (cmd.hasOption("png")) {
+        Optional<String> file = Optional.ofNullable(cmd.getOptionValue("png"));
+        
+        if (file.isPresent()) {
+          prettyPrintPlantUmlPng(jsonDoc, file.get(), styled);
+        }
+        else {
+          printHelp(options);
         }
       }
       
@@ -471,12 +455,10 @@ public class JSONTool extends JSONToolTOP {
     //pretty print JSON
     options.addOption(Option.builder("pp")
         .longOpt("prettyprint")
-        .argName("(json [file] | puml (plain | styled) (txt [file] | svg file | png file))")
-        .optionalArg(true).numberOfArgs(4)
-        .desc("Prints the JSON either as pretty printed JSON (json), PlantUML DSL code (puml" +
-            " txt), or PlantUML SVG/PNG diagram (puml svg|png), and writes it to the given " +
-            "file (mandatory for SVG/PNG). When using PlantUML it must be specified whether " +
-            "to use default styling (plain) or the \"Darkula\"-themed style (styled).")
+        .argName("file")
+        .optionalArg(true)
+        .numberOfArgs(1)
+        .desc("Prints the JSON-AST to stdout or the specified file (optional)")
         .build());
     
     //reports
@@ -512,6 +494,28 @@ public class JSONTool extends JSONToolTOP {
             .numberOfArgs(1).desc(
                 "Prints an object diagram of the JSON-AST to stdout or the specified file (optional)")
             .build());
+    
+    // print OD using the PlantUML syntax
+    options.addOption(
+        Option.builder("puml").longOpt("plantuml").argName("file").numberOfArgs(1).optionalArg(true)
+            .desc(
+                "Prints the JSON-AST in the PlantUML syntax to stdout or the specified file (optional)")
+            .build());
+    
+    // render OD as PlantUML SVG
+    options.addOption(Option.builder("svg").longOpt("svg").argName("file").numberOfArgs(1)
+        .desc("Renders the JSON-AST as a PlantUML SVG").build());
+    
+    // render OD as PlantUML PNG
+    options.addOption(Option.builder("png").longOpt("png").argName("file").numberOfArgs(1)
+        .desc("Renders the JSON-AST as a PlantUML PNG").build());
+    
+    // set theme for rendering with PlantUML
+    options.addOption(Option.builder("t").longOpt("theme").numberOfArgs(1).argName("light|dark")
+        .desc(
+            "Defines the theme 'light' (default) or 'dark' for printing or rendering PlantUML images")
+        .build());
+    
     return options;
     
   }
