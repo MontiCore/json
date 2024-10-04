@@ -31,7 +31,7 @@ public class JSONToolTest {
   
   @Test
   public void testParseAndPrint() throws IOException {
-    String[] args = { "-i", INPUT, "-pp", "json", PRINT };
+    String[] args = { "-i", INPUT, "-pp", PRINT };
     JSONTool.main(args);
     
     // check if printed JSON is valid
