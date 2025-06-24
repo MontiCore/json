@@ -8,7 +8,7 @@ plugins {
     id 'java'
     id "monticore" version "$mc_version"
     id 'maven-publish'
-    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
     //id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
     id 'org.unbroken-dome.test-sets' version '3.0.1'
     id "io.github.themrmilchmann.ecj" version "0.2.0"
