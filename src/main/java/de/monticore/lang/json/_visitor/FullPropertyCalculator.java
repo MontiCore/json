@@ -2,7 +2,7 @@
 package de.monticore.lang.json._visitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import de.monticore.lang.json._ast.ASTJSONProperty;
  */
 public class FullPropertyCalculator implements JSONVisitor2 {
   private List<String> properties = new ArrayList<String>();
-  private Map<String, Integer> propertyMap = new HashMap<String, Integer>();
+  private Map<String, Integer> propertyMap = new LinkedHashMap<String, Integer>();
   
   @Override
   public void visit(ASTJSONProperty node) {

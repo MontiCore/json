@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public class TestFullPropertyCalculator {
     FullPropertyCalculator fpc = new FullPropertyCalculator();
     traverser.add4JSON(fpc);
     jsonDoc.get().accept(traverser);
-    Map<String, Integer> checksum = new HashMap<String, Integer>();
+    Map<String, Integer> checksum = new LinkedHashMap<String, Integer>();
     checksum.put("Alice", 3);
     checksum.put("name", 2);
     checksum.put("Bob", 2);
