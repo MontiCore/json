@@ -6,7 +6,7 @@
 
 plugins {
     id 'java'
-    id "monticore" version "$mc_version"
+    id "de.monticore.generator" version "$mc_version"
     id 'maven-publish'
     id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
     id "io.github.themrmilchmann.ecj" version "0.2.0"
@@ -26,37 +26,13 @@ sourceCompatibility = '11'
 
 def junit_version = "4.13.1"
 def commons_cli_version = "1.4"
-def grammar_classifier = "grammars"
-def grammarDir = "src/main/grammars"
 
 
 /* ============================================================ */
 /* ======================= Configuration ====================== */
 /* ============================================================ */
 
-// configure non-standard source sets
-sourceSets {
-    main.java.srcDirs += [ "$projectDir/target/generated-sources/monticore/sourcecode"]
-    grammars {
-      resources {
-        srcDirs([grammarDir])
-        include "**/*.mc4"
-      }
-    }
-    test {
-        java.srcDir "$projectDir/src/test/java"
-        resources.srcDir "$projectDir/src/test/resources"
-    }
-}
 buildDir = file("$projectDir/target")
-
-configurations {grammar}
-
-java {
-    registerFeature('grammars') {
-        usingSourceSet(sourceSets.grammars)
-    }
-}
 
 test {
     useJUnit()
@@ -79,13 +55,7 @@ repositories {
 }
 
 dependencies {
-    grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
-        requireCapability("de.monticore:monticore-grammar-grammars") }
-    }
-    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "org.antlr:antlr4-runtime:4.12.0"
-    implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
-    implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
+    grammar ("de.monticore:monticore-grammar:$mc_version")
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     implementation 'org.apache.commons:commons-lang3:3.0'
@@ -97,24 +67,14 @@ dependencies {
 /* ========================== Tasks =========================== */
 /* ============================================================ */
 
-task generateJSON(type: MCTask) {
-    grammar = file "$projectDir/$grammarDir/de/monticore/lang/JSON.mc4"
-    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    handcodedPath "$projectDir/src/main/java"
-    def uptoDate = incCheck("de/monticore/lang/JSON.mc4")
-    outputs.upToDateWhen { uptoDate }
-}
-
-compileJava.dependsOn(generateJSON)
-
 tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
 
-tasks.withType(JavaCompile) {
-    options.fork = true
-    options.encoding = "UTF-8"
-    options.deprecation = false
-    options.warnings = false
-    options.headerOutputDirectory.convention(null)
+tasks.withType(JavaCompile).configureEach {
+  options.fork = true
+  options.encoding = "UTF-8"
+  options.deprecation = false
+  options.warnings = false
+  options.headerOutputDirectory.convention(null)
 }
 
 // build sources jar in addition
@@ -133,12 +93,6 @@ task javadocJar(type: Jar) {
 
 // generated java doc contains errors, disable for now
 javadoc.failOnError(false)
-
-// build grammar jar as well
-task grammarJar(type: Jar) {
-    from("$projectDir/src/main/grammars/") { include "**/*.mc4" }
-    archiveClassifier = "grammars"
-}
 
 // all in one tool-jar
 shadowJar {
