@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json._visitor;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,16 +11,18 @@ import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.Test;
 
 import de.monticore.lang.json.JSONMill;
 import de.monticore.lang.json._ast.ASTJSONDocument;
 import de.monticore.lang.json._parser.JSONParser;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTopLevelPropertyCalculator {
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -45,7 +44,7 @@ public class TestTopLevelPropertyCalculator {
     List<String> checksum = Arrays.asList(new String[] { "Alice", "Bob" });
     
     List<String> propList = tlpc.getTopLevelPropertyNames();
-    assertTrue(propList.equals(checksum));
+    assertEquals(propList, checksum);
   }
   
 }

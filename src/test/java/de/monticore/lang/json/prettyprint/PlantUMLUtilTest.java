@@ -2,26 +2,22 @@ package de.monticore.lang.json.prettyprint;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PlantUMLUtilTest {
   
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
-  
   @Test
-  public void testWriteCdToPlantUmlModelFile() {
+  public void testWriteCdToPlantUmlModelFile(@TempDir Path tempDir) {
     Path pathJSON = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
-    Path outputPath = Paths.get(folder.getRoot().getAbsolutePath().toString(), "bookstore.puml");
+    Path outputPath = tempDir.resolve("bookstore.puml");
     PlantUMLConfig config = new PlantUMLConfig();
     
     try {
@@ -54,9 +50,9 @@ public class PlantUMLUtilTest {
   }
   
   @Test
-  public void testWriteCdToPlantUmlSvg() {
+  public void testWriteCdToPlantUmlSvg(@TempDir Path tempDir) {
     Path pathJSON = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
-    Path outputPath = Paths.get(folder.getRoot().getAbsolutePath().toString(), "bookstore.svg");
+    Path outputPath = tempDir.resolve("bookstore.svg");
     PlantUMLConfig config = new PlantUMLConfig();
     
     try {
@@ -83,9 +79,9 @@ public class PlantUMLUtilTest {
   }
   
   @Test
-  public void testWriteCdToPlantUmlPng() {
+  public void testWriteCdToPlantUmlPng(@TempDir Path tempDir) {
     Path pathJSON = Paths.get("src/test/resources/json/prettyprint/bookstore.json");
-    Path outputPath = Paths.get(folder.getRoot().getAbsolutePath().toString(), "bookstore.png");
+    Path outputPath = tempDir.resolve("bookstore.png");
     PlantUMLConfig config = new PlantUMLConfig();
     
     try {

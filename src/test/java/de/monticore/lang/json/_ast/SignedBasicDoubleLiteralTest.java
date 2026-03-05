@@ -1,24 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json._ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.Optional;
 
-import de.monticore.lang.json.semdiff.SemanticJSONDifferencer;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+
 
 import de.monticore.lang.json._parser.JSONParser;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SignedBasicDoubleLiteralTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -65,7 +63,7 @@ public class SignedBasicDoubleLiteralTest {
     Optional<ASTSignedBasicDoubleLiteral> ast;
     try {
       ast = parser.parse_StringSignedBasicDoubleLiteral(s);
-      assertTrue(!parser.hasErrors());
+      assertFalse(parser.hasErrors());
       assertEquals(d, ast.get().getValue(), 0);
     }
     catch (IOException e) {

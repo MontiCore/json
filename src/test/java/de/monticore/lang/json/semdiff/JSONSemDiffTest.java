@@ -9,10 +9,10 @@ import java.util.List;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JSONSemDiffTest {
   
@@ -20,7 +20,7 @@ public class JSONSemDiffTest {
   
   private SemanticJSONDifferencer semJsonDiffer;
   
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -57,7 +57,7 @@ public class JSONSemDiffTest {
     
     // then
     assertEquals(1, result.size());
-    assertTrue(result.get(0) instanceof MissingPropertyMessage);
+    assertInstanceOf(MissingPropertyMessage.class, result.get(0));
     MissingPropertyMessage message = (MissingPropertyMessage) result.get(0);
     assertEquals(
         "Object in document has property 'Alice' missing in other document.", 

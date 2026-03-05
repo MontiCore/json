@@ -8,7 +8,7 @@ plugins {
     id 'java'
     id "de.monticore.generator" version "$mc_version"
     id 'maven-publish'
-    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
+    id "com.gradleup.shadow" version "$shadow_plugin_version"
     id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
@@ -18,24 +18,26 @@ plugins {
 
 group = 'de.monticore.lang'
 description = 'json'
-sourceCompatibility = '11'
-
-/* ============================================================ */
-/* ========================= Versions ========================= */
-/* ============================================================ */
-
-def junit_version = "4.13.1"
-def commons_cli_version = "1.4"
-
+sourceCompatibility = JavaVersion.VERSION_21
 
 /* ============================================================ */
 /* ======================= Configuration ====================== */
 /* ============================================================ */
 
-buildDir = file("$projectDir/target")
+layout.buildDirectory = layout.projectDirectory.dir("target")
+
+ecj {
+    compilerVersion = "3.44.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 /* ============================================================ */
@@ -56,11 +58,17 @@ repositories {
 
 dependencies {
     grammar ("de.monticore:monticore-grammar:$mc_version")
-    implementation "org.assertj:assertj-core:3.7.0"
+    implementation "org.assertj:assertj-core:$assertj_version"
     implementation "commons-cli:commons-cli:$commons_cli_version"
-    implementation 'org.apache.commons:commons-lang3:3.0'
-    implementation "net.sourceforge.plantuml:plantuml:1.2023.7"
-    testImplementation "junit:junit:$junit_version"
+    implementation "org.apache.commons:commons-lang3:$commons_lang_version"
+    implementation "net.sourceforge.plantuml:plantuml:$plantuml_version"
+
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+
 }
 
 /* ============================================================ */
