@@ -18,7 +18,6 @@ plugins {
 
 group = 'de.monticore.lang'
 description = 'json'
-sourceCompatibility = JavaVersion.VERSION_21
 
 /* ============================================================ */
 /* ======================= Configuration ====================== */
@@ -50,9 +49,9 @@ repositories {
     }
     mavenCentral()
     maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-      url repo
+        credentials.username = mavenUser
+        credentials.password = mavenPassword
+        url = repo
     }
 }
 
@@ -75,7 +74,7 @@ dependencies {
 /* ========================== Tasks =========================== */
 /* ============================================================ */
 
-tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
+tasks.withType(Copy).configureEach { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }
 
 tasks.withType(JavaCompile).configureEach {
   options.fork = true
@@ -86,7 +85,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // build sources jar in addition
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     from sourceSets.main.allJava
     archiveClassifier = "sources"
 }
@@ -100,7 +99,7 @@ task javadocJar(type: Jar) {
 }
 
 // generated java doc contains errors, disable for now
-javadoc.failOnError(false)
+javadoc.failOnError = false
 
 // all in one tool-jar
 shadowJar {
@@ -132,8 +131,8 @@ publishing {
         }
     }
     repositories.maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
+        credentials.username = mavenUser
+        credentials.password = mavenPassword
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
