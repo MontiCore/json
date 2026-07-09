@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.json._ast;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
@@ -56,19 +55,13 @@ public class SignedBasicDoubleLiteralTest {
    * 
    * @param d The expected double value
    * @param s The String value to parse
-   * @throws IOException
    */
   private void checkDoubleLiteral(double d, String s) {
     JSONParser parser = new JSONParser();
-    Optional<ASTSignedBasicDoubleLiteral> ast;
-    try {
-      ast = parser.parse_StringSignedBasicDoubleLiteral(s);
-      assertFalse(parser.hasErrors());
-      assertEquals(d, ast.get().getValue(), 0);
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
+    Optional<ASTSignedBasicDoubleLiteral> ast =
+        parser.parse_StringSignedBasicDoubleLiteral(s);
+    assertFalse(parser.hasErrors());
+    assertEquals(d, ast.get().getValue(), 0);
   }
   
 }
