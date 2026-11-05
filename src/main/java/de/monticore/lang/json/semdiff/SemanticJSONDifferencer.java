@@ -6,7 +6,6 @@ import static de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffError.FA
 import static de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffError.INVALID_JSON_SEM_DIFF_TYPE;
 import static de.monticore.lang.json.semdiff.exceptions.SemanticJSONDiffError.UNKNOWN_JSON_VALUE_TYPE;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,12 +41,7 @@ public class SemanticJSONDifferencer {
   }
   
   private ASTJSONDocument parse(String model) throws SemanticJSONDiffException {
-    try {
-      return parser.parse(model).orElseThrow(() -> new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, model));
-    }
-    catch (IOException e) {
-      throw new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, model, e);
-    }
+    return parser.parse(model).orElseThrow(() -> new SemanticJSONDiffException(FAILED_TO_PARSE_MODEL, model));
   }
   
   public List<JSONSemDiffMessage> semDiffASTs(ASTJSONDocument d1, ASTJSONDocument d2) throws SemanticJSONDiffException {
