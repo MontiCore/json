@@ -150,15 +150,8 @@ public class PlantUMLUtil {
   public static String toPlantUmlModelString(String jsonString, PlantUMLConfig plantUMLConfig) {
     JSONParser parser = new JSONParser();
     
-    try {
-      Optional<ASTJSONDocument> astJSON = parser.parse_String(jsonString);
-      return toPlantUmlModelString(astJSON, plantUMLConfig);
-    }
-    catch (IOException e) {
-      Log.error("Cannot display JSON since it contains errors!");
-    }
-    
-    return PLANTUML_EMPTY;
+    Optional<ASTJSONDocument> astJSON = parser.parse_String(jsonString);
+    return toPlantUmlModelString(astJSON, plantUMLConfig);
   }
   
   /**

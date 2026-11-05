@@ -298,7 +298,7 @@ public class JSONTool extends JSONToolTOP {
       JSONParser parser = new JSONParser();
       jsonDoc = parser.parse(model.toString());
     }
-    catch (IOException | NullPointerException e) {
+    catch (NullPointerException e) {
       Log.error("0xA7109 Input file '" + path + "' not found.");
     }
     
